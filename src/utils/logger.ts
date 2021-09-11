@@ -10,11 +10,11 @@ const customFormat = format.printf(({level, message, timestamp}) => {
     return `${timestamp} ${level} - ${message}`;
 });
 
-const transportArray: Array<any> = [
+const transportList: Array<any> = [
 ];
 
 if (isDevelopment) {
-    transportArray.push(new transports.Console());
+    transportList.push(new transports.Console());
 }
 
 const logger = createLogger({
@@ -24,7 +24,7 @@ const logger = createLogger({
         }),
         customFormat
     ),
-    transports: transportArray
+    transports: transportList
 });
 
 export default logger;
