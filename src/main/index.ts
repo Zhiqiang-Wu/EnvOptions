@@ -1,11 +1,10 @@
 import {app, BrowserWindow, protocol} from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
-// import installExtension, {
-//   REACT_DEVELOPER_TOOLS,
-// } from 'electron-devtools-installer';
+// import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
+
 let mainWindow: BrowserWindow;
 
 protocol.registerSchemesAsPrivileged([
@@ -34,9 +33,10 @@ const createWindow = () => {
 };
 
 app.on('ready', async () => {
-    // if (isDevelopment) {
-    //   await installExtension(REACT_DEVELOPER_TOOLS);
-    // }
+    /*if (isDevelopment) {
+        await installExtension(REACT_DEVELOPER_TOOLS);
+        await installExtension(REDUX_DEVTOOLS);
+    }*/
     createWindow();
 });
 
