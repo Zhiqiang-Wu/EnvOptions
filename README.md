@@ -1,15 +1,3 @@
-# umi project
+# environment
 
-## Getting Started
-
-Install dependencies,
-
-```bash
-$ yarn
-```
-
-Start the dev server,
-
-```bash
-$ yarn start
-```
+#### windows平台环境变量管理工具
