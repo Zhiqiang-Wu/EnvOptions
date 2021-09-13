@@ -13,9 +13,11 @@ protocol.registerSchemesAsPrivileged([
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
+        icon: path.join(__dirname, '../../assets/favicon.ico'),
         width: 800,
         height: 600,
         show: false,
+        title: 'environment',
         webPreferences: {
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
