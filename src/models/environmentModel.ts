@@ -3,7 +3,7 @@
 
 import {
     deleteEnvironmentVariable, listEnvironmentVariables, setEnvironmentVariable,
-} from '@/services/localService';
+} from '@/services/environmentService';
 
 export default {
     namespace: 'environmentModel',
