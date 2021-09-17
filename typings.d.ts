@@ -1,5 +1,3 @@
-export {};
-
 declare module '*.css';
 declare module '*.less';
 declare module '*.png';
@@ -15,9 +13,11 @@ declare module '*.svg' {
 declare global {
     interface Window {
         electron: {
-            setEnvironmentVariable: (key: string, value: string) => Promise<number>;
-            listEnvironmentVariables: () => Promise<any>;
-            deleteEnvironmentVariable: (Key: string) => Promise<number>;
+            setEnvironmentVariable: (key: string, value: string) => Promise<Result>;
+            listEnvironmentVariables: () => Promise<Result>;
+            deleteEnvironmentVariable: (Key: string) => Promise<Result>;
         };
     }
 }
+
+export {}

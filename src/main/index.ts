@@ -6,6 +6,7 @@ import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
 import ffi from 'ffi-napi';
 import ref from 'ref-napi';
+import fs from 'fs';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -53,11 +54,16 @@ const createTray = () => {
 };
 
 const loadDLL = () => {
-    environmentDLL = ffi.Library(path.join(__dirname, '../../assets/environment.dll'), {
-        setEnvironmentVariable: [ref.types.int, [ref.types.CString, ref.types.CString]],
-        listEnvironmentVariables: [ref.types.int, []],
-        deleteEnvironmentVariable: [ref.types.int, [ref.types.CString]],
-    });
+    try {
+        environmentDLL = ffi.Library(path.join(__dirname, '../../assets/libenvironment_dll_c.dll'), {
+            setEnvironmentVariable: [ref.types.int, [ref.types.CString, ref.types.CString]],
+            listEnvironmentVariables: [ref.types.int, [ref.types.CString]],
+            deleteEnvironmentVariable: [ref.types.int, [ref.types.CString]],
+        });
+    } catch (e) {
+        console.log(e);
+    }
+
 };
 
 app.on('ready', async () => {
@@ -83,13 +89,31 @@ app.on('activate', () => {
 });
 
 ipcMain.handle('listEnvironmentVariables', () => {
-    return environmentDLL.listEnvironmentVariables();
+    const resultPath = path.join(__dirname, '../../assets/result.txt');
+    const i = environmentDLL.listEnvironmentVariables(resultPath);
+    if (i !== 0) {
+        return {code: 1, message: '获取环境变量失败'};
+    }
+    const buffer = fs.readFileSync(resultPath);
+    const str = buffer.toString().trim();
+    fs.unlinkSync(resultPath);
+    return {code: 0, data: {environmentVariables: str.split('\n')}};
 });
 
 ipcMain.handle('setEnvironmentVariable', (event, key: string, value: string) => {
-    return environmentDLL.setEnvironmentVariable(key, value);
+    const i = environmentDLL.setEnvironmentVariable(key, value);
+    if (i !== 0) {
+        return {code: 1, message: '设置环境变量失败'};
+    } else {
+        return {code: 0};
+    }
 });
 
 ipcMain.handle('deleteEnvironmentVariable', (event, key: string) => {
-    return environmentDLL.deleteEnvironmentVariable(key);
+    const i = environmentDLL.deleteEnvironmentVariable(key);
+    if (i !== 0) {
+        return {code: 1, message: '删除环境变量失败'};
+    } else {
+        return {code: 0};
+    }
 });
