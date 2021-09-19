@@ -49,36 +49,85 @@ const createTray = (): void => {
     tray.setToolTip('Env Options');
 };
 
-const connectBaseDB = (): Promise<boolean> => {
+const connectBaseDB = (): Promise<Result> => {
     return new Promise((resolve) => {
         const baseDBPath = path.join(__dirname, '../../../db/base.db3');
         baseDB = new sqlite3.Database(baseDBPath, (err) => {
-            resolve(!err);
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
         });
     });
 };
 
-const listDatabaseEnvironmentVariables = (): Promise<Array<EnvironmentVariable>> => {
-    return new Promise<Array<EnvironmentVariable>>((resolve) => {
+const listDatabaseEnvironmentVariables = (): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
         baseDB.all('SELECT * FROM variable', (err, result) => {
-            resolve(result);
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200, data: {environmentVariables: result}});
+            }
         });
     });
 };
 
-const listSystemEnvironmentVariables = (): Promise<Array<EnvironmentVariable>> => {
-    return new Promise<Array<EnvironmentVariable>>((resolve) => {
+const listSystemEnvironmentVariables = (): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
         regedit.list(envPath, (err, result) => {
-            const environmentVariableObject = result[envPath].values;
-            const environmentVariables: Array<EnvironmentVariable> = loadsh.keys(environmentVariableObject).map((key) => ({
-                key,
-                type: environmentVariableObject[key].type,
-                value: environmentVariableObject[key].value,
-                selected: true,
-            }));
-            resolve(environmentVariables);
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                const environmentVariableObject = result[envPath].values;
+                const environmentVariables: Array<EnvironmentVariable> = loadsh.keys(environmentVariableObject).map((key) => ({
+                    key,
+                    type: environmentVariableObject[key].type,
+                    value: environmentVariableObject[key].value,
+                    selected: true,
+                }));
+                resolve({code: 200, data: {environmentVariables}});
+            }
         });
     });
+};
+
+const deleteSystemEnvironmentVariable = async (key: string): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        regedit.deleteValue([`${envPath}\\${key}`], (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
+const deleteDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        baseDB.exec(`DELETE
+                     FROM variable
+                     WHERE id = ${id}`, (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
+const existsSystemEnvironmentVariable = async (key: string): Promise<Result> => {
+    const result: Result = await listSystemEnvironmentVariables();
+    if (result.code !== 200) {
+        return result;
+    }
+    const index = loadsh.findIndex(result.data.environmentVariables, (systemEnvironmentVariable: EnvironmentVariable) => {
+        return systemEnvironmentVariable.key === key;
+    });
+    return {code: 200, data: {exists: index >= 0}};
 };
 
 const appQuit = (): void => {
@@ -108,9 +157,17 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.handle('listEnvironmentVariables', async () => {
-    return Promise.all([listSystemEnvironmentVariables(), listDatabaseEnvironmentVariables()]).then((environmentVariablesArray: Array<Array<EnvironmentVariable>>) => {
-        const systemEnvironmentVariables: Array<EnvironmentVariable> = environmentVariablesArray[0];
-        let databaseEnvironmentVariables: Array<EnvironmentVariable> = environmentVariablesArray[1];
+    return Promise.all([listSystemEnvironmentVariables(), listDatabaseEnvironmentVariables()]).then((resultArray: Array<Result>) => {
+        const result1 = resultArray[0];
+        if (result1.code !== 200) {
+            return result1;
+        }
+        const result2 = resultArray[1];
+        if (result2.code !== 200) {
+            return result2;
+        }
+        const systemEnvironmentVariables: Array<EnvironmentVariable> = result1.data.environmentVariables;
+        const databaseEnvironmentVariables: Array<EnvironmentVariable> = result2.data.environmentVariables;
         const newDatabaseEnvironmentVariables: Array<EnvironmentVariable> = loadsh.differenceWith(systemEnvironmentVariables, databaseEnvironmentVariables, (systemEnvironmentVariable: EnvironmentVariable, databaseEnvironmentVariable: EnvironmentVariable) => {
             return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
         });
@@ -124,17 +181,17 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                     if (err) {
                         return {code: 1, message: err.message};
                     } else {
-                        databaseEnvironmentVariables = await listDatabaseEnvironmentVariables();
-                        const environmentVariables: Array<EnvironmentVariable> = databaseEnvironmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
+                        const result = await listDatabaseEnvironmentVariables();
+                        const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
                             const index = loadsh.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
                                 return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
                             });
                             return {
                                 ...databaseEnvironmentVariable,
-                                selected: index >= 0
+                                selected: index >= 0,
                             };
                         });
-                        return {code: 0, data: {environmentVariables}};
+                        return {code: 200, data: {environmentVariables}};
                     }
                 });
             });
@@ -145,62 +202,33 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                 });
                 return {
                     ...databaseEnvironmentVariable,
-                    selected: index >= 0
+                    selected: index >= 0,
                 };
             });
-            return {code: 0, data: {environmentVariables}};
+            return {code: 200, data: {environmentVariables}};
         }
     });
 });
 
-ipcMain.handle('setEnvironmentVariable', (event, key: string, value: string) => {
-    const i = 0;
-    if (i !== 0) {
-        return {code: 1, message: '设置环境变量失败'};
+ipcMain.handle('setEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
+    console.log(environmentVariable);
+    return {code: 200};
+    /*if (environmentVariable.selected) {
+
     } else {
-        return {code: 0};
-    }
+        return deleteSystemEnvironmentVariable(environmentVariable.key);
+    }*/
 });
 
-ipcMain.handle('deleteEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
+ipcMain.handle('deleteEnvironmentVariable', async (event, environmentVariable: EnvironmentVariable): Promise<Result> => {
     if (environmentVariable.selected) {
-        return new Promise<Result>((resolve) => {
-            regedit.deleteValue([`${envPath}\\${environmentVariable.key}`], (err) => {
-                if (err) {
-                    resolve({code: 1, message: err.message});
-                } else {
-                    resolve({code: 0});
-                }
-            });
-        }).then((result: Result) => {
-            if (result.code !== 0) {
-                return result;
-            } else {
-                return new Promise<Result>((resolve) => {
-                    baseDB.exec(`DELETE
-                                 FROM variable
-                                 WHERE id = ${environmentVariable.id}`, (err) => {
-                        if (err) {
-                            resolve({code: 1, message: err.message});
-                        } else {
-                            resolve({code: 0});
-                        }
-                    });
-                });
-            }
-        });
+        let result = await deleteSystemEnvironmentVariable(environmentVariable.key);
+        if (result.code !== 200) {
+            return result;
+        }
+        return deleteDatabaseEnvironmentVariable(environmentVariable.id);
     } else {
-        return new Promise<Result>((resolve) => {
-            baseDB.exec(`DELETE
-                         FROM variable
-                         WHERE id = ${environmentVariable.id}`, (err) => {
-                if (err) {
-                    resolve({code: 1, message: err.message});
-                } else {
-                    resolve({code: 0});
-                }
-            });
-        });
+        return deleteDatabaseEnvironmentVariable(environmentVariable.id);
     }
 });
 
