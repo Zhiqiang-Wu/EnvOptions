@@ -4,28 +4,24 @@
 import {app, BrowserWindow, Menu, protocol, Tray, ipcMain} from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
-import ffi from 'ffi-napi';
-import ref from 'ref-napi';
-import fs from 'fs';
+import loadsh from 'loadsh';
+import regedit from 'regedit';
+import sqlite3 from 'sqlite3';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
-
 let mainWindow: BrowserWindow;
 let tray: Tray;
-let environmentDLL;
+let baseDB: sqlite3.Database;
+const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment';
 
-protocol.registerSchemesAsPrivileged([
-    {scheme: 'app', privileges: {secure: true, standard: true}},
-]);
-
-const createWindow = () => {
+const createWindow = (): void => {
     mainWindow = new BrowserWindow({
         icon: path.join(__dirname, '../../assets/favicon.ico'),
         width: 800,
         height: 600,
         show: false,
-        title: 'environment',
+        title: 'Env Options',
         webPreferences: {
             contextIsolation: true,
             preload: path.join(__dirname, 'preload.js'),
@@ -44,64 +40,110 @@ const createWindow = () => {
     });
 };
 
-const createTray = () => {
+const createTray = (): void => {
     tray = new Tray(path.join(__dirname, '../../assets/favicon.ico'));
     const menu = Menu.buildFromTemplate([
         {label: '退出', click: app.quit},
     ]);
     tray.setContextMenu(menu);
-    tray.setToolTip('environment');
+    tray.setToolTip('Env Options');
 };
 
-const loadDLL = () => {
-    try {
-        environmentDLL = ffi.Library(path.join(__dirname, '../../assets/libenvironment_dll_c.dll'), {
-            setEnvironmentVariable: [ref.types.int, [ref.types.CString, ref.types.CString]],
-            listEnvironmentVariables: [ref.types.int, [ref.types.CString]],
-            deleteEnvironmentVariable: [ref.types.int, [ref.types.CString]],
+const connectBaseDB = (): Promise<boolean> => {
+    return new Promise((resolve) => {
+        const baseDBPath = path.join(__dirname, '../../../db/base.db3');
+        baseDB = new sqlite3.Database(baseDBPath, (err) => {
+            resolve(!err);
         });
-    } catch (e) {
-        console.log(e);
-    }
-
+    });
 };
+
+const listDatabaseEnvironmentVariables = (): Promise<Array<EnvironmentVariable>> => {
+    return new Promise<Array<EnvironmentVariable>>((resolve) => {
+        baseDB.all('SELECT * FROM variable', (err, result) => {
+            resolve(result);
+        });
+    });
+};
+
+const listSystemEnvironmentVariables = (): Promise<Array<EnvironmentVariable>> => {
+    return new Promise<Array<EnvironmentVariable>>((resolve) => {
+        regedit.list(envPath, (err, result) => {
+            const environmentVariableObject = result[envPath].values;
+            const environmentVariables = loadsh.keys(environmentVariableObject).map((key) => ({
+                key,
+                type: environmentVariableObject[key].type,
+                value: environmentVariableObject[key].value,
+            }));
+            resolve(environmentVariables);
+        });
+    });
+};
+
+const loadSystemEnvironmentVariable = async (): Promise<any> => {
+    return Promise.all([listSystemEnvironmentVariables(), listDatabaseEnvironmentVariables()]).then((environmentVariablesArray: Array<Array<EnvironmentVariable>>) => {
+        const systemEnvironmentVariables: Array<EnvironmentVariable> = environmentVariablesArray[0];
+        const databaseEnvironmentVariables: Array<EnvironmentVariable> = environmentVariablesArray[1];
+        const newDatabaseEnvironmentVariables: Array<EnvironmentVariable> = [];
+        systemEnvironmentVariables.forEach((systemEnvironmentVariable: EnvironmentVariable) => {
+            const databaseEnvironmentVariable = databaseEnvironmentVariables.find((databaseEnvironmentVariable: EnvironmentVariable) => {
+                return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
+            });
+            if (databaseEnvironmentVariable) {
+                if (!databaseEnvironmentVariable.selected) {
+                    baseDB.exec(`UPDATE variable
+                             SET selected = 1
+                             WHERE id = ${databaseEnvironmentVariable.id}`);
+                }
+            } else {
+                newDatabaseEnvironmentVariables.push(systemEnvironmentVariable);
+            }
+        });
+        if (newDatabaseEnvironmentVariables.length > 0) {
+            const statement: sqlite3.Statement = baseDB.prepare('INSERT INTO variable (key, type, value, selected) VALUES (?, ?, ? , 1)');
+            newDatabaseEnvironmentVariables.forEach((environmentVariable: EnvironmentVariable) => {
+                statement.run([environmentVariable.key, environmentVariable.type, environmentVariable.value]);
+            });
+            statement.finalize();
+        }
+        return true;
+    });
+};
+
+const appQuit = (): void => {
+    baseDB.close(() => {
+        app.quit();
+    });
+};
+
+protocol.registerSchemesAsPrivileged([
+    {scheme: 'app', privileges: {secure: true, standard: true}},
+]);
 
 app.on('ready', async () => {
     /*if (isDevelopment) {
         await installExtension(REACT_DEVELOPER_TOOLS);
         await installExtension(REDUX_DEVTOOLS);
     }*/
-    loadDLL();
+    await connectBaseDB();
+    await loadSystemEnvironmentVariable();
     createWindow();
     createTray();
 });
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        app.quit();
+        appQuit();
     }
 });
 
-app.on('activate', () => {
-    if (mainWindow === null) {
-        createWindow();
-    }
-});
-
-ipcMain.handle('listEnvironmentVariables', () => {
-    const resultPath = path.join(__dirname, '../../assets/result.txt');
-    const i = environmentDLL.listEnvironmentVariables(resultPath);
-    if (i !== 0) {
-        return {code: 1, message: '获取环境变量失败'};
-    }
-    const buffer = fs.readFileSync(resultPath);
-    const str = buffer.toString().trim();
-    fs.unlinkSync(resultPath);
-    return {code: 0, data: {environmentVariables: str.split('\n')}};
+ipcMain.handle('listEnvironmentVariables', async () => {
+    const environmentVariables: Array<EnvironmentVariable> = await listDatabaseEnvironmentVariables();
+    return {code: 0, data: {environmentVariables}};
 });
 
 ipcMain.handle('setEnvironmentVariable', (event, key: string, value: string) => {
-    const i = environmentDLL.setEnvironmentVariable(key, value);
+    const i = 0;
     if (i !== 0) {
         return {code: 1, message: '设置环境变量失败'};
     } else {
@@ -110,7 +152,7 @@ ipcMain.handle('setEnvironmentVariable', (event, key: string, value: string) => 
 });
 
 ipcMain.handle('deleteEnvironmentVariable', (event, key: string) => {
-    const i = environmentDLL.deleteEnvironmentVariable(key);
+    const i = 0;
     if (i !== 0) {
         return {code: 1, message: '删除环境变量失败'};
     } else {
