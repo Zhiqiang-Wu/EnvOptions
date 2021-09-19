@@ -43,7 +43,7 @@ const createWindow = (): void => {
 const createTray = (): void => {
     tray = new Tray(path.join(__dirname, '../../assets/favicon.ico'));
     const menu = Menu.buildFromTemplate([
-        {label: '退出', click: app.quit},
+        {label: '退出', click: appQuit},
     ]);
     tray.setContextMenu(menu);
     tray.setToolTip('Env Options');
@@ -70,43 +70,14 @@ const listSystemEnvironmentVariables = (): Promise<Array<EnvironmentVariable>> =
     return new Promise<Array<EnvironmentVariable>>((resolve) => {
         regedit.list(envPath, (err, result) => {
             const environmentVariableObject = result[envPath].values;
-            const environmentVariables = loadsh.keys(environmentVariableObject).map((key) => ({
+            const environmentVariables: Array<EnvironmentVariable> = loadsh.keys(environmentVariableObject).map((key) => ({
                 key,
                 type: environmentVariableObject[key].type,
                 value: environmentVariableObject[key].value,
+                selected: true,
             }));
             resolve(environmentVariables);
         });
-    });
-};
-
-const loadSystemEnvironmentVariable = async (): Promise<any> => {
-    return Promise.all([listSystemEnvironmentVariables(), listDatabaseEnvironmentVariables()]).then((environmentVariablesArray: Array<Array<EnvironmentVariable>>) => {
-        const systemEnvironmentVariables: Array<EnvironmentVariable> = environmentVariablesArray[0];
-        const databaseEnvironmentVariables: Array<EnvironmentVariable> = environmentVariablesArray[1];
-        const newDatabaseEnvironmentVariables: Array<EnvironmentVariable> = [];
-        systemEnvironmentVariables.forEach((systemEnvironmentVariable: EnvironmentVariable) => {
-            const databaseEnvironmentVariable = databaseEnvironmentVariables.find((databaseEnvironmentVariable: EnvironmentVariable) => {
-                return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
-            });
-            if (databaseEnvironmentVariable) {
-                if (!databaseEnvironmentVariable.selected) {
-                    baseDB.exec(`UPDATE variable
-                             SET selected = 1
-                             WHERE id = ${databaseEnvironmentVariable.id}`);
-                }
-            } else {
-                newDatabaseEnvironmentVariables.push(systemEnvironmentVariable);
-            }
-        });
-        if (newDatabaseEnvironmentVariables.length > 0) {
-            const statement: sqlite3.Statement = baseDB.prepare('INSERT INTO variable (key, type, value, selected) VALUES (?, ?, ? , 1)');
-            newDatabaseEnvironmentVariables.forEach((environmentVariable: EnvironmentVariable) => {
-                statement.run([environmentVariable.key, environmentVariable.type, environmentVariable.value]);
-            });
-            statement.finalize();
-        }
-        return true;
     });
 };
 
@@ -126,7 +97,6 @@ app.on('ready', async () => {
         await installExtension(REDUX_DEVTOOLS);
     }*/
     await connectBaseDB();
-    await loadSystemEnvironmentVariable();
     createWindow();
     createTray();
 });
@@ -138,8 +108,49 @@ app.on('window-all-closed', () => {
 });
 
 ipcMain.handle('listEnvironmentVariables', async () => {
-    const environmentVariables: Array<EnvironmentVariable> = await listDatabaseEnvironmentVariables();
-    return {code: 0, data: {environmentVariables}};
+    return Promise.all([listSystemEnvironmentVariables(), listDatabaseEnvironmentVariables()]).then((environmentVariablesArray: Array<Array<EnvironmentVariable>>) => {
+        const systemEnvironmentVariables: Array<EnvironmentVariable> = environmentVariablesArray[0];
+        let databaseEnvironmentVariables: Array<EnvironmentVariable> = environmentVariablesArray[1];
+        const newDatabaseEnvironmentVariables: Array<EnvironmentVariable> = loadsh.differenceWith(systemEnvironmentVariables, databaseEnvironmentVariables, (systemEnvironmentVariable: EnvironmentVariable, databaseEnvironmentVariable: EnvironmentVariable) => {
+            return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
+        });
+        if (newDatabaseEnvironmentVariables.length > 0) {
+            const statement: sqlite3.Statement = baseDB.prepare('INSERT INTO variable (key, type, value, selected) VALUES (?, ?, ? , 1)');
+            newDatabaseEnvironmentVariables.forEach((environmentVariable: EnvironmentVariable) => {
+                statement.run([environmentVariable.key, environmentVariable.type, environmentVariable.value]);
+            });
+            return new Promise<Result>(() => {
+                statement.finalize(async (err) => {
+                    if (err) {
+                        return {code: 1, message: err.message};
+                    } else {
+                        databaseEnvironmentVariables = await listDatabaseEnvironmentVariables();
+                        const environmentVariables: Array<EnvironmentVariable> = databaseEnvironmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
+                            const index = loadsh.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
+                                return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
+                            });
+                            return {
+                                ...databaseEnvironmentVariable,
+                                selected: index >= 0
+                            };
+                        });
+                        return {code: 0, data: {environmentVariables}};
+                    }
+                });
+            });
+        } else {
+            const environmentVariables: Array<EnvironmentVariable> = databaseEnvironmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
+                const index = loadsh.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
+                    return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
+                });
+                return {
+                    ...databaseEnvironmentVariable,
+                    selected: index >= 0
+                };
+            });
+            return {code: 0, data: {environmentVariables}};
+        }
+    });
 });
 
 ipcMain.handle('setEnvironmentVariable', (event, key: string, value: string) => {
@@ -151,11 +162,48 @@ ipcMain.handle('setEnvironmentVariable', (event, key: string, value: string) => 
     }
 });
 
-ipcMain.handle('deleteEnvironmentVariable', (event, key: string) => {
-    const i = 0;
-    if (i !== 0) {
-        return {code: 1, message: '删除环境变量失败'};
+ipcMain.handle('deleteEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
+    if (environmentVariable.selected) {
+        return new Promise<Result>((resolve) => {
+            regedit.deleteValue([`${envPath}\\${environmentVariable.key}`], (err) => {
+                if (err) {
+                    resolve({code: 1, message: err.message});
+                } else {
+                    resolve({code: 0});
+                }
+            });
+        }).then((result: Result) => {
+            if (result.code !== 0) {
+                return result;
+            } else {
+                return new Promise<Result>((resolve) => {
+                    baseDB.exec(`DELETE
+                                 FROM variable
+                                 WHERE id = ${environmentVariable.id}`, (err) => {
+                        if (err) {
+                            resolve({code: 1, message: err.message});
+                        } else {
+                            resolve({code: 0});
+                        }
+                    });
+                });
+            }
+        });
     } else {
-        return {code: 0};
+        return new Promise<Result>((resolve) => {
+            baseDB.exec(`DELETE
+                         FROM variable
+                         WHERE id = ${environmentVariable.id}`, (err) => {
+                if (err) {
+                    resolve({code: 1, message: err.message});
+                } else {
+                    resolve({code: 0});
+                }
+            });
+        });
     }
+});
+
+ipcMain.handle('insertEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
+
 });

@@ -10,7 +10,7 @@ export default {
     namespace: 'environmentModel',
     state: {},
     effects: {
-        * listEnvironmentVariables({payload}, {call, put}) {
+        * listEnvironmentVariables({payload}, {call}) {
             return yield call(listEnvironmentVariables, payload);
         },
         * setEnvironmentVariable({payload}, {call}) {

@@ -3,3 +3,11 @@ type Result = {
     message?: string;
     data?: any;
 }
+
+type EnvironmentVariable = {
+    id: number;
+    key: string;
+    value: string;
+    type: 'REG_EXPAND_SZ' | 'REG_SZ',
+    selected: boolean;
+}

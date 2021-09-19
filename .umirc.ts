@@ -4,11 +4,34 @@ export default defineConfig({
     nodeModulesTransform: {
         type: 'none',
     },
+    layout: {
+        name: 'Env Options',
+        local: false,
+        logo: 'favicon.png'
+    },
     electronBuilder: {
-        externals: ['ffi-napi', 'ref-napi'],
+        externals: ['regedit', 'sqlite3'],
     },
     routes: [
-        {path: '/', component: '@/pages/home'},
+        {
+            path: '/home',
+            name: '首页',
+            icon: 'home',
+            exact: true,
+            component: '@/pages/home',
+        },
+        {
+            path: '/setting',
+            name: '设置',
+            icon: 'setting',
+            exact: true,
+            component: '@/pages/setting',
+        },
+        {path: '/', redirect: '/home'},
     ],
+    sass: {
+        implementation: require('node-sass'),
+    },
+    mock: false,
     fastRefresh: {},
 });
