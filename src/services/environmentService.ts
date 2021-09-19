@@ -9,6 +9,11 @@ export const listEnvironmentVariables = (): Promise<Result> => {
     return window.electron.listEnvironmentVariables();
 };
 
-export const deleteEnvironmentVariable = (key: string): Promise<Result> => {
-    return window.electron.deleteEnvironmentVariable(key);
+export const deleteEnvironmentVariable = (environmentVariable: EnvironmentVariable): Promise<Result> => {
+    return window.electron.deleteEnvironmentVariable(environmentVariable);
+};
+
+
+export const insertEnvironmentVariable = () => {
+
 };
