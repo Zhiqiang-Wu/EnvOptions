@@ -3,7 +3,7 @@
 
 import {
     deleteEnvironmentVariable, listEnvironmentVariables, setEnvironmentVariable,
-    insertEnvironmentVariable
+    insertEnvironmentVariable, getEnvironmentVariable
 } from '@/services/environmentService';
 
 export default {
@@ -21,6 +21,9 @@ export default {
         },
         * insertEnvironmentVariable({payload}, {call}) {
             return yield call(insertEnvironmentVariable, payload);
+        },
+        * getEnvironmentVariable({payload}, {call}) {
+            return yield call(getEnvironmentVariable, payload);
         },
     },
 };

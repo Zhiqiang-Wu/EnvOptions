@@ -13,7 +13,10 @@ export const deleteEnvironmentVariable = (environmentVariable: EnvironmentVariab
     return window.electron.deleteEnvironmentVariable(environmentVariable);
 };
 
-
-export const insertEnvironmentVariable = (environmentVariable: EnvironmentVariable) => {
+export const insertEnvironmentVariable = (environmentVariable: EnvironmentVariable): Promise<Result> => {
     return window.electron.insertEnvironmentVariable(environmentVariable);
+};
+
+export const getEnvironmentVariable = (id: number): Promise<Result> => {
+    return window.electron.getEnvironmentVariable(id);
 };

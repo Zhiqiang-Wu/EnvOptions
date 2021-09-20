@@ -21,6 +21,13 @@ export default defineConfig({
             component: '@/pages/home',
         },
         {
+            path: '/edit',
+            name: '编辑',
+            exact: true,
+            component: '@/pages/edit',
+            hideInMenu: true
+        },
+        {
             path: '/setting',
             name: '设置',
             icon: 'setting',
