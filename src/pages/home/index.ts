@@ -24,6 +24,7 @@ interface IProps {
     selectedRowKeys: Array<number>;
     visible: boolean;
     setVisible: Function;
+    history: any;
 }
 
 const onInsert = (props: IProps) => () => {
@@ -69,14 +70,33 @@ const onCancel = (props: IProps) => () => {
 };
 
 const onDelete = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
-    const {dispatch, setDataSource} = props;
-    dispatch(deleteEnvironmentVariable(environmentVariable)).then((result) => {
-        console.log(result);
+    const {dispatch, setDataSource, setSelectedRowKeys} = props;
+    dispatch(deleteEnvironmentVariable(environmentVariable)).then((result: Result) => {
+        if (result.code === 200) {
+            message.success('删除成功');
+            return dispatch(listEnvironmentVariables());
+        } else {
+            return result;
+        }
+    }).then((result: Result) => {
+        if (result.code === 200) {
+            const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables;
+            setDataSource(environmentVariables);
+            setSelectedRowKeys(environmentVariables.filter((value => value.selected)).map((value) => value.id));
+        } else {
+            message.warn(result.message);
+        }
     });
 };
 
-const onEdit = (props: IProps) => (event) => {
-
+const onEdit = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
+    const {history} = props;
+    history.push({
+        pathname: '/edit',
+        params: {
+            id: environmentVariable.id
+        }
+    });
 };
 
 const onReload = (props: IProps) => () => {
@@ -148,7 +168,7 @@ export default compose(
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
     withState('visible', 'setVisible', false),
     withHandlers({
-        onInsert, selectedOnChange, onDelete, onOk, onCancel, onReload
+        onInsert, selectedOnChange, onDelete, onOk, onCancel, onReload, onEdit,
     }),
     withLifecycle,
     pure,

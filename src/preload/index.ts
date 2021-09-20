@@ -16,6 +16,9 @@ const api: any = {
     insertEnvironmentVariable: (environmentVariable: EnvironmentVariable): Promise<Result> => {
         return ipcRenderer.invoke('insertEnvironmentVariable', environmentVariable);
     },
+    getEnvironmentVariable: (id: number): Promise<Result> => {
+        return ipcRenderer.invoke('getEnvironmentVariable', id);
+    },
 };
 
 contextBridge.exposeInMainWorld(apiKey, api);

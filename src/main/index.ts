@@ -131,7 +131,6 @@ const existsSystemEnvironmentVariable = async (key: string): Promise<Result> => 
 };
 
 const insertDatabaseEnvironmentVariable = (environmentVariable: EnvironmentVariable): Promise<Result> => {
-    console.log(environmentVariable);
     return new Promise<Result>((resolve) => {
         const sql = `INSERT INTO variable (key, type, value)
                      VALUES (${'\''}${environmentVariable.key}${'\''}, ${'\''}${environmentVariable.type}${'\''},
@@ -141,6 +140,20 @@ const insertDatabaseEnvironmentVariable = (environmentVariable: EnvironmentVaria
                 resolve({code: 1, message: err.message});
             } else {
                 resolve({code: 200});
+            }
+        });
+    });
+};
+
+const getDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        baseDB.get(`SELECT *
+                    FROM variable
+                    WHERE id = ${id}`, (err, row) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200, data: {environmentVariable: row}});
             }
         });
     });
@@ -227,7 +240,6 @@ ipcMain.handle('listEnvironmentVariables', async () => {
 });
 
 ipcMain.handle('setEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
-    console.log(environmentVariable);
     return {code: 200};
     /*if (environmentVariable.selected) {
 
@@ -238,11 +250,12 @@ ipcMain.handle('setEnvironmentVariable', (event, environmentVariable: Environmen
 
 ipcMain.handle('deleteEnvironmentVariable', async (event, environmentVariable: EnvironmentVariable): Promise<Result> => {
     if (environmentVariable.selected) {
-        let result = await deleteSystemEnvironmentVariable(environmentVariable.key);
+        return {code: 1, message: '删除失败'};
+        /*let result = await deleteSystemEnvironmentVariable(environmentVariable.key);
         if (result.code !== 200) {
             return result;
         }
-        return deleteDatabaseEnvironmentVariable(environmentVariable.id);
+        return deleteDatabaseEnvironmentVariable(environmentVariable.id);*/
     } else {
         return deleteDatabaseEnvironmentVariable(environmentVariable.id);
     }
@@ -250,4 +263,8 @@ ipcMain.handle('deleteEnvironmentVariable', async (event, environmentVariable: E
 
 ipcMain.handle('insertEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
     return insertDatabaseEnvironmentVariable(environmentVariable);
+});
+
+ipcMain.handle('getEnvironmentVariable', (event, id): Promise<Result> => {
+    return getDatabaseEnvironmentVariable(id);
 });

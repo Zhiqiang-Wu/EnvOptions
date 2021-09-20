@@ -12,18 +12,19 @@ import styles from './index.scss';
 const {Item, useForm} = Form;
 
 const Index = ({
-                      dataSource,
-                      onDelete,
-                      tableLoading,
-                      selectedRowKeys,
-                      selectedOnChange,
-                      visible,
-                      onCancel,
-                      onOk,
-                      onInsert,
-                      onButtonLoading,
-                      onReload,
-                  }: any) => {
+                   dataSource,
+                   onDelete,
+                   tableLoading,
+                   selectedRowKeys,
+                   selectedOnChange,
+                   visible,
+                   onCancel,
+                   onOk,
+                   onInsert,
+                   onButtonLoading,
+                   onReload,
+                   onEdit,
+               }: any) => {
     const columns = [
         {
             key: 'key',
@@ -50,7 +51,7 @@ const Index = ({
                     <Space>
                         <Tooltip title='编辑'>
                             <Typography.Link>
-                                <EditOutlined/>
+                                <EditOutlined onClick={() => onEdit(record)}/>
                             </Typography.Link>
                         </Tooltip>
                         <Popconfirm
@@ -110,6 +111,9 @@ const Index = ({
                 forceRender={true}
             >
                 <Form form={form} labelCol={{span: 4}} onFinish={onOk}>
+                    <Item name='id' hidden={true}>
+                        <Input/>
+                    </Item>
                     <Item
                         name='key'
                         label='变量名'
