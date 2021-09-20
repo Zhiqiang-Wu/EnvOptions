@@ -17,5 +17,6 @@ interface Window {
         setEnvironmentVariable: (key: string, value: string) => Promise<Result>;
         listEnvironmentVariables: () => Promise<Result>;
         deleteEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
+        insertEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
     };
 }

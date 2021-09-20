@@ -14,6 +14,6 @@ export const deleteEnvironmentVariable = (environmentVariable: EnvironmentVariab
 };
 
 
-export const insertEnvironmentVariable = () => {
-
+export const insertEnvironmentVariable = (environmentVariable: EnvironmentVariable) => {
+    return window.electron.insertEnvironmentVariable(environmentVariable);
 };

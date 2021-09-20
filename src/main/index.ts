@@ -130,6 +130,22 @@ const existsSystemEnvironmentVariable = async (key: string): Promise<Result> => 
     return {code: 200, data: {exists: index >= 0}};
 };
 
+const insertDatabaseEnvironmentVariable = (environmentVariable: EnvironmentVariable): Promise<Result> => {
+    console.log(environmentVariable);
+    return new Promise<Result>((resolve) => {
+        const sql = `INSERT INTO variable (key, type, value)
+                     VALUES (${'\''}${environmentVariable.key}${'\''}, ${'\''}${environmentVariable.type}${'\''},
+                             ${'\''}${environmentVariable.value}${'\''})`;
+        baseDB.exec(sql, (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
 const appQuit = (): void => {
     baseDB.close(() => {
         app.quit();
@@ -172,7 +188,7 @@ ipcMain.handle('listEnvironmentVariables', async () => {
             return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
         });
         if (newDatabaseEnvironmentVariables.length > 0) {
-            const statement: sqlite3.Statement = baseDB.prepare('INSERT INTO variable (key, type, value, selected) VALUES (?, ?, ? , 1)');
+            const statement: sqlite3.Statement = baseDB.prepare('INSERT INTO variable (key, type, value) VALUES (?, ?, ?)');
             newDatabaseEnvironmentVariables.forEach((environmentVariable: EnvironmentVariable) => {
                 statement.run([environmentVariable.key, environmentVariable.type, environmentVariable.value]);
             });
@@ -233,5 +249,5 @@ ipcMain.handle('deleteEnvironmentVariable', async (event, environmentVariable: E
 });
 
 ipcMain.handle('insertEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
-
+    return insertDatabaseEnvironmentVariable(environmentVariable);
 });
