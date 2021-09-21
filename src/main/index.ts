@@ -93,9 +93,44 @@ const listSystemEnvironmentVariables = (): Promise<Result> => {
     });
 };
 
-const deleteSystemEnvironmentVariable = async (key: string): Promise<Result> => {
+const deleteSystemEnvironmentVariable = (key: string): Promise<Result> => {
     return new Promise<Result>((resolve) => {
         regedit.deleteValue([`${envPath}\\${key}`], (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
+const insertSystemEnvironmentVariable = (environmentVariable: EnvironmentVariable): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        const value = {
+            [`${envPath}`]: {
+                [`${environmentVariable.key}`]: {
+                    type: environmentVariable.type,
+                    value: environmentVariable.value,
+                },
+            },
+        };
+        regedit.putValue(value, (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
+const updateDatabaseEnvironmentVariable = (environmentVariable: EnvironmentVariable): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        baseDB.exec(`UPDATE variable
+                     SET key   = ${'\''}${environmentVariable.key}${'\''},
+                         value = ${'\''}${environmentVariable.value}${'\''}
+                     WHERE id = ${environmentVariable.id}`, (err) => {
             if (err) {
                 resolve({code: 1, message: err.message});
             } else {
@@ -153,7 +188,7 @@ const getDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
             if (err) {
                 resolve({code: 1, message: err.message});
             } else {
-                resolve({code: 200, data: {environmentVariable: row}});
+                resolve({code: 200222222, data: {environmentVariable: row}});
             }
         });
     });
@@ -240,31 +275,25 @@ ipcMain.handle('listEnvironmentVariables', async () => {
 });
 
 ipcMain.handle('setEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
-    return {code: 200};
-    /*if (environmentVariable.selected) {
-
+    if (environmentVariable.selected) {
+        return insertSystemEnvironmentVariable(environmentVariable);
     } else {
         return deleteSystemEnvironmentVariable(environmentVariable.key);
-    }*/
-});
-
-ipcMain.handle('deleteEnvironmentVariable', async (event, environmentVariable: EnvironmentVariable): Promise<Result> => {
-    if (environmentVariable.selected) {
-        return {code: 1, message: '删除失败'};
-        /*let result = await deleteSystemEnvironmentVariable(environmentVariable.key);
-        if (result.code !== 200) {
-            return result;
-        }
-        return deleteDatabaseEnvironmentVariable(environmentVariable.id);*/
-    } else {
-        return deleteDatabaseEnvironmentVariable(environmentVariable.id);
     }
 });
 
-ipcMain.handle('insertEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
+ipcMain.handle('deleteEnvironmentVariable', async (event, environmentVariable: EnvironmentVariable): Promise<Result> => {
+    return deleteDatabaseEnvironmentVariable(environmentVariable.id);
+});
+
+ipcMain.handle('insertEnvironmentVariable', (event, environmentVariable: EnvironmentVariable): Promise<Result> => {
     return insertDatabaseEnvironmentVariable(environmentVariable);
 });
 
 ipcMain.handle('getEnvironmentVariable', (event, id): Promise<Result> => {
     return getDatabaseEnvironmentVariable(id);
+});
+
+ipcMain.handle('updateEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
+    return updateDatabaseEnvironmentVariable(environmentVariable);
 });
