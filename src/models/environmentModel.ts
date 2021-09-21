@@ -2,8 +2,12 @@
 // @date 2021/9/12
 
 import {
-    deleteEnvironmentVariable, listEnvironmentVariables, setEnvironmentVariable,
-    insertEnvironmentVariable, getEnvironmentVariable
+    deleteEnvironmentVariable,
+    listEnvironmentVariables,
+    setEnvironmentVariable,
+    insertEnvironmentVariable,
+    getEnvironmentVariable,
+    updateEnvironmentVariable,
 } from '@/services/environmentService';
 
 export default {
@@ -24,6 +28,9 @@ export default {
         },
         * getEnvironmentVariable({payload}, {call}) {
             return yield call(getEnvironmentVariable, payload);
+        },
+        * updateEnvironmentVariable({payload}, {call}) {
+            return yield call(updateEnvironmentVariable, payload);
         },
     },
 };

@@ -6,3 +6,4 @@ export const DELETE_ENVIRONMENT_VARIABLE = 'environmentModel/deleteEnvironmentVa
 export const SET_ENVIRONMENT_VARIABLE = 'environmentModel/setEnvironmentVariable';
 export const INSERT_ENVIRONMENT_VARIABLE = 'environmentModel/insertEnvironmentVariable';
 export const GET_ENVIRONMENT_VARIABLE = 'environmentModel/getEnvironmentVariable';
+export const UPDATE_ENVIRONMENT_VARIABLE = 'environmentModel/updateEnvironmentVariable';

@@ -6,7 +6,7 @@ import {Form, Input, Button, Select, Spin} from 'antd';
 
 const {Item, useForm} = Form;
 
-const EditView = ({loading, value, onOk}: any) => {
+const EditView = ({getLoading, updateLoading, value, onOk}: any) => {
     const [form] = useForm();
     useEffect(() => {
         if (value) {
@@ -19,7 +19,7 @@ const EditView = ({loading, value, onOk}: any) => {
         }
     }, [value]);
     return (
-        <Spin spinning={loading}>
+        <Spin spinning={getLoading}>
             <Form layout='vertical' form={form} onFinish={onOk}>
                 <Item
                     name='id'
@@ -27,7 +27,7 @@ const EditView = ({loading, value, onOk}: any) => {
                     hidden={true}
                     rules={[{required: true, message: '请输入id'}]}
                 >
-                    <Input disabled={loading}/>
+                    <Input disabled={updateLoading}/>
                 </Item>
                 <Item
                     name='key'
@@ -35,7 +35,7 @@ const EditView = ({loading, value, onOk}: any) => {
                     required={true}
                     rules={[{required: true, message: '请输入变量名'}]}
                 >
-                    <Input disabled={loading}/>
+                    <Input disabled={updateLoading}/>
                 </Item>
                 <Item
                     name='type'
@@ -55,10 +55,10 @@ const EditView = ({loading, value, onOk}: any) => {
                     required={true}
                     rules={[{required: true, message: '请输入值'}]}
                 >
-                    <Input disabled={loading}/>
+                    <Input disabled={updateLoading}/>
                 </Item>
                 <Item>
-                    <Button htmlType='submit' type='primary' loading={loading}>确认</Button>
+                    <Button htmlType='submit' type='primary' loading={updateLoading}>确认</Button>
                 </Item>
             </Form>
         </Spin>

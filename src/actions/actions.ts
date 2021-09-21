@@ -4,7 +4,7 @@
 import {createAction} from 'redux-actions';
 import {
     LIST_ENVIRONMENT_VARIABLES, DELETE_ENVIRONMENT_VARIABLE, SET_ENVIRONMENT_VARIABLE,
-    INSERT_ENVIRONMENT_VARIABLE, GET_ENVIRONMENT_VARIABLE
+    INSERT_ENVIRONMENT_VARIABLE, GET_ENVIRONMENT_VARIABLE, UPDATE_ENVIRONMENT_VARIABLE
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -12,3 +12,4 @@ export const deleteEnvironmentVariable = createAction(DELETE_ENVIRONMENT_VARIABL
 export const setEnvironmentVariable = createAction(SET_ENVIRONMENT_VARIABLE);
 export const insertEnvironmentVariable = createAction(INSERT_ENVIRONMENT_VARIABLE);
 export const getEnvironmentVariable = createAction(GET_ENVIRONMENT_VARIABLE);
+export const updateEnvironmentVariable = createAction(UPDATE_ENVIRONMENT_VARIABLE);

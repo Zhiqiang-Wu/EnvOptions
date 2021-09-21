@@ -13,11 +13,12 @@ type EnvironmentVariable = {
 }
 
 interface Window {
-    electron: {
-        setEnvironmentVariable: (key: string, value: string) => Promise<Result>;
+    localServices: {
+        setEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
         listEnvironmentVariables: () => Promise<Result>;
         deleteEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
         insertEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
         getEnvironmentVariable: (id: number) => Promise<Result>;
+        updateEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
     };
 }

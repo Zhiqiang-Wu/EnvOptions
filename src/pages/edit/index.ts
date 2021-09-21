@@ -5,16 +5,24 @@ import {compose, lifecycle, pure, withState, withHandlers} from 'recompose';
 import EditView from '@/pages/edit/edit-view';
 import withDva from '@/components/with-dva';
 import {createSelector} from 'reselect';
-import {GET_ENVIRONMENT_VARIABLE} from '@/actions/actionTypes';
-import {getEnvironmentVariable} from '@/actions/actions';
+import {GET_ENVIRONMENT_VARIABLE, UPDATE_ENVIRONMENT_VARIABLE} from '@/actions/actionTypes';
+import {getEnvironmentVariable, updateEnvironmentVariable} from '@/actions/actions';
 import {message} from 'antd';
 
 interface IProps {
-
+    dispatch: Function;
+    history: any;
 }
 
-const onOk = () => (environmentVariable: EnvironmentVariable) => {
-    console.log(environmentVariable);
+const onOk = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
+    const {dispatch, history} = props;
+    dispatch(updateEnvironmentVariable(environmentVariable)).then((result: Result) => {
+        if (result.code === 200) {
+            history.push('/home');
+        } else {
+            message.warn(result.message);
+        }
+    });
 };
 
 const withLifecycle = lifecycle({
@@ -33,7 +41,8 @@ const withLifecycle = lifecycle({
 const selector = createSelector((state: any) => ({
     loadings: state.loading.effects,
 }), ({loadings}) => ({
-    loading: loadings[GET_ENVIRONMENT_VARIABLE] === true,
+    getLoading: loadings[GET_ENVIRONMENT_VARIABLE] === true,
+    updateLoading: loadings[UPDATE_ENVIRONMENT_VARIABLE] === true,
 }));
 
 const mapStateToProps = (state) => selector(state);
