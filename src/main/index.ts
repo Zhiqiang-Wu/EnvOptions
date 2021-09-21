@@ -7,12 +7,14 @@ import path from 'path';
 import loadsh from 'loadsh';
 import regedit from 'regedit';
 import sqlite3 from 'sqlite3';
+import {LowSync, JSONFileSync} from 'lowdb';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
 let tray: Tray;
 let baseDB: sqlite3.Database;
+let settingDB: LowSync;
 const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment';
 
 const createWindow = (): void => {
@@ -60,6 +62,13 @@ const connectBaseDB = (): Promise<Result> => {
             }
         });
     });
+};
+
+const connectSettingDB = () => {
+    const settingDBPath = path.join(__dirname, '../../../db/setting.json');
+    const adapter = new JSONFileSync(settingDBPath);
+    settingDB = new LowSync(adapter);
+    settingDB.read();
 };
 
 const listDatabaseEnvironmentVariables = (): Promise<Result> => {
@@ -194,6 +203,26 @@ const getDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
     });
 };
 
+const getSetting = (key: string): Result => {
+    const {data}: any = settingDB;
+    const value = data[key];
+    return {
+        code: 200,
+        data: {
+            [`${key}`]: value,
+        },
+    };
+};
+
+const updateSetting = (settings: Array<Setting>): Result => {
+    const {data}: any = settingDB;
+    settings.forEach((setting) => {
+        data[setting.key] = setting.value;
+    });
+    settingDB.write();
+    return {code: 200};
+};
+
 const appQuit = (): void => {
     baseDB.close(() => {
         app.quit();
@@ -210,6 +239,7 @@ app.on('ready', async () => {
         await installExtension(REDUX_DEVTOOLS);
     }*/
     await connectBaseDB();
+    connectSettingDB();
     createWindow();
     createTray();
 });
@@ -296,4 +326,12 @@ ipcMain.handle('getEnvironmentVariable', (event, id): Promise<Result> => {
 
 ipcMain.handle('updateEnvironmentVariable', (event, environmentVariable: EnvironmentVariable) => {
     return updateDatabaseEnvironmentVariable(environmentVariable);
+});
+
+ipcMain.handle('getSetting', (event, key: string): Result => {
+    return getSetting(key);
+});
+
+ipcMain.handle('updateSetting', (event, settings: Array<Setting>): Result => {
+    return updateSetting(settings);
 });

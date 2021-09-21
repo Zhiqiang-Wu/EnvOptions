@@ -3,7 +3,15 @@
 
 import React, {useEffect} from 'react';
 import {
-    Tooltip, Table, Popconfirm, Typography, Space, Switch, Button, Modal, Form,
+    Tooltip,
+    Table,
+    Popconfirm,
+    Typography,
+    Space,
+    Switch,
+    Button,
+    Modal,
+    Form,
     Input,
 } from 'antd';
 import {DeleteOutlined, EditOutlined, ReloadOutlined} from '@ant-design/icons';
@@ -16,7 +24,7 @@ const Index = ({
                    onDelete,
                    tableLoading,
                    selectedRowKeys,
-                   selectedOnChange,
+                   onSelectedChange,
                    visible,
                    onCancel,
                    onOk,
@@ -24,6 +32,7 @@ const Index = ({
                    onButtonLoading,
                    onReload,
                    onEdit,
+                   onSwitchChange,
                }: any) => {
     const columns = [
         {
@@ -88,7 +97,7 @@ const Index = ({
                         onClick={onReload}
                     />
                 </Tooltip>
-                {/*<Switch checkedChildren='类型' unCheckedChildren='类型'/>*/}
+                <Switch checkedChildren='类型' unCheckedChildren='类型' onChange={onSwitchChange}/>
                 <Button type='primary' className={styles.insert} onClick={onInsert}>添加</Button>
             </div>
             <Table
@@ -98,7 +107,7 @@ const Index = ({
                 dataSource={dataSource || []}
                 rowSelection={{
                     selectedRowKeys,
-                    onChange: selectedOnChange,
+                    onChange: onSelectedChange,
                     hideSelectAll: true,
                 }}
             />

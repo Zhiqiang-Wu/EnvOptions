@@ -4,7 +4,9 @@
 import {message} from 'antd';
 import {createSelector} from 'reselect';
 import {
-    LIST_ENVIRONMENT_VARIABLES, SET_ENVIRONMENT_VARIABLE, DELETE_ENVIRONMENT_VARIABLE,
+    LIST_ENVIRONMENT_VARIABLES,
+    SET_ENVIRONMENT_VARIABLE,
+    DELETE_ENVIRONMENT_VARIABLE,
     INSERT_ENVIRONMENT_VARIABLE,
 } from '@/actions/actionTypes';
 import loadsh from 'loadsh';
@@ -12,8 +14,11 @@ import {compose, lifecycle, withState, pure, withHandlers} from 'recompose';
 import HomeView from '@/pages/home/home-view';
 import withDva from '@/components/with-dva';
 import {
-    listEnvironmentVariables, setEnvironmentVariable, deleteEnvironmentVariable,
+    listEnvironmentVariables,
+    setEnvironmentVariable,
+    deleteEnvironmentVariable,
     insertEnvironmentVariable,
+    updateSetting
 } from '@/actions/actions';
 
 interface IProps {
@@ -94,8 +99,8 @@ const onEdit = (props: IProps) => (environmentVariable: EnvironmentVariable) => 
     history.push({
         pathname: '/edit',
         params: {
-            id: environmentVariable.id
-        }
+            id: environmentVariable.id,
+        },
     });
 };
 
@@ -112,7 +117,7 @@ const onReload = (props: IProps) => () => {
     });
 };
 
-const selectedOnChange = (props: IProps) => (keys: Array<number>, selectedRows: Array<EnvironmentVariable>) => {
+const onSelectedChange = (props: IProps) => (keys: Array<number>, selectedRows: Array<EnvironmentVariable>) => {
     const {setSelectedRowKeys, selectedRowKeys, dataSource, dispatch, setDataSource} = props;
     let environmentVariable;
     let selected;
@@ -142,6 +147,11 @@ const selectedOnChange = (props: IProps) => (keys: Array<number>, selectedRows: 
             message.warn(result.message);
         }
     });
+};
+
+const onSwitchChange = (props: IProps) => (selected) => {
+    const {dispatch} = props;
+    dispatch(updateSetting([{key: 'type', value: selected}]));
 };
 
 const withLifecycle = lifecycle({
@@ -176,7 +186,14 @@ export default compose(
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
     withState('visible', 'setVisible', false),
     withHandlers({
-        onInsert, selectedOnChange, onDelete, onOk, onCancel, onReload, onEdit,
+        onInsert,
+        onSelectedChange,
+        onDelete,
+        onOk,
+        onCancel,
+        onReload,
+        onEdit,
+        onSwitchChange,
     }),
     withLifecycle,
     pure,
