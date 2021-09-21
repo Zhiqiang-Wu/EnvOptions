@@ -188,7 +188,7 @@ const getDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
             if (err) {
                 resolve({code: 1, message: err.message});
             } else {
-                resolve({code: 200222222, data: {environmentVariable: row}});
+                resolve({code: 200, data: {environmentVariable: row}});
             }
         });
     });
