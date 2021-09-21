@@ -1,11 +1,11 @@
 import {contextBridge, ipcRenderer} from 'electron';
 
-const apiKey = 'electron';
+const apiKey = 'localServices';
 
 const api: any = {
     // versions: process.versions,
-    setEnvironmentVariable: (key: string, value: string): Promise<Result> => {
-        return ipcRenderer.invoke('setEnvironmentVariable', key, value);
+    setEnvironmentVariable: (environmentVariable: EnvironmentVariable): Promise<Result> => {
+        return ipcRenderer.invoke('setEnvironmentVariable', environmentVariable);
     },
     deleteEnvironmentVariable: (environmentVariable: EnvironmentVariable): Promise<Result> => {
         return ipcRenderer.invoke('deleteEnvironmentVariable', environmentVariable);
@@ -18,6 +18,9 @@ const api: any = {
     },
     getEnvironmentVariable: (id: number): Promise<Result> => {
         return ipcRenderer.invoke('getEnvironmentVariable', id);
+    },
+    updateEnvironmentVariable: (environmentVariable: EnvironmentVariable): Promise<Result> => {
+        return ipcRenderer.invoke('updateEnvironmentVariable', environmentVariable);
     },
 };
 

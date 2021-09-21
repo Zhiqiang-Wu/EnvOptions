@@ -46,7 +46,10 @@ const Index = ({
             key: 'action',
             title: '操作',
             width: 80,
-            render: (record) => {
+            render: (record: EnvironmentVariable) => {
+                if (record.selected) {
+                    return null;
+                }
                 return (
                     <Space>
                         <Tooltip title='编辑'>

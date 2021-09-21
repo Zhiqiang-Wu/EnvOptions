@@ -113,7 +113,7 @@ const onReload = (props: IProps) => () => {
 };
 
 const selectedOnChange = (props: IProps) => (keys: Array<number>, selectedRows: Array<EnvironmentVariable>) => {
-    const {setSelectedRowKeys, selectedRowKeys, dataSource, dispatch} = props;
+    const {setSelectedRowKeys, selectedRowKeys, dataSource, dispatch, setDataSource} = props;
     let environmentVariable;
     let selected;
     if (keys.length < selectedRowKeys.length) {
@@ -129,7 +129,15 @@ const selectedOnChange = (props: IProps) => (keys: Array<number>, selectedRows: 
     }
     dispatch(setEnvironmentVariable({...environmentVariable, selected})).then((result: Result) => {
         if (result.code === 200) {
-            setSelectedRowKeys(keys);
+            return dispatch(listEnvironmentVariables());
+        } else {
+            return result;
+        }
+    }).then((result: Result) => {
+        if (result.code === 200) {
+            const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables;
+            setDataSource(environmentVariables);
+            setSelectedRowKeys(environmentVariables.filter((value => value.selected)).map((value) => value.id));
         } else {
             message.warn(result.message);
         }
