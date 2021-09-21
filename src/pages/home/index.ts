@@ -18,7 +18,8 @@ import {
     setEnvironmentVariable,
     deleteEnvironmentVariable,
     insertEnvironmentVariable,
-    updateSetting
+    updateSetting,
+    getSetting,
 } from '@/actions/actions';
 
 interface IProps {
@@ -29,7 +30,9 @@ interface IProps {
     selectedRowKeys: Array<number>;
     visible: boolean;
     setVisible: Function;
+    setTypeChecked: Function;
     history: any;
+    setPageSize: Function;
 }
 
 const onInsert = (props: IProps) => () => {
@@ -150,13 +153,42 @@ const onSelectedChange = (props: IProps) => (keys: Array<number>, selectedRows: 
 };
 
 const onSwitchChange = (props: IProps) => (selected) => {
-    const {dispatch} = props;
+    const {dispatch, setTypeChecked} = props;
+    setTypeChecked(selected);
     dispatch(updateSetting([{key: 'type', value: selected}]));
+};
+
+let timer;
+
+const onPageSizeChange = (props: IProps) => (pageSize) => {
+    if (!pageSize) {
+        return;
+    }
+    const {dispatch, setPageSize} = props;
+    setPageSize(pageSize);
+    // 限流
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+        dispatch(updateSetting([{key: 'pageSize', value: pageSize}]));
+    }, 500);
 };
 
 const withLifecycle = lifecycle({
     componentDidMount() {
-        const {dispatch, setDataSource, setSelectedRowKeys}: any = this.props;
+        const {dispatch, setDataSource, setSelectedRowKeys, setTypeChecked, setPageSize}: any = this.props;
+        dispatch(getSetting('type')).then((result: Result) => {
+            if (result.code === 200) {
+                setTypeChecked(result.data.type);
+            }
+        });
+        dispatch(getSetting('pageSize')).then((result: Result) => {
+            if (result.code === 200) {
+                const pageSize = result.data.pageSize;
+                if (pageSize && pageSize >= 1 && pageSize <= 20) {
+                    setPageSize(pageSize);
+                }
+            }
+        });
         dispatch(listEnvironmentVariables()).then((result: Result) => {
             if (result.code === 200) {
                 const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables;
@@ -184,7 +216,9 @@ export default compose(
     withDva(mapStateToProps),
     withState('dataSource', 'setDataSource', []),
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
+    withState('typeChecked', 'setTypeChecked', false),
     withState('visible', 'setVisible', false),
+    withState('pageSize', 'setPageSize', 10),
     withHandlers({
         onInsert,
         onSelectedChange,
@@ -194,6 +228,7 @@ export default compose(
         onReload,
         onEdit,
         onSwitchChange,
+        onPageSizeChange
     }),
     withLifecycle,
     pure,

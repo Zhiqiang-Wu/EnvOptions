@@ -5,17 +5,18 @@ import React, {useEffect} from 'react';
 import {
     Tooltip,
     Table,
-    Popconfirm,
-    Typography,
-    Space,
     Switch,
     Button,
     Modal,
     Form,
     Input,
+    Space,
+    InputNumber,
+    Typography,
 } from 'antd';
-import {DeleteOutlined, EditOutlined, ReloadOutlined} from '@ant-design/icons';
+import {ReloadOutlined} from '@ant-design/icons';
 import styles from './index.scss';
+import ActionView from '@/pages/home/action-view';
 
 const {Item, useForm} = Form;
 
@@ -33,17 +34,15 @@ const Index = ({
                    onReload,
                    onEdit,
                    onSwitchChange,
+                   typeChecked,
+                   pageSize,
+                   onPageSizeChange,
                }: any) => {
     const columns = [
         {
             key: 'key',
             title: '变量',
             dataIndex: 'key',
-        },
-        {
-            key: 'type',
-            title: '类型',
-            dataIndex: 'type',
         },
         {
             key: 'value',
@@ -60,23 +59,11 @@ const Index = ({
                     return null;
                 }
                 return (
-                    <Space>
-                        <Tooltip title='编辑'>
-                            <Typography.Link>
-                                <EditOutlined onClick={() => onEdit(record)}/>
-                            </Typography.Link>
-                        </Tooltip>
-                        <Popconfirm
-                            title='确认删除？'
-                            onConfirm={() => onDelete(record)}
-                        >
-                            <Tooltip title='删除'>
-                                <Typography.Link>
-                                    <DeleteOutlined/>
-                                </Typography.Link>
-                            </Tooltip>
-                        </Popconfirm>
-                    </Space>
+                    <ActionView
+                        record={record}
+                        onEdit={() => onEdit(record)}
+                        onDelete={() => onDelete(record)}
+                    />
                 );
             },
         },
@@ -90,26 +77,48 @@ const Index = ({
     return (
         <>
             <div className={styles.actions}>
-                <Tooltip title='刷新'>
-                    <Button
-                        icon={<ReloadOutlined/>}
-                        disabled={tableLoading}
-                        onClick={onReload}
+                <Space size={'large'}>
+                    <Tooltip title='刷新'>
+                        <Button
+                            icon={<ReloadOutlined/>}
+                            disabled={tableLoading}
+                            onClick={onReload}
+                        />
+                    </Tooltip>
+                    <Switch
+                        checked={typeChecked}
+                        checkedChildren='类型'
+                        unCheckedChildren='类型'
+                        onChange={onSwitchChange}
                     />
-                </Tooltip>
-                <Switch checkedChildren='类型' unCheckedChildren='类型' onChange={onSwitchChange}/>
+                    <Space size={2}>
+                        <Typography.Text>每页展示数量:</Typography.Text>
+                        <InputNumber
+                            value={pageSize}
+                            min={1}
+                            max={20}
+                            onChange={onPageSizeChange}
+                        />
+                    </Space>
+                </Space>
+
                 <Button type='primary' className={styles.insert} onClick={onInsert}>添加</Button>
             </div>
             <Table
                 rowKey={(record) => record.id}
                 loading={tableLoading}
-                columns={columns}
+                columns={typeChecked ? [columns[0], {
+                    key: 'type',
+                    title: '类型',
+                    dataIndex: 'type',
+                }, columns[1], columns[2]] : columns}
                 dataSource={dataSource || []}
                 rowSelection={{
                     selectedRowKeys,
                     onChange: onSelectedChange,
                     hideSelectAll: true,
                 }}
+                pagination={{pageSize}}
             />
             <Modal
                 visible={visible}
