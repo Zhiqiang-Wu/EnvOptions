@@ -12,6 +12,11 @@ type EnvironmentVariable = {
     selected: boolean;
 }
 
+type Setting = {
+    key: string;
+    value: any;
+}
+
 interface Window {
     localServices: {
         setEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
@@ -20,5 +25,7 @@ interface Window {
         insertEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
         getEnvironmentVariable: (id: number) => Promise<Result>;
         updateEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
+        getSetting: (key: string) => Promise<Result>;
+        updateSetting: (settings: Array<Setting>) => Promise<Result>;
     };
 }

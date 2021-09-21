@@ -22,6 +22,12 @@ const api: any = {
     updateEnvironmentVariable: (environmentVariable: EnvironmentVariable): Promise<Result> => {
         return ipcRenderer.invoke('updateEnvironmentVariable', environmentVariable);
     },
+    getSetting: (key: string): Promise<Result> => {
+        return ipcRenderer.invoke('getSetting', key);
+    },
+    updateSetting: (settings: Array<Setting>): Promise<Result> => {
+        return ipcRenderer.invoke('updateSetting', settings);
+    },
 };
 
 contextBridge.exposeInMainWorld(apiKey, api);
