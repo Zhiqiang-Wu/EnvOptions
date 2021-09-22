@@ -16,7 +16,11 @@ export default defineConfig({
             productName: 'Env Options',
             win: {
                 icon: 'src/assets/favicon256.ico'
-            }
+            },
+            nsis: {
+                oneClick: false,
+                allowToChangeInstallationDirectory: true
+            },
         },
     },
     routes: [
