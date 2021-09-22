@@ -7,10 +7,17 @@ export default defineConfig({
     layout: {
         name: 'Env Options',
         local: false,
-        logo: 'favicon.png'
+        logo: 'favicon.png',
     },
     electronBuilder: {
         externals: ['regedit', 'sqlite3'],
+        builderOptions: {
+            appId: 'wzq.env.options',
+            productName: 'Env Options',
+            win: {
+                icon: 'src/assets/favicon256.ico'
+            }
+        },
     },
     routes: [
         {
@@ -25,7 +32,7 @@ export default defineConfig({
             name: '编辑',
             exact: true,
             component: '@/pages/edit',
-            hideInMenu: true
+            hideInMenu: true,
         },
         {
             path: '/setting',

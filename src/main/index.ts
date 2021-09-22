@@ -19,7 +19,7 @@ const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Envi
 
 const createWindow = (): void => {
     mainWindow = new BrowserWindow({
-        icon: path.join(__dirname, '../../assets/favicon.ico'),
+        icon: path.join(__dirname, '../../assets/favicon128.ico'),
         width: 800,
         height: 600,
         show: false,
@@ -43,7 +43,7 @@ const createWindow = (): void => {
 };
 
 const createTray = (): void => {
-    tray = new Tray(path.join(__dirname, '../../assets/favicon.ico'));
+    tray = new Tray(path.join(__dirname, '../../assets/favicon128.ico'));
     const menu = Menu.buildFromTemplate([
         {label: '退出', click: appQuit},
     ]);
