@@ -18,3 +18,4 @@
 /.env.local
 
 /.idea
+/dist_electron
