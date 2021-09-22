@@ -53,7 +53,12 @@ const createTray = (): void => {
 
 const connectBaseDB = (): Promise<Result> => {
     return new Promise((resolve) => {
-        const baseDBPath = path.join(__dirname, '../../../db/base.db3');
+        let baseDBPath;
+        if (isDevelopment) {
+            baseDBPath = path.join(__dirname, '../../../contents/base.db3');
+        } else {
+            baseDBPath = path.join(__dirname, '../../contents/base.db3');
+        }
         baseDB = new sqlite3.Database(baseDBPath, (err) => {
             if (err) {
                 resolve({code: 1, message: err.message});
@@ -65,7 +70,12 @@ const connectBaseDB = (): Promise<Result> => {
 };
 
 const connectSettingDB = () => {
-    const settingDBPath = path.join(__dirname, '../../../db/setting.json');
+    let settingDBPath;
+    if (isDevelopment) {
+        settingDBPath = path.join(__dirname, '../../../contents/settings.json');
+    } else {
+        settingDBPath = path.join(__dirname, '../../contents/settings.json');
+    }
     const adapter = new JSONFileSync(settingDBPath);
     settingDB = new LowSync(adapter);
     settingDB.read();

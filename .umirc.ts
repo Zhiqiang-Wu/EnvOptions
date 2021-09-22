@@ -14,12 +14,17 @@ export default defineConfig({
         builderOptions: {
             appId: 'wzq.env.options',
             productName: 'Env Options',
+            asar: true,
+            extraFiles: [
+                'contents'
+            ],
             win: {
-                icon: 'src/assets/favicon256.ico'
+                icon: 'src/assets/favicon256.ico',
             },
             nsis: {
+                perMachine: true,
                 oneClick: false,
-                allowToChangeInstallationDirectory: true
+                allowToChangeInstallationDirectory: true,
             },
         },
     },
