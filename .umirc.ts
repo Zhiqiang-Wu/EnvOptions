@@ -20,6 +20,7 @@ export default defineConfig({
             ],
             win: {
                 icon: 'public/favicon256.ico',
+                requestedExecutionLevel: 'requireAdministrator',
             },
             nsis: {
                 perMachine: true,
@@ -55,7 +56,7 @@ export default defineConfig({
     sass: {
         implementation: require('node-sass'),
     },
-    mfsu: {},
+    // mfsu: {},
     mock: false,
     fastRefresh: {},
 });
