@@ -17,6 +17,12 @@ let baseDB: sqlite3.Database;
 let settingDB: LowSync;
 const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment';
 
+const setVBS = () => {
+    if (!isDevelopment) {
+        regedit.setExternalVBSLocation(path.join(__dirname, '../../vbs'));
+    }
+};
+
 const createWindow = (): void => {
     let iconPath;
     if (isDevelopment) {
@@ -260,6 +266,7 @@ app.on('ready', async () => {
         await installExtension(REACT_DEVELOPER_TOOLS);
         await installExtension(REDUX_DEVTOOLS);
     }*/
+    setVBS();
     await connectBaseDB();
     connectSettingDB();
     createWindow();

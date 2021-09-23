@@ -14,8 +14,12 @@ export default defineConfig({
         builderOptions: {
             appId: 'wzq.env.options',
             productName: 'Env Options',
-            asar: false,
+            asar: true,
             extraFiles: [
+                {
+                    from: 'node_modules/regedit/vbs',
+                    to: 'vbs',
+                },
                 'contents',
             ],
             win: {
