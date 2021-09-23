@@ -16,7 +16,7 @@ export default defineConfig({
             productName: 'Env Options',
             asar: false,
             extraFiles: [
-                'contents'
+                'contents',
             ],
             win: {
                 icon: 'public/favicon256.ico',
@@ -55,6 +55,7 @@ export default defineConfig({
     sass: {
         implementation: require('node-sass'),
     },
+    mfsu: {},
     mock: false,
     fastRefresh: {},
 });
