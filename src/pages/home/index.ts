@@ -137,6 +137,7 @@ const onSelectedChange = (props: IProps) => (keys: Array<number>, selectedRows: 
     }
     dispatch(setEnvironmentVariable({...environmentVariable, selected})).then((result: Result) => {
         if (result.code === 200) {
+            message.success('设置成功');
             return dispatch(listEnvironmentVariables());
         } else {
             return result;
