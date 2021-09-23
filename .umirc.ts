@@ -56,7 +56,8 @@ export default defineConfig({
     sass: {
         implementation: require('node-sass'),
     },
-    // mfsu: {},
+    mfsu: {},
+    webpack5: {},
     mock: false,
     fastRefresh: {},
 });
