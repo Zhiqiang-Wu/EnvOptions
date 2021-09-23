@@ -18,8 +18,14 @@ let settingDB: LowSync;
 const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment';
 
 const createWindow = (): void => {
+    let iconPath;
+    if (isDevelopment) {
+        iconPath = path.join(__dirname, '../../../public/favicon128.ico');
+    } else {
+        iconPath = path.join(__dirname, 'favicon128.ico');
+    }
     mainWindow = new BrowserWindow({
-        icon: path.join(__dirname, '../../assets/favicon128.ico'),
+        icon: iconPath,
         width: 800,
         height: 600,
         show: false,
@@ -43,7 +49,13 @@ const createWindow = (): void => {
 };
 
 const createTray = (): void => {
-    tray = new Tray(path.join(__dirname, '../../assets/favicon128.ico'));
+    let iconPath;
+    if (isDevelopment) {
+        iconPath = path.join(__dirname, '../../../public/favicon128.ico');
+    } else {
+        iconPath = path.join(__dirname, 'favicon128.ico');
+    }
+    tray = new Tray(iconPath);
     const menu = Menu.buildFromTemplate([
         {label: '退出', click: appQuit},
     ]);
