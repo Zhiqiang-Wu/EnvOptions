@@ -299,10 +299,10 @@ ipcMain.handle('listEnvironmentVariables', async () => {
             newDatabaseEnvironmentVariables.forEach((environmentVariable: EnvironmentVariable) => {
                 statement.run([environmentVariable.key, environmentVariable.type, environmentVariable.value]);
             });
-            return new Promise<Result>(() => {
+            return new Promise<Result>((resolve) => {
                 statement.finalize(async (err) => {
                     if (err) {
-                        return {code: 1, message: err.message};
+                        resolve({code: 1, message: err.message});
                     } else {
                         const result = await listDatabaseEnvironmentVariables();
                         const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
@@ -314,7 +314,7 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                                 selected: index >= 0,
                             };
                         });
-                        return {code: 200, data: {environmentVariables}};
+                        resolve({code: 200, data: {environmentVariables}});
                     }
                 });
             });
