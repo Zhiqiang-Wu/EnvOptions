@@ -252,14 +252,22 @@ const updateSetting = (settings: Array<Setting>): Result => {
 };
 
 const appQuit = (): void => {
-    baseDB.close(() => {
+    if (baseDB) {
+        baseDB.close(() => {
+            app.quit();
+        });
+    } else {
         app.quit();
-    });
+    }
 };
 
 protocol.registerSchemesAsPrivileged([
     {scheme: 'app', privileges: {secure: true, standard: true}},
 ]);
+
+if (!app.requestSingleInstanceLock()) {
+    appQuit();
+}
 
 app.on('ready', async () => {
     /*if (isDevelopment) {
@@ -276,6 +284,12 @@ app.on('ready', async () => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         appQuit();
+    }
+});
+
+app.on('second-instance', () => {
+    if (mainWindow) {
+        mainWindow.focus();
     }
 });
 
