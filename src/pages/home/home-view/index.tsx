@@ -14,10 +14,18 @@ import {
     InputNumber,
     Typography,
     Radio,
+    Popconfirm,
 } from 'antd';
-import {ReloadOutlined, FolderOpenOutlined, FileOutlined} from '@ant-design/icons';
+import {
+    ReloadOutlined,
+    FolderOpenOutlined,
+    FileOutlined,
+    LockOutlined,
+    UnlockOutlined,
+    EditOutlined,
+    DeleteOutlined,
+} from '@ant-design/icons';
 import styles from './index.scss';
-import ActionView from '@/pages/home/action-view';
 
 const {Item, useForm} = Form;
 
@@ -34,10 +42,16 @@ const Index = ({
                    onButtonLoading,
                    onReload,
                    onEdit,
+                   onLock,
+                   onUnlock,
                    onSwitchChange,
                    typeChecked,
                    pageSize,
                    onPageSizeChange,
+                   showEditAction,
+                   showDeleteAction,
+                   showLockAction,
+                   showUnlockAction,
                }: any) => {
     const columns = [
         {
@@ -54,17 +68,48 @@ const Index = ({
         {
             key: 'action',
             title: '操作',
-            width: 80,
+            width: 100,
             render: (record: EnvironmentVariable) => {
-                if (record.selected) {
-                    return null;
-                }
+                const editAction = showEditAction && showEditAction(record) ? (
+                    <Tooltip title='编辑'>
+                        <Typography.Link>
+                            <EditOutlined onClick={() => onEdit(record)}/>
+                        </Typography.Link>
+                    </Tooltip>
+                ) : null;
+                const deleteAction = showDeleteAction && showDeleteAction(record) ? (
+                    <Popconfirm
+                        title='确认删除？'
+                        onConfirm={() => onDelete(record)}
+                    >
+                        <Tooltip title='删除'>
+                            <Typography.Link>
+                                <DeleteOutlined/>
+                            </Typography.Link>
+                        </Tooltip>
+                    </Popconfirm>
+                ) : null;
+                const lockAction = showLockAction && showLockAction(record) ? (
+                    <Tooltip title='点击锁定'>
+                        <Typography.Link>
+                            <UnlockOutlined onClick={() => onLock(record)}/>
+                        </Typography.Link>
+                    </Tooltip>
+                ) : null;
+                const unlockAction = showUnlockAction && showUnlockAction(record) ? (
+                    <Tooltip title='点击解锁'>
+                        <Typography.Link>
+                            <LockOutlined style={{color: 'red'}} onClick={() => onUnlock(record)}/>
+                        </Typography.Link>
+                    </Tooltip>
+                ) : null;
                 return (
-                    <ActionView
-                        record={record}
-                        onEdit={() => onEdit(record)}
-                        onDelete={() => onDelete(record)}
-                    />
+                    <Space>
+                        {editAction}
+                        {deleteAction}
+                        {lockAction}
+                        {unlockAction}
+                    </Space>
                 );
             },
         },

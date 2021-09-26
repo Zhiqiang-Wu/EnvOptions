@@ -20,6 +20,8 @@ import {
     insertEnvironmentVariable,
     updateSetting,
     getSetting,
+    unlockEnvironmentVariable,
+    lockEnvironmentVariable,
 } from '@/actions/actions';
 
 interface IProps {
@@ -107,6 +109,46 @@ const onEdit = (props: IProps) => (environmentVariable: EnvironmentVariable) => 
     });
 };
 
+const onLock = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
+    const {dispatch, setDataSource, setSelectedRowKeys} = props;
+    dispatch(lockEnvironmentVariable(environmentVariable.id)).then((result: Result) => {
+        if (result.code === 200) {
+            message.success('锁定成功');
+            return dispatch(listEnvironmentVariables());
+        } else {
+            return result;
+        }
+    }).then((result: Result) => {
+        if (result.code === 200) {
+            const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables;
+            setDataSource(environmentVariables);
+            setSelectedRowKeys(environmentVariables.filter((value => value.selected)).map((value) => value.id));
+        } else {
+            message.warn(result.message);
+        }
+    });
+};
+
+const onUnlock = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
+    const {dispatch, setDataSource, setSelectedRowKeys} = props;
+    dispatch(unlockEnvironmentVariable(environmentVariable.id)).then((result: Result) => {
+        if (result.code === 200) {
+            message.success('解锁成功');
+            return dispatch(listEnvironmentVariables());
+        } else {
+            return result;
+        }
+    }).then((result: Result) => {
+        if (result.code === 200) {
+            const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables;
+            setDataSource(environmentVariables);
+            setSelectedRowKeys(environmentVariables.filter((value => value.selected)).map((value) => value.id));
+        } else {
+            message.warn(result.message);
+        }
+    });
+};
+
 const onReload = (props: IProps) => () => {
     const {dispatch, setDataSource, setSelectedRowKeys} = props;
     dispatch(listEnvironmentVariables()).then((result: Result) => {
@@ -174,6 +216,22 @@ const onPageSizeChange = (props: IProps) => (pageSize) => {
     }, 500);
 };
 
+const showEditAction = () => (environmentVariable: EnvironmentVariable): boolean => {
+    return !environmentVariable.locked && !environmentVariable.selected;
+};
+
+const showDeleteAction = () => (environmentVariable: EnvironmentVariable): boolean => {
+    return !environmentVariable.locked && !environmentVariable.selected;
+};
+
+const showLockAction = () => (environmentVariable: EnvironmentVariable): boolean => {
+    return environmentVariable.locked === 0;
+};
+
+const showUnlockAction = () => (environmentVariable: EnvironmentVariable): boolean => {
+    return environmentVariable.locked === 1;
+};
+
 const withLifecycle = lifecycle({
     componentDidMount() {
         const {dispatch, setDataSource, setSelectedRowKeys, setTypeChecked, setPageSize}: any = this.props;
@@ -228,8 +286,14 @@ export default compose(
         onCancel,
         onReload,
         onEdit,
+        onLock,
+        onUnlock,
         onSwitchChange,
-        onPageSizeChange
+        onPageSizeChange,
+        showEditAction,
+        showDeleteAction,
+        showLockAction,
+        showUnlockAction,
     }),
     withLifecycle,
     pure,

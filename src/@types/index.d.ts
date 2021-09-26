@@ -10,7 +10,7 @@ type EnvironmentVariable = {
     value: string;
     type: 'REG_EXPAND_SZ' | 'REG_SZ',
     selected: boolean;
-    locked: boolean;
+    locked: 0 | 1;
 }
 
 type Setting = {
