@@ -52,6 +52,7 @@ const Index = ({
                    showDeleteAction,
                    showLockAction,
                    showUnlockAction,
+                   disabledCheckbox,
                }: any) => {
     const columns = [
         {
@@ -176,6 +177,11 @@ const Index = ({
                     selectedRowKeys,
                     onChange: onSelectedChange,
                     hideSelectAll: true,
+                    getCheckboxProps: (record) => {
+                        return {
+                            disabled: disabledCheckbox ? disabledCheckbox(record) : false,
+                        };
+                    },
                 }}
                 pagination={{pageSize}}
             />
