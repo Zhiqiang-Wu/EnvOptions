@@ -39,7 +39,7 @@ const Index = ({
                    onCancel,
                    onOk,
                    onInsert,
-                   onButtonLoading,
+                   okButtonLoading,
                    onReload,
                    onEdit,
                    onLock,
@@ -185,7 +185,7 @@ const Index = ({
                 onOk={form.submit}
                 centered={true}
                 title='添加'
-                okButtonProps={{loading: onButtonLoading}}
+                okButtonProps={{loading: okButtonLoading}}
                 // 预渲染
                 // 不执行预渲染的话第一次执行form.resetFields()的时候from找不到Model里的Form，因为还没被渲染
                 forceRender={true}

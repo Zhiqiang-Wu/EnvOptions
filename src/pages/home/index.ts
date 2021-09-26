@@ -8,6 +8,8 @@ import {
     SET_ENVIRONMENT_VARIABLE,
     DELETE_ENVIRONMENT_VARIABLE,
     INSERT_ENVIRONMENT_VARIABLE,
+    UNLOCK_ENVIRONMENT_VARIABLE,
+    LOCK_ENVIRONMENT_VARIABLE,
 } from '@/actions/actionTypes';
 import loadsh from 'loadsh';
 import {compose, lifecycle, withState, pure, withHandlers} from 'recompose';
@@ -265,8 +267,10 @@ const selector = createSelector((state: any) => ({
 }), ({loadings}) => ({
     tableLoading: loadings[LIST_ENVIRONMENT_VARIABLES] === true
         || loadings[DELETE_ENVIRONMENT_VARIABLE] === true
-        || loadings[SET_ENVIRONMENT_VARIABLE] === true,
-    onButtonLoading: loadings[INSERT_ENVIRONMENT_VARIABLE] === true,
+        || loadings[SET_ENVIRONMENT_VARIABLE] === true
+        || loadings[UNLOCK_ENVIRONMENT_VARIABLE] === true
+        || loadings[LOCK_ENVIRONMENT_VARIABLE] === true,
+    okButtonLoading: loadings[INSERT_ENVIRONMENT_VARIABLE] === true,
 }));
 
 const mapStateToProps = (state) => selector(state);
