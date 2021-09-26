@@ -7,6 +7,8 @@ export const SET_ENVIRONMENT_VARIABLE = 'environmentModel/setEnvironmentVariable
 export const INSERT_ENVIRONMENT_VARIABLE = 'environmentModel/insertEnvironmentVariable';
 export const GET_ENVIRONMENT_VARIABLE = 'environmentModel/getEnvironmentVariable';
 export const UPDATE_ENVIRONMENT_VARIABLE = 'environmentModel/updateEnvironmentVariable';
+export const LOCK_ENVIRONMENT_VARIABLE = 'environmentModel/lockEnvironmentVariable';
+export const UNLOCK_ENVIRONMENT_VARIABLE = 'environmentModel/unlockEnvironmentVariable';
 
 export const UPDATE_SETTING = 'settingModel/updateSetting';
 export const GET_SETTING = 'settingModel/getSetting';
