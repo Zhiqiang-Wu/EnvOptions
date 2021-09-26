@@ -231,6 +231,30 @@ const getDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
     });
 };
 
+const lockDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        baseDB.exec(`UPDATE variable SET locked = 1 WHERE id = ${id}`, (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
+const unlockDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        baseDB.exec(`UPDATE variable SET locked = 0 WHERE id = ${id}`, (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
 const getSetting = (key: string): Result => {
     const {data}: any = settingDB;
     const value = data[key];
@@ -377,6 +401,14 @@ ipcMain.handle('getSetting', (event, key: string): Result => {
 
 ipcMain.handle('updateSetting', (event, settings: Array<Setting>): Result => {
     return updateSetting(settings);
+});
+
+ipcMain.handle('unlockDatabaseEnvironmentVariable', (event, id: number): Promise<Result> => {
+    return unlockDatabaseEnvironmentVariable(id);
+});
+
+ipcMain.handle('lockDatabaseEnvironmentVariable', (event, id: number): Promise<Result> => {
+    return lockDatabaseEnvironmentVariable(id);
 });
 
 ipcMain.on('showOpenDialogSync', (event, options: OpenDialogSyncOptions) => {
