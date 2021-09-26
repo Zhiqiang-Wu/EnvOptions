@@ -29,7 +29,7 @@ const localServices: any = {
 };
 
 const localFunctions: any = {
-    showOpenDialogSync: (options: OpenDialogSyncOptions) => {
+    showOpenDialogSync: (options: OpenDialogSyncOptions): Array<string> | undefined => {
         return ipcRenderer.sendSync('showOpenDialogSync', options);
     },
 };
