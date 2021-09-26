@@ -13,7 +13,7 @@ import {
     Space,
     InputNumber,
     Typography,
-    Radio
+    Radio,
 } from 'antd';
 import {ReloadOutlined, FolderOpenOutlined, FileOutlined} from '@ant-design/icons';
 import styles from './index.scss';
@@ -73,11 +73,11 @@ const Index = ({
     const [valueType, setValueType] = useState<'directory' | 'file'>('directory');
     const onBrowse = () => {
         const result: Array<string> | undefined = window.localFunctions.showOpenDialogSync({
-            properties: [valueType === 'directory' ? 'openDirectory' : 'openFile']
+            properties: [valueType === 'directory' ? 'openDirectory' : 'openFile'],
         });
         if (result) {
             form.setFieldsValue({
-                value: result[0]
+                value: result[0],
             });
         }
     };
@@ -119,11 +119,13 @@ const Index = ({
             <Table
                 rowKey={(record) => record.id}
                 loading={tableLoading}
-                columns={typeChecked ? [columns[0], {
-                    key: 'type',
-                    title: '类型',
-                    dataIndex: 'type',
-                }, columns[1], columns[2]] : columns}
+                columns={typeChecked ?
+                    [columns[0], {
+                        key: 'type',
+                        title: '类型',
+                        dataIndex: 'type',
+                    }, columns[1], columns[2]] :
+                    columns}
                 dataSource={dataSource || []}
                 rowSelection={{
                     selectedRowKeys,
@@ -161,7 +163,11 @@ const Index = ({
                         required={true}
                         rules={[{required: true, message: '请输入值'}]}
                     >
-                        <Input addonAfter={valueType === 'directory' ? <FolderOpenOutlined onClick={onBrowse}/> : <FileOutlined onClick={onBrowse}/>} />
+                        <Input
+                            addonAfter={valueType === 'directory' ?
+                                <FolderOpenOutlined onClick={onBrowse}/> :
+                                <FileOutlined onClick={onBrowse}/>}
+                        />
                     </Item>
                     <Item wrapperCol={{offset: 4}}>
                         <Radio.Group

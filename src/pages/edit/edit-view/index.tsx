@@ -1,20 +1,32 @@
 // @author 吴志强
 // @date 2021/9/21
 
-import React, {useEffect} from 'react';
-import {Form, Input, Button, Select, Spin} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Form, Input, Button, Select, Spin, Radio} from 'antd';
+import {FileOutlined, FolderOpenOutlined} from '@ant-design/icons';
 
 const {Item, useForm} = Form;
 
 const EditView = ({getLoading, updateLoading, value, onOk}: any) => {
     const [form] = useForm();
+    const [valueType, setValueType] = useState<'directory' | 'file'>('directory');
+    const onBrowse = () => {
+        const result: Array<string> | undefined = window.localFunctions.showOpenDialogSync({
+            properties: [valueType === 'directory' ? 'openDirectory' : 'openFile'],
+        });
+        if (result) {
+            form.setFieldsValue({
+                value: result[0],
+            });
+        }
+    };
     useEffect(() => {
         if (value) {
             form.setFieldsValue({
                 id: value.id,
                 key: value.key,
                 value: value.value,
-                type: value.type
+                type: value.type,
             });
         }
     }, [value]);
@@ -55,7 +67,21 @@ const EditView = ({getLoading, updateLoading, value, onOk}: any) => {
                     required={true}
                     rules={[{required: true, message: '请输入值'}]}
                 >
-                    <Input disabled={updateLoading}/>
+                    <Input
+                        disabled={updateLoading}
+                        addonAfter={valueType === 'directory' ?
+                            <FolderOpenOutlined disabled={updateLoading} onClick={onBrowse}/> :
+                            <FileOutlined disabled={updateLoading} onClick={onBrowse}/>}
+                    />
+                </Item>
+                <Item>
+                    <Radio.Group
+                        value={valueType}
+                        onChange={(event) => setValueType(event.target.value)}
+                    >
+                        <Radio value='directory'>文件夹</Radio>
+                        <Radio value='file'>文件</Radio>
+                    </Radio.Group>
                 </Item>
                 <Item>
                     <Button htmlType='submit' type='primary' loading={updateLoading}>确认</Button>
@@ -63,6 +89,6 @@ const EditView = ({getLoading, updateLoading, value, onOk}: any) => {
             </Form>
         </Spin>
     );
-}
+};
 
 export default EditView;
