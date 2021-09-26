@@ -20,6 +20,12 @@ const localServices: any = {
     updateEnvironmentVariable: (environmentVariable: EnvironmentVariable): Promise<Result> => {
         return ipcRenderer.invoke('updateEnvironmentVariable', environmentVariable);
     },
+    unlockDatabaseEnvironmentVariable: (id: number): Promise<Result> => {
+        return ipcRenderer.invoke('unlockDatabaseEnvironmentVariable', id);
+    },
+    lockDatabaseEnvironmentVariable: (id: number): Promise<Result> => {
+        return ipcRenderer.invoke('lockDatabaseEnvironmentVariable', id);
+    },
     getSetting: (key: string): Promise<Result> => {
         return ipcRenderer.invoke('getSetting', key);
     },

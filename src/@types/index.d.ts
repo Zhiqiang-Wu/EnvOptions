@@ -10,6 +10,7 @@ type EnvironmentVariable = {
     value: string;
     type: 'REG_EXPAND_SZ' | 'REG_SZ',
     selected: boolean;
+    locked: boolean;
 }
 
 type Setting = {
@@ -27,6 +28,8 @@ interface Window {
         updateEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
         getSetting: (key: string) => Promise<Result>;
         updateSetting: (settings: Array<Setting>) => Promise<Result>;
+        unlockDatabaseEnvironmentVariable: (id: number) => Promise<Result>;
+        lockDatabaseEnvironmentVariable: (id: number) => Promise<Result>;
     };
     localFunctions: {
         showOpenDialogSync: (options: OpenDialogSyncOptions) => Array<string> | undefined;
