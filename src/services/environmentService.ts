@@ -24,3 +24,11 @@ export const getEnvironmentVariable = (id: number): Promise<Result> => {
 export const updateEnvironmentVariable = (environmentVariable: EnvironmentVariable): Promise<Result> => {
     return window.localServices.updateEnvironmentVariable(environmentVariable);
 };
+
+export const unlockEnvironmentVariable = (id: number): Promise<Result> => {
+    return window.localServices.unlockDatabaseEnvironmentVariable(id);
+};
+
+export const lockEnvironmentVariable = (id: number): Promise<Result> => {
+    return window.localServices.lockDatabaseEnvironmentVariable(id);
+};

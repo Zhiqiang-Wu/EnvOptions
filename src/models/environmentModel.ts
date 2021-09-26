@@ -8,6 +8,8 @@ import {
     insertEnvironmentVariable,
     getEnvironmentVariable,
     updateEnvironmentVariable,
+    unlockEnvironmentVariable,
+    lockEnvironmentVariable,
 } from '@/services/environmentService';
 
 export default {
@@ -31,6 +33,12 @@ export default {
         },
         * updateEnvironmentVariable({payload}, {call}) {
             return yield call(updateEnvironmentVariable, payload);
+        },
+        * unlockEnvironmentVariable({payload}, {call}) {
+            return yield call(unlockEnvironmentVariable, payload);
+        },
+        * lockEnvironmentVariable({payload}, {call}) {
+            return yield call(lockEnvironmentVariable, payload);
         },
     },
 };
