@@ -1,7 +1,7 @@
 // @author 吴志强
 // @date 2021/9/11
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Tooltip,
     Table,
@@ -13,8 +13,9 @@ import {
     Space,
     InputNumber,
     Typography,
+    Radio
 } from 'antd';
-import {ReloadOutlined} from '@ant-design/icons';
+import {ReloadOutlined, FolderOpenOutlined, FileOutlined} from '@ant-design/icons';
 import styles from './index.scss';
 import ActionView from '@/pages/home/action-view';
 
@@ -69,9 +70,21 @@ const Index = ({
         },
     ];
     const [form] = useForm();
+    const [valueType, setValueType] = useState<'directory' | 'file'>('directory');
+    const onBrowse = () => {
+        const result: Array<string> | undefined = window.localFunctions.showOpenDialogSync({
+            properties: [valueType === 'directory' ? 'openDirectory' : 'openFile']
+        });
+        if (result) {
+            form.setFieldsValue({
+                value: result[0]
+            });
+        }
+    };
     useEffect(() => {
         if (!visible) {
             form.resetFields();
+            setValueType('directory');
         }
     }, [visible]);
     return (
@@ -101,7 +114,6 @@ const Index = ({
                         />
                     </Space>
                 </Space>
-
                 <Button type='primary' className={styles.insert} onClick={onInsert}>添加</Button>
             </div>
             <Table
@@ -149,7 +161,16 @@ const Index = ({
                         required={true}
                         rules={[{required: true, message: '请输入值'}]}
                     >
-                        <Input/>
+                        <Input addonAfter={valueType === 'directory' ? <FolderOpenOutlined onClick={onBrowse}/> : <FileOutlined onClick={onBrowse}/>} />
+                    </Item>
+                    <Item wrapperCol={{offset: 4}}>
+                        <Radio.Group
+                            value={valueType}
+                            onChange={(event) => setValueType(event.target.value)}
+                        >
+                            <Radio value='directory'>文件夹</Radio>
+                            <Radio value='file'>文件</Radio>
+                        </Radio.Group>
                     </Item>
                 </Form>
             </Modal>

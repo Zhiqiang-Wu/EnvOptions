@@ -1,8 +1,6 @@
 import {contextBridge, ipcRenderer} from 'electron';
 
-const apiKey = 'localServices';
-
-const api: any = {
+const localServices: any = {
     // versions: process.versions,
     setEnvironmentVariable: (environmentVariable: EnvironmentVariable): Promise<Result> => {
         return ipcRenderer.invoke('setEnvironmentVariable', environmentVariable);
@@ -30,4 +28,12 @@ const api: any = {
     },
 };
 
-contextBridge.exposeInMainWorld(apiKey, api);
+const localFunctions: any = {
+    showOpenDialogSync: (options: OpenDialogSyncOptions) => {
+        return ipcRenderer.sendSync('showOpenDialogSync', options);
+    },
+};
+
+contextBridge.exposeInMainWorld('localServices', localServices);
+
+contextBridge.exposeInMainWorld('localFunctions', localFunctions);

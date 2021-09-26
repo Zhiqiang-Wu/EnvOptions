@@ -28,4 +28,22 @@ interface Window {
         getSetting: (key: string) => Promise<Result>;
         updateSetting: (settings: Array<Setting>) => Promise<Result>;
     };
+    localFunctions: {
+        showOpenDialogSync: (options: OpenDialogSyncOptions) => Array<string> | undefined;
+    };
+}
+
+interface FileFilter {
+    extensions: string[];
+    name: string;
+}
+
+interface OpenDialogSyncOptions {
+    title?: string;
+    defaultPath?: string;
+    buttonLabel?: string;
+    filters?: FileFilter[];
+    properties?: Array<'openFile' | 'openDirectory' | 'multiSelections' | 'showHiddenFiles' | 'createDirectory' | 'promptToCreate' | 'noResolveAliases' | 'treatPackageAsDirectory' | 'dontAddToRecent'>;
+    message?: string;
+    securityScopedBookmarks?: boolean;
 }

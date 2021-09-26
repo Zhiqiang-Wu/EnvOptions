@@ -1,7 +1,7 @@
 // @author 吴志强
 // @date 2021/9/11
 
-import {app, BrowserWindow, Menu, protocol, Tray, ipcMain} from 'electron';
+import {app, BrowserWindow, Menu, protocol, Tray, ipcMain, dialog} from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
 import loadsh from 'loadsh';
@@ -377,4 +377,8 @@ ipcMain.handle('getSetting', (event, key: string): Result => {
 
 ipcMain.handle('updateSetting', (event, settings: Array<Setting>): Result => {
     return updateSetting(settings);
+});
+
+ipcMain.on('showOpenDialogSync', (event, options: OpenDialogSyncOptions) => {
+    event.returnValue = dialog.showOpenDialogSync(mainWindow, options);
 });
