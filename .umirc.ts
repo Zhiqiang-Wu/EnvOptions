@@ -20,7 +20,7 @@ export default defineConfig({
                     from: 'node_modules/regedit/vbs',
                     to: 'vbs',
                 },
-                'contents',
+                'data',
             ],
             win: {
                 icon: 'public/favicon256.ico',
