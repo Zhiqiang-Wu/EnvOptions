@@ -55,6 +55,13 @@ export default defineConfig({
             exact: true,
             component: '@/pages/setting',
         },
+        {
+            path: '/about',
+            name: '关于',
+            icon: 'info',
+            exact: true,
+            component: '@/pages/about'
+        },
         {path: '/', redirect: '/home'},
     ],
     sass: {
