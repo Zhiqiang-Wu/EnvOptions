@@ -62,6 +62,6 @@
         "umi-plugin-electron-builder": "^2.1.4",
         "yorkie": "^2.0.0"
     },
-    "name": "environment",
-    "version": "0.0.1"
+    "name": "env-options",
+    "version": "1.0.0-alpha"
 }

@@ -1,3 +1,3 @@
-# environment
+# Env Options
 
-#### windows平台环境变量管理工具
+windows平台环境变量管理工具
