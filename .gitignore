@@ -19,3 +19,5 @@
 
 /.idea
 /dist_electron
+
+/log
