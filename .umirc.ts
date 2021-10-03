@@ -67,8 +67,8 @@ export default defineConfig({
     sass: {
         implementation: require('node-sass'),
     },
+    // 开启mfsu功能后会自动开启webpack5和dynamicImport
     mfsu: {},
-    webpack5: {},
     mock: false,
     fastRefresh: {},
 });
