@@ -10,7 +10,7 @@ export default defineConfig({
         logo: 'favicon.png',
     },
     electronBuilder: {
-        externals: ['regedit', 'sqlite3'],
+        externals: ['regedit', 'sqlite3', 'winston', 'winston-daily-rotate-file'],
         builderOptions: {
             appId: 'wzq.env.options',
             productName: 'Env Options',

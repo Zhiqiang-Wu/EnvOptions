@@ -1,13 +1,24 @@
 // @author 吴志强
 // @date 2021/9/11
 
-import {app, BrowserWindow, Menu, protocol, Tray, ipcMain, dialog} from 'electron';
+import {
+    app,
+    BrowserWindow,
+    Menu,
+    protocol,
+    Tray,
+    ipcMain,
+    dialog,
+    OpenDialogSyncOptions
+} from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
 import loadsh from 'loadsh';
 import regedit from 'regedit';
 import sqlite3 from 'sqlite3';
 import {LowSync, JSONFileSync} from 'lowdb';
+import {createLogger, format, Logger} from 'winston';
+import DailyRotateFile from 'winston-daily-rotate-file';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -15,6 +26,7 @@ let mainWindow: BrowserWindow;
 let tray: Tray;
 let baseDB: sqlite3.Database;
 let settingDB: LowSync;
+let logger: Logger;
 const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment';
 
 const setVBS = () => {
@@ -67,6 +79,36 @@ const createTray = (): void => {
     ]);
     tray.setContextMenu(menu);
     tray.setToolTip('Env Options');
+};
+
+const createLogger1 = (): void => {
+    const customFormat = format.printf(({level, message, timestamp}) => {
+        return `${timestamp} ${level} - ${message}`;
+    });
+    let filename;
+    if (isDevelopment) {
+        filename = path.join(__dirname, '..', '..', '..', 'log', '%DATE%.log');
+    } else {
+        filename = 'c://log/%DATE%.log';
+    }
+    const transport: DailyRotateFile = new DailyRotateFile({
+        filename,
+        datePattern: 'YYYY-MM-DD-HH',
+        zippedArchive: true,
+        maxSize: '20m',
+        maxFiles: '14d',
+    });
+    logger = createLogger({
+        level: isDevelopment ? 'debug' : 'info',
+        format: format.combine(
+            format.timestamp({
+                format: 'HH:mm:ss.SSS',
+            }),
+            format.splat(),
+            customFormat,
+        ),
+        transports: [transport],
+    });
 };
 
 const connectBaseDB = (): Promise<Result> => {
@@ -233,7 +275,9 @@ const getDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
 
 const lockDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
     return new Promise<Result>((resolve) => {
-        baseDB.exec(`UPDATE variable SET locked = 1 WHERE id = ${id}`, (err) => {
+        baseDB.exec(`UPDATE variable
+                     SET locked = 1
+                     WHERE id = ${id}`, (err) => {
             if (err) {
                 resolve({code: 1, message: err.message});
             } else {
@@ -245,7 +289,9 @@ const lockDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
 
 const unlockDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
     return new Promise<Result>((resolve) => {
-        baseDB.exec(`UPDATE variable SET locked = 0 WHERE id = ${id}`, (err) => {
+        baseDB.exec(`UPDATE variable
+                     SET locked = 0
+                     WHERE id = ${id}`, (err) => {
             if (err) {
                 resolve({code: 1, message: err.message});
             } else {
@@ -299,6 +345,7 @@ app.on('ready', async () => {
         await installExtension(REDUX_DEVTOOLS);
     }*/
     setVBS();
+    createLogger1();
     await connectBaseDB();
     connectSettingDB();
     createWindow();
@@ -413,4 +460,8 @@ ipcMain.handle('lockDatabaseEnvironmentVariable', (event, id: number): Promise<R
 
 ipcMain.on('showOpenDialogSync', (event, options: OpenDialogSyncOptions) => {
     event.returnValue = dialog.showOpenDialogSync(mainWindow, options);
+});
+
+ipcMain.on('log', (event, args) => {
+    logger.log(args.level, args.message, args.meta);
 });
