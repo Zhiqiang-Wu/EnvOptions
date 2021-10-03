@@ -78,6 +78,11 @@ const createTray = (): void => {
         {label: '退出', click: appQuit},
     ]);
     tray.setContextMenu(menu);
+    tray.on('double-click', () => {
+        if (mainWindow) {
+            mainWindow.focus();
+        }
+    });
     tray.setToolTip('Env Options');
 };
 
