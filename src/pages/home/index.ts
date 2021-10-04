@@ -12,7 +12,7 @@ import {
     LOCK_ENVIRONMENT_VARIABLE,
 } from '@/actions/actionTypes';
 import loadsh from 'loadsh';
-import {compose, lifecycle, withState, pure, withHandlers} from 'recompose';
+import {compose, lifecycle, withState, pure, withHandlers, withProps} from 'recompose';
 import HomeView from '@/pages/home/home-view';
 import withDva from '@/components/with-dva';
 import {
@@ -273,6 +273,10 @@ const withLifecycle = lifecycle({
     },
 });
 
+const sorter = (record1, record2): number => {
+    return record1.key.localeCompare(record2.key);
+};
+
 const selector = createSelector((state: any) => ({
     loadings: state.loading.effects,
 }), ({loadings}) => ({
@@ -311,6 +315,7 @@ export default compose(
         showUnlockAction,
         disabledCheckbox
     }),
+    withProps(() => ({sorter})),
     withLifecycle,
     pure,
 )(HomeView);

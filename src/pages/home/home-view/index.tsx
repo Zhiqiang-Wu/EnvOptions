@@ -53,12 +53,14 @@ const Index = ({
                    showLockAction,
                    showUnlockAction,
                    disabledCheckbox,
+                   sorter
                }: any) => {
     const columns = [
         {
             key: 'key',
             title: '变量',
             dataIndex: 'key',
+            sorter,
         },
         {
             key: 'value',
