@@ -3,6 +3,7 @@
 
 import {Typography} from 'antd';
 import styles from './index.scss';
+import packageJson from '@/../package.json';
 
 const AboutView = () => {
     return (
@@ -12,7 +13,7 @@ const AboutView = () => {
                 <Typography.Title level={4} type='secondary'>环境变量管理工具</Typography.Title>
             </div>
             <div>
-                version 1.0.0-alpha
+                version {packageJson.version}
             </div>
         </div>
     );
