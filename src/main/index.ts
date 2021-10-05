@@ -9,7 +9,7 @@ import {
     Tray,
     ipcMain,
     dialog,
-    OpenDialogSyncOptions
+    OpenDialogSyncOptions,
 } from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
@@ -19,6 +19,7 @@ import sqlite3 from 'sqlite3';
 import {LowSync, JSONFileSync} from 'lowdb';
 import {createLogger, format, Logger} from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
+import {autoUpdater} from 'electron-updater';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
