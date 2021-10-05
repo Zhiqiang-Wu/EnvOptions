@@ -5,6 +5,7 @@ const {parallel} = require('gulp');
 const path = require('path');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
+const fsExtra = require('fs-extra');
 
 const resetBaseDB = async (cb) => {
     const baseDBPath = path.join(__dirname, 'data', 'base.db3');
@@ -70,4 +71,10 @@ const resetSettingsDB = (cb) => {
     cb();
 };
 
+const deleteDistElectron = (cb) => {
+    fsExtra.removeSync(path.join(__dirname, 'dist_electron'));
+    cb();
+};
+
 exports.resetDB = parallel(resetBaseDB, resetSettingsDB);
+exports.deleteDistElectron = deleteDistElectron;

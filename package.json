@@ -13,7 +13,8 @@
         "electron:build:win": "umi build electron --win",
         "electron:build:mac": "umi build electron --mac",
         "electron:build:linux": "umi build electron --linux",
-        "gulp:resetDB": "gulp resetDB"
+        "gulp:resetDB": "gulp resetDB",
+        "gulp:deleteDistElectron": "gulp deleteDistElectron"
     },
     "gitHooks": {},
     "lint-staged": {
@@ -27,6 +28,7 @@
     "dependencies": {
         "@ant-design/icons": "^4.6.4",
         "@ant-design/pro-layout": "^6.5.0",
+        "fs-extra": "^10.0.0",
         "loadsh": "^0.0.4",
         "lowdb": "^3.0.0",
         "react": "17.x",
@@ -41,6 +43,7 @@
         "winston-daily-rotate-file": "^4.5.5"
     },
     "devDependencies": {
+        "@types/fs-extra": "^9.0.13",
         "@types/lowdb": "^1.0.11",
         "@types/node": "^14.6.2",
         "@types/react": "^17.0.0",
