@@ -2,6 +2,7 @@ import {OpenDialogSyncOptions} from 'electron';
 
 interface LeveledLogMethod {
     (message: string, ...meta: any[]): void;
+
     (message: any): void;
 }
 
@@ -26,6 +27,8 @@ declare global {
         value: any;
     }
 
+    type MainListener = (props: any) => (...arg: any[]) => void;
+
     interface Window {
         localServices: {
             setEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
@@ -44,7 +47,9 @@ declare global {
             log: {
                 info: LeveledLogMethod,
                 debug: LeveledLogMethod,
-            }
+            },
+            onMain: (channel: string, listener: Function) => void,
+            offMain: (channel: string) => void,
         };
     }
 }

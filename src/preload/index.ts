@@ -38,6 +38,14 @@ const localFunctions: any = {
     showOpenDialogSync: (options: OpenDialogSyncOptions): Array<string> | undefined => {
         return ipcRenderer.sendSync('showOpenDialogSync', options);
     },
+    onMain: (channel: string, listener: Function): void => {
+        ipcRenderer.on(channel, (event, ...args) => {
+            listener(args);
+        });
+    },
+    offMain: (channel: string) => {
+        ipcRenderer.removeAllListeners(channel);
+    },
     log: {
         info: (message: any, ...meta: any[]): void => {
             ipcRenderer.send('log', {level: 'info', message, meta});
