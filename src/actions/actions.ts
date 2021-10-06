@@ -12,7 +12,8 @@ import {
     UNLOCK_ENVIRONMENT_VARIABLE,
     LOCK_ENVIRONMENT_VARIABLE,
     UPDATE_SETTING,
-    GET_SETTING
+    GET_SETTING,
+    CHECK_FOR_UPDATES,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -26,3 +27,5 @@ export const lockEnvironmentVariable = createAction(LOCK_ENVIRONMENT_VARIABLE);
 
 export const updateSetting = createAction(UPDATE_SETTING);
 export const getSetting = createAction(GET_SETTING);
+
+export const checkForUpdates = createAction(CHECK_FOR_UPDATES);

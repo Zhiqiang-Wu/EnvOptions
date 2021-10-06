@@ -12,3 +12,5 @@ export const UNLOCK_ENVIRONMENT_VARIABLE = 'environmentModel/unlockEnvironmentVa
 
 export const UPDATE_SETTING = 'settingModel/updateSetting';
 export const GET_SETTING = 'settingModel/getSetting';
+
+export const CHECK_FOR_UPDATES = 'updateModel/checkForUpdates';
