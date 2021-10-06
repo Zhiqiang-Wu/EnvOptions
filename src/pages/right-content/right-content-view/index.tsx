@@ -4,10 +4,15 @@
 import React from 'react';
 import {Progress} from 'antd';
 
-const RightContentView = ({progressWidth = 35}: any) => {
+const RightContentView = ({progressWidth = 35, percent = 0}: any) => {
     return (
         <div>
-            <Progress width={progressWidth} strokeWidth={8} type='circle'  percent={75}/>
+            <Progress
+                width={progressWidth}
+                strokeWidth={8}
+                type='circle'
+                percent={percent}
+            />
         </div>
     );
 };
