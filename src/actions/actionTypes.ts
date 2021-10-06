@@ -14,3 +14,4 @@ export const UPDATE_SETTING = 'settingModel/updateSetting';
 export const GET_SETTING = 'settingModel/getSetting';
 
 export const CHECK_FOR_UPDATES = 'updateModel/checkForUpdates';
+export const DOWNLOAD_UPDATE = 'updateModel/downloadUpdate';

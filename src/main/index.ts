@@ -340,6 +340,14 @@ const checkForUpdates = (): Promise<Result> => {
     });
 };
 
+const downloadUpdate = (): Promise<Result> => {
+    return autoUpdater.downloadUpdate().then((result) => {
+        return {code: 200, data: result};
+    }).catch((err: Error) => {
+        return {code: 1, message: err.message};
+    });
+};
+
 const appQuit = (): void => {
     if (baseDB) {
         baseDB.close(() => {
@@ -385,19 +393,19 @@ app.on('second-instance', () => {
     }
 });
 
-autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
-    mainWindow.webContents.send('updateAvailable', updateInfo);
-});
-
-autoUpdater.on('update-not-available', (updateInfo: UpdateInfo) => {
-    mainWindow.webContents.send('updateNotAvailable', updateInfo);
-});
-
 autoUpdater.on('error', (error: Error) => {
     mainWindow.webContents.send('updateError', error);
 });
 
 if (!isDevelopment) {
+    autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+        mainWindow.webContents.send('updateAvailable', updateInfo);
+    });
+
+    autoUpdater.on('update-not-available', (updateInfo: UpdateInfo) => {
+        mainWindow.webContents.send('updateNotAvailable', updateInfo);
+    });
+
     autoUpdater.on('download-progress', (progress: ProgressInfo) => {
         mainWindow.webContents.send('updateDownloadProgress', progress);
     });
@@ -503,6 +511,10 @@ ipcMain.handle('lockDatabaseEnvironmentVariable', (event, id: number): Promise<R
 
 ipcMain.handle('checkForUpdates', (): Promise<Result> => {
     return checkForUpdates();
+});
+
+ipcMain.handle('downloadUpdate', (): Promise<Result> => {
+    return downloadUpdate();
 });
 
 ipcMain.on('showOpenDialogSync', (event, options: OpenDialogSyncOptions) => {

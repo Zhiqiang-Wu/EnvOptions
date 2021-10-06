@@ -35,6 +35,9 @@ const localServices: any = {
     checkForUpdates: (): Promise<Result> => {
         return ipcRenderer.invoke('checkForUpdates');
     },
+    downloadUpdate: (): Promise<Result> => {
+        return ipcRenderer.invoke('downloadUpdate');
+    },
 };
 
 const localFunctions: any = {

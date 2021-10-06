@@ -4,3 +4,7 @@
 export const checkForUpdates = (): Promise<Result> => {
     return window.localServices.checkForUpdates();
 };
+
+export const downloadUpdate = (): Promise<Result> => {
+    return window.localServices.downloadUpdate();
+};
