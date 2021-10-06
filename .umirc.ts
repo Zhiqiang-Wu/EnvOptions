@@ -10,7 +10,7 @@ export default defineConfig({
         logo: 'favicon.png',
     },
     electronBuilder: {
-        externals: ['regedit', 'sqlite3', 'winston', 'winston-daily-rotate-file'],
+        externals: ['regedit', 'sqlite3', 'winston', 'winston-daily-rotate-file', 'electron-updater'],
         builderOptions: {
             appId: 'wzq.env.options',
             productName: 'Env Options',
@@ -31,6 +31,12 @@ export default defineConfig({
                 oneClick: false,
                 allowToChangeInstallationDirectory: true,
             },
+            publish: [
+                {
+                    provider: 'generic',
+                    url: 'https://env-options.oss-cn-hangzhou.aliyuncs.com/update/release/',
+                },
+            ],
         },
     },
     routes: [
@@ -60,7 +66,7 @@ export default defineConfig({
             name: '关于',
             icon: 'info',
             exact: true,
-            component: '@/pages/about'
+            component: '@/pages/about',
         },
         {path: '/', redirect: '/home'},
     ],
