@@ -19,7 +19,7 @@ import sqlite3 from 'sqlite3';
 import {LowSync, JSONFileSync} from 'lowdb';
 import {createLogger, format, Logger} from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import {autoUpdater} from 'electron-updater';
+import {autoUpdater, UpdateCheckResult, UpdateInfo, ProgressInfo} from 'electron-updater';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -326,6 +326,20 @@ const updateSetting = (settings: Array<Setting>): Result => {
     return {code: 200};
 };
 
+const checkForUpdates = (): Promise<Result> => {
+    return autoUpdater.checkForUpdates().then((result: UpdateCheckResult) => {
+        return {
+            code: 200,
+            data: result,
+        };
+    }).catch((err: Error) => {
+        return {
+            code: 1,
+            message: err.message,
+        };
+    });
+};
+
 const appQuit = (): void => {
     if (baseDB) {
         baseDB.close(() => {
@@ -335,6 +349,8 @@ const appQuit = (): void => {
         app.quit();
     }
 };
+
+autoUpdater.autoDownload = false;
 
 protocol.registerSchemesAsPrivileged([
     {scheme: 'app', privileges: {secure: true, standard: true}},
@@ -368,6 +384,28 @@ app.on('second-instance', () => {
         mainWindow.focus();
     }
 });
+
+autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+    mainWindow.webContents.send('updateAvailable', updateInfo);
+});
+
+autoUpdater.on('update-not-available', (updateInfo: UpdateInfo) => {
+    mainWindow.webContents.send('updateNotAvailable', updateInfo);
+});
+
+autoUpdater.on('error', (error: Error) => {
+    mainWindow.webContents.send('updateError', error);
+});
+
+if (!isDevelopment) {
+    autoUpdater.on('download-progress', (progress: ProgressInfo) => {
+        mainWindow.webContents.send('updateDownloadProgress', progress);
+    });
+
+    autoUpdater.on('update-downloaded', (updateInfo: UpdateInfo) => {
+        mainWindow.webContents.send('updateDownloaded', updateInfo);
+    });
+}
 
 ipcMain.handle('listEnvironmentVariables', async () => {
     return Promise.all([listSystemEnvironmentVariables(), listDatabaseEnvironmentVariables()]).then((resultArray: Array<Result>) => {
@@ -463,10 +501,14 @@ ipcMain.handle('lockDatabaseEnvironmentVariable', (event, id: number): Promise<R
     return lockDatabaseEnvironmentVariable(id);
 });
 
+ipcMain.handle('checkForUpdates', (): Promise<Result> => {
+    return checkForUpdates();
+});
+
 ipcMain.on('showOpenDialogSync', (event, options: OpenDialogSyncOptions) => {
     event.returnValue = dialog.showOpenDialogSync(mainWindow, options);
 });
 
 ipcMain.on('log', (event, args) => {
-    logger.log(args.level, args.message, args.meta);
+    logger.log(args.level, args.message, ...args.meta);
 });
