@@ -32,6 +32,9 @@ const localServices: any = {
     updateSetting: (settings: Array<Setting>): Promise<Result> => {
         return ipcRenderer.invoke('updateSetting', settings);
     },
+    checkForUpdates: (): Promise<Result> => {
+        return ipcRenderer.invoke('checkForUpdates');
+    },
 };
 
 const localFunctions: any = {

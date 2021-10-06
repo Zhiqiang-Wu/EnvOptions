@@ -41,6 +41,7 @@ declare global {
             updateSetting: (settings: Array<Setting>) => Promise<Result>;
             unlockDatabaseEnvironmentVariable: (id: number) => Promise<Result>;
             lockDatabaseEnvironmentVariable: (id: number) => Promise<Result>;
+            checkForUpdates: () => Promise<Result>;
         };
         localFunctions: {
             showOpenDialogSync: (options: OpenDialogSyncOptions) => Array<string> | undefined;
