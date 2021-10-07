@@ -4,15 +4,23 @@
 import React from 'react';
 import {Progress} from 'antd';
 
-const RightContentView = ({progressWidth = 35, percent = 0}: any) => {
+const RightContentView = ({
+                              progressWidth = 35,
+                              progressPercent = 0,
+                              progressVisible = false,
+                              progressStatus = 'normal',
+                          }: any) => {
     return (
         <div>
-            <Progress
-                width={progressWidth}
-                strokeWidth={8}
-                type='circle'
-                percent={percent}
-            />
+            {progressVisible ? (
+                <Progress
+                    width={progressWidth}
+                    strokeWidth={8}
+                    type='circle'
+                    percent={progressPercent}
+                    status={progressStatus}
+                />
+            ) : null}
         </div>
     );
 };

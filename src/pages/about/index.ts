@@ -6,11 +6,10 @@ import AboutView from '@/pages/about/about-view';
 import withDva from '@/components/with-dva';
 import {createSelector} from 'reselect';
 import {CHECK_FOR_UPDATES, DOWNLOAD_UPDATE} from '@/actions/actionTypes';
-import {checkForUpdates} from '@/actions/actions';
+import {checkForUpdates, downloadUpdate, updateUpdateModel} from '@/actions/actions';
 import {message} from 'antd';
 import withMain from '@/components/with-main';
 import {UpdateInfo} from 'electron-updater';
-import {downloadUpdate} from '@/actions/actions';
 
 interface IProps {
     dispatch: Function;
@@ -22,9 +21,14 @@ const onCheck = ({dispatch}: IProps) => () => {
 };
 
 const onUpdate = ({dispatch}: IProps) => () => {
-    dispatch(downloadUpdate()).then((result) => {
-
-    });
+    dispatch(updateUpdateModel({
+        progressVisible: true,
+        progressPercent: 0,
+        progressStatus: 'normal',
+    }));
+    message.info('开始下载');
+    // 只有下载结束或出异常后返回
+    dispatch(downloadUpdate());
 };
 
 const updateAvailable = ({setUpdateInfo}: IProps) => (updateInfo: UpdateInfo) => {

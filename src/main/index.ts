@@ -341,6 +341,7 @@ const checkForUpdates = (): Promise<Result> => {
 };
 
 const downloadUpdate = (): Promise<Result> => {
+    // 只有下载结束或出异常后返回
     return autoUpdater.downloadUpdate().then((result) => {
         return {code: 200, data: result};
     }).catch((err: Error) => {

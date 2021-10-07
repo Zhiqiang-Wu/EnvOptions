@@ -25,8 +25,7 @@ const AboutView = ({onCheck, checkLoading, updateLoading, onUpdate, updateInfo}:
                 </div>
                 {updateInfo ? (
                     <Space direction='vertical'>
-                        <Descriptions title='新版本' bordered column={1} contentStyle={{backgroundColor: 'white'}}
-                                      style={{width: '100%'}}>
+                        <Descriptions title='新版本' bordered column={1} contentStyle={{backgroundColor: 'white'}}>
                             <Descriptions.Item label='version'>{updateInfo.version}</Descriptions.Item>
                             <Descriptions.Item label='更新内容'>
                                 <Space direction='vertical'>

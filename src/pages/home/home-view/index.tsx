@@ -29,7 +29,7 @@ import styles from './index.scss';
 
 const {Item, useForm} = Form;
 
-const Index = ({
+const HomeView = ({
                    dataSource,
                    onDelete,
                    tableLoading,
@@ -237,4 +237,4 @@ const Index = ({
     );
 };
 
-export default Index;
+export default HomeView;

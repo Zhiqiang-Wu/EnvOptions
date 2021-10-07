@@ -15,6 +15,7 @@ import {
     GET_SETTING,
     CHECK_FOR_UPDATES,
     DOWNLOAD_UPDATE,
+    UPDATE_UPDATE_MODEL,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -31,3 +32,4 @@ export const getSetting = createAction(GET_SETTING);
 
 export const checkForUpdates = createAction(CHECK_FOR_UPDATES);
 export const downloadUpdate = createAction(DOWNLOAD_UPDATE);
+export const updateUpdateModel = createAction(UPDATE_UPDATE_MODEL);

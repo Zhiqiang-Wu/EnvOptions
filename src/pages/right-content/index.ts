@@ -1,27 +1,41 @@
 // @author 吴志强
 // @date 2021/10/6
 
-import {compose, withState, pure} from 'recompose';
+import {compose, pure} from 'recompose';
 import RightContentView from '@/pages/right-content/right-content-view';
 import toFunction from '@/components/to-function';
 import withMain from '@/components/with-main';
 import {ProgressInfo} from 'electron-updater';
 import {message} from 'antd';
+import withDva from '@/components/with-dva';
+import {createSelector} from 'reselect';
+import {updateUpdateModel} from '@/actions/actions';
 
 interface IProps {
-    setPercent: Function;
+    progressVisible: boolean;
+    dispatch: Function;
 }
 
-const updateDownloadProgress = ({setPercent}: IProps) => (progress: ProgressInfo) => {
-    window.localFunctions.log.info('%j', progress);
+const updateDownloadProgress = ({dispatch}: IProps) => (progress: ProgressInfo) => {
+    dispatch(updateUpdateModel({
+        progressPercent: progress.percent
+    }));
 };
 
-const updateError = ({setPercent}: IProps) => (err: Error) => {
+const updateError = ({progressVisible, dispatch}: IProps) => (err: Error) => {
     message.warn(err.message);
+    if (progressVisible) {
+        dispatch(updateUpdateModel({
+            progressStatus: 'exception'
+        }));
+    }
 };
 
-const updateDownloaded = ({setPercent}: IProps) => () => {
-    setPercent(100);
+const updateDownloaded = ({dispatch}: IProps) => () => {
+    message.info('下载完毕');
+    dispatch(updateUpdateModel({
+        progressStatus: 'success'
+    }));
 };
 
 const mapPropsToComponent = (props) => {
@@ -30,8 +44,18 @@ const mapPropsToComponent = (props) => {
     };
 };
 
+const selector = createSelector((state: any) => ({
+    updateModel: state.updateModel,
+}), ({updateModel}) => ({
+    progressVisible: updateModel.progressVisible,
+    progressPercent: updateModel.progressPercent,
+    progressStatus: updateModel.progressStatus,
+}));
+
+const mapStateToProps = (state) => selector(state);
+
 export default toFunction(compose(
-    withState('percent', 'setPercent', 0),
+    withDva(mapStateToProps),
     withMain('updateDownloadProgress', updateDownloadProgress),
     withMain('updateError', updateError),
     withMain('updateDownloaded', updateDownloaded),
