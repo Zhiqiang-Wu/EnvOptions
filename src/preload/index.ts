@@ -47,13 +47,17 @@ const localFunctions: any = {
     showOpenDialogSync: (options: OpenDialogSyncOptions): Array<string> | undefined => {
         return ipcRenderer.sendSync('showOpenDialogSync', options);
     },
-    onMain: (channel: string, listener: Function): void => {
-        ipcRenderer.on(channel, (event, ...args) => {
-            listener(args);
-        });
+    addMainListener: (channel: string, mainListener: MainListener): void => {
+        const listener: any = mainListener.listener;
+        listener.key = mainListener.key;
+        ipcRenderer.on(channel, listener);
     },
-    offMain: (channel: string) => {
-        ipcRenderer.removeAllListeners(channel);
+    removeMainListener: (channel: string, key: symbol): void => {
+        const listener: any = ipcRenderer.listeners(channel).find((value: any) => value.key === key);
+        ipcRenderer.removeListener(channel, listener);
+    },
+    mainTest: () => {
+        ipcRenderer.send('mainTest');
     },
     log: {
         info: (message: any, ...meta: any[]): void => {

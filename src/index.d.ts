@@ -1,4 +1,4 @@
-import {OpenDialogSyncOptions} from 'electron';
+import {OpenDialogSyncOptions, IpcRendererEvent} from 'electron';
 
 interface LeveledLogMethod {
     (message: string, ...meta: any[]): void;
@@ -27,7 +27,12 @@ declare global {
         value: any;
     }
 
-    type MainListener = (props: any) => (...arg: any[]) => void;
+    type MainListener = {
+        key: symbol;
+        listener: (event: IpcRendererEvent, ...arg: any[]) => void;
+    }
+
+    type MainHandler = (props: any) => (event: IpcRendererEvent, ...arg: any[]) => void;
 
     interface Window {
         localServices: {
@@ -51,8 +56,8 @@ declare global {
                 info: LeveledLogMethod,
                 debug: LeveledLogMethod,
             },
-            onMain: (channel: string, listener: Function) => void,
-            offMain: (channel: string) => void,
+            addMainListener: (channel: string, mainListener: MainListener) => void,
+            removeMainListener: (channel: string, key: symbol) => void,
         };
     }
 }

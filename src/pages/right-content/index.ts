@@ -21,13 +21,13 @@ const onUpdate = ({dispatch}: IProps) => () => {
     dispatch(quitAndInstall());
 };
 
-const updateDownloadProgress = ({dispatch}: IProps) => (progress: ProgressInfo) => {
+const updateDownloadProgress = ({dispatch}: IProps) => (event, progress: ProgressInfo) => {
     dispatch(updateUpdateModel({
         progressPercent: loadsh.round(progress.percent),
     }));
 };
 
-const updateError = ({progressVisible, dispatch}: IProps) => (err: Error) => {
+const updateError = ({progressVisible, dispatch}: IProps) => (event, err: Error) => {
     message.warn(err.message);
     if (progressVisible) {
         dispatch(updateUpdateModel({
@@ -62,9 +62,14 @@ const selector = createSelector((state: any) => ({
 
 const mapStateToProps = (state) => selector(state);
 
+const test = () => (event, arg) => {
+    console.log('right ' + arg);
+};
+
 export default toFunction(compose(
     withDva(mapStateToProps),
     withHandlers({onUpdate}),
+    withMain('mainTestChannel', test),
     withMain('updateDownloadProgress', updateDownloadProgress),
     withMain('updateError', updateError),
     withMain('updateDownloaded', updateDownloaded),

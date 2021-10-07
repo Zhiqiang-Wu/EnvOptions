@@ -3,19 +3,19 @@
 
 import {createFactory, Component} from 'react';
 
-const withMain = (channel: string, listener: MainListener) => (BaseComponent) => {
+const withMain = (channel: string, mainHandler: MainHandler) => (BaseComponent) => {
     const factory = createFactory(BaseComponent);
+
+    const key = Symbol();
 
     class WithMain extends Component {
 
         componentDidMount() {
-            window.localFunctions.onMain(channel, (args) => {
-                listener(this.props)(...args);
-            });
+            window.localFunctions.addMainListener(channel, {key, listener: mainHandler(this.props)})
         }
 
         componentWillUnmount() {
-            window.localFunctions.offMain(channel);
+            window.localFunctions.removeMainListener(channel, key);
         }
 
         render() {
