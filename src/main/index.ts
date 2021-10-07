@@ -349,6 +349,16 @@ const downloadUpdate = (): Promise<Result> => {
     });
 };
 
+const quitAndInstall = (): void => {
+    if (baseDB) {
+        baseDB.close(() => {
+            autoUpdater.quitAndInstall();
+        });
+    } else {
+        autoUpdater.quitAndInstall();
+    }
+};
+
 const appQuit = (): void => {
     if (baseDB) {
         baseDB.close(() => {
@@ -519,7 +529,7 @@ ipcMain.handle('downloadUpdate', (): Promise<Result> => {
 });
 
 ipcMain.on('quitAndInstall', (): void => {
-    autoUpdater.quitAndInstall();
+    quitAndInstall();
 });
 
 ipcMain.on('showOpenDialogSync', (event, options: OpenDialogSyncOptions) => {
