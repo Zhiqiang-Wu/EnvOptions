@@ -10,6 +10,7 @@ import {message} from 'antd';
 import withDva from '@/components/with-dva';
 import {createSelector} from 'reselect';
 import {updateUpdateModel} from '@/actions/actions';
+import loadsh from 'loadsh';
 
 interface IProps {
     progressVisible: boolean;
@@ -18,7 +19,7 @@ interface IProps {
 
 const updateDownloadProgress = ({dispatch}: IProps) => (progress: ProgressInfo) => {
     dispatch(updateUpdateModel({
-        progressPercent: progress.percent
+        progressPercent: loadsh.round(progress.percent),
     }));
 };
 
@@ -26,7 +27,7 @@ const updateError = ({progressVisible, dispatch}: IProps) => (err: Error) => {
     message.warn(err.message);
     if (progressVisible) {
         dispatch(updateUpdateModel({
-            progressStatus: 'exception'
+            progressStatus: 'exception',
         }));
     }
 };
@@ -34,7 +35,8 @@ const updateError = ({progressVisible, dispatch}: IProps) => (err: Error) => {
 const updateDownloaded = ({dispatch}: IProps) => () => {
     message.info('下载完毕');
     dispatch(updateUpdateModel({
-        progressStatus: 'success'
+        progressStatus: 'success',
+        progressPercent: 100,
     }));
 };
 
