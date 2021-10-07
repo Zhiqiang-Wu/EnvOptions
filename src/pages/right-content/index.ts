@@ -1,7 +1,7 @@
 // @author 吴志强
 // @date 2021/10/6
 
-import {compose, pure} from 'recompose';
+import {compose, pure, withHandlers} from 'recompose';
 import RightContentView from '@/pages/right-content/right-content-view';
 import toFunction from '@/components/to-function';
 import withMain from '@/components/with-main';
@@ -9,13 +9,17 @@ import {ProgressInfo} from 'electron-updater';
 import {message} from 'antd';
 import withDva from '@/components/with-dva';
 import {createSelector} from 'reselect';
-import {updateUpdateModel} from '@/actions/actions';
+import {updateUpdateModel, quitAndInstall} from '@/actions/actions';
 import loadsh from 'loadsh';
 
 interface IProps {
     progressVisible: boolean;
     dispatch: Function;
 }
+
+const onUpdate = ({dispatch}: IProps) => () => {
+    dispatch(quitAndInstall());
+};
 
 const updateDownloadProgress = ({dispatch}: IProps) => (progress: ProgressInfo) => {
     dispatch(updateUpdateModel({
@@ -37,6 +41,7 @@ const updateDownloaded = ({dispatch}: IProps) => () => {
     dispatch(updateUpdateModel({
         progressStatus: 'success',
         progressPercent: 100,
+        updateButtonVisible: true,
     }));
 };
 
@@ -52,12 +57,14 @@ const selector = createSelector((state: any) => ({
     progressVisible: updateModel.progressVisible,
     progressPercent: updateModel.progressPercent,
     progressStatus: updateModel.progressStatus,
+    updateButtonVisible: updateModel.updateButtonVisible,
 }));
 
 const mapStateToProps = (state) => selector(state);
 
 export default toFunction(compose(
     withDva(mapStateToProps),
+    withHandlers({onUpdate}),
     withMain('updateDownloadProgress', updateDownloadProgress),
     withMain('updateError', updateError),
     withMain('updateDownloaded', updateDownloaded),

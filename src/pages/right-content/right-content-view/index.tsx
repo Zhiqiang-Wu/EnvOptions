@@ -2,18 +2,25 @@
 // @date 2021/10/6
 
 import React from 'react';
-import {Progress} from 'antd';
+import {Progress, Button, Space} from 'antd';
+import styles from './index.scss';
 
 const RightContentView = ({
                               progressWidth = 35,
                               progressPercent = 0,
                               progressVisible = false,
                               progressStatus = 'normal',
+                              onUpdate,
+                              updateButtonVisible = false,
                           }: any) => {
     return (
-        <div>
+        <Space>
+            {updateButtonVisible ? (
+                <Button type='link' onClick={onUpdate}>重启更新</Button>
+            ) : null}
             {progressVisible ? (
                 <Progress
+                    className={styles.progress}
                     width={progressWidth}
                     strokeWidth={8}
                     type='circle'
@@ -21,7 +28,7 @@ const RightContentView = ({
                     status={progressStatus}
                 />
             ) : null}
-        </div>
+        </Space>
     );
 };
 

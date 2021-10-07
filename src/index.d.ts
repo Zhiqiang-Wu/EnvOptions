@@ -43,6 +43,7 @@ declare global {
             lockDatabaseEnvironmentVariable: (id: number) => Promise<Result>;
             checkForUpdates: () => Promise<Result>;
             downloadUpdate: () => Promise<Result>;
+            quitAndInstall: () => void;
         };
         localFunctions: {
             showOpenDialogSync: (options: OpenDialogSyncOptions) => Array<string> | undefined;

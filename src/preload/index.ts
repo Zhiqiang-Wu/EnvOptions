@@ -38,6 +38,9 @@ const localServices: any = {
     downloadUpdate: (): Promise<Result> => {
         return ipcRenderer.invoke('downloadUpdate');
     },
+    quitAndInstall: (): void => {
+        ipcRenderer.send('quitAndInstall');
+    },
 };
 
 const localFunctions: any = {

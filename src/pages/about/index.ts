@@ -25,6 +25,7 @@ const onUpdate = ({dispatch}: IProps) => () => {
         progressVisible: true,
         progressPercent: 0,
         progressStatus: 'normal',
+        updateButtonVisible: false,
     }));
     message.info('开始下载');
     // 只有下载结束或出异常后返回

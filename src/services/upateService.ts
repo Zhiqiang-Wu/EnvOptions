@@ -8,3 +8,7 @@ export const checkForUpdates = (): Promise<Result> => {
 export const downloadUpdate = (): Promise<Result> => {
     return window.localServices.downloadUpdate();
 };
+
+export const quitAndInstall = (): void => {
+    window.localServices.quitAndInstall();
+};

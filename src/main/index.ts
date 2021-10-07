@@ -518,6 +518,10 @@ ipcMain.handle('downloadUpdate', (): Promise<Result> => {
     return downloadUpdate();
 });
 
+ipcMain.on('quitAndInstall', (): void => {
+    autoUpdater.quitAndInstall();
+});
+
 ipcMain.on('showOpenDialogSync', (event, options: OpenDialogSyncOptions) => {
     event.returnValue = dialog.showOpenDialogSync(mainWindow, options);
 });

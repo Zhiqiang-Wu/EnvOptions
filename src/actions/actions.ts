@@ -16,6 +16,7 @@ import {
     CHECK_FOR_UPDATES,
     DOWNLOAD_UPDATE,
     UPDATE_UPDATE_MODEL,
+    QUID_AND_INSTALL,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -32,4 +33,5 @@ export const getSetting = createAction(GET_SETTING);
 
 export const checkForUpdates = createAction(CHECK_FOR_UPDATES);
 export const downloadUpdate = createAction(DOWNLOAD_UPDATE);
+export const quitAndInstall = createAction(QUID_AND_INSTALL);
 export const updateUpdateModel = createAction(UPDATE_UPDATE_MODEL);
