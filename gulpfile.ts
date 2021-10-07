@@ -6,6 +6,7 @@ const path = require('path');
 const sqlite3 = require('sqlite3');
 const fs = require('fs');
 const fsExtra = require('fs-extra');
+const jsYaml = require('js-yaml');
 
 const resetBaseDB = async (cb) => {
     const baseDBPath = path.join(__dirname, 'data', 'base.db3');
@@ -76,5 +77,19 @@ const deleteDistElectron = (cb) => {
     cb();
 };
 
+const writeReleaseNotes = (cb) => {
+    const updateInfoPath = path.join(__dirname, 'dist_electron', 'latest.yml');
+    const updateInfo = jsYaml.load(fs.readFileSync(updateInfoPath));
+    let releaseNotes: any = ['更新内容1', '更新内容2', '更新内容3'];
+    releaseNotes = releaseNotes.map((note) => ({
+        version: updateInfo.version,
+        note
+    }));
+    updateInfo.releaseNotes = releaseNotes;
+    fs.writeFileSync(updateInfoPath, jsYaml.dump(updateInfo, {lineWidth: 500}));
+    cb();
+};
+
 exports.resetDB = parallel(resetBaseDB, resetSettingsDB);
 exports.deleteDistElectron = deleteDistElectron;
+exports.writeReleaseNotes = writeReleaseNotes;

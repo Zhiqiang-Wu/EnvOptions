@@ -29,10 +29,11 @@ const AboutView = ({onCheck, checkLoading, updateLoading, onUpdate, updateInfo}:
                             <Descriptions.Item label='version'>{updateInfo.version}</Descriptions.Item>
                             <Descriptions.Item label='更新内容'>
                                 <Space direction='vertical'>
-                                    <span>1. 123222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222</span>
-                                    <span>1. 1233333333333</span>
-                                    <span>1. 123</span>
-                                    <span>1. 123</span>
+                                    {
+                                        updateInfo.releaseNotes ? updateInfo.releaseNotes.map((releaseNote, index) => (
+                                            <span>{index + 1}、{releaseNote.note}</span>
+                                        )) : null
+                                    }
                                 </Space>
                             </Descriptions.Item>
                         </Descriptions>

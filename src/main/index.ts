@@ -369,11 +369,35 @@ const appQuit = (): void => {
     }
 };
 
-autoUpdater.autoDownload = false;
-
 protocol.registerSchemesAsPrivileged([
     {scheme: 'app', privileges: {secure: true, standard: true}},
 ]);
+
+autoUpdater.autoDownload = false;
+
+autoUpdater.fullChangelog = true;
+
+autoUpdater.on('error', (error: Error) => {
+    mainWindow.webContents.send('updateError', error);
+});
+
+if (!isDevelopment) {
+    autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+        mainWindow.webContents.send('updateAvailable', updateInfo);
+    });
+
+    autoUpdater.on('update-not-available', (updateInfo: UpdateInfo) => {
+        mainWindow.webContents.send('updateNotAvailable', updateInfo);
+    });
+
+    autoUpdater.on('download-progress', (progress: ProgressInfo) => {
+        mainWindow.webContents.send('updateDownloadProgress', progress);
+    });
+
+    autoUpdater.on('update-downloaded', (updateInfo: UpdateInfo) => {
+        mainWindow.webContents.send('updateDownloaded', updateInfo);
+    });
+}
 
 if (!app.requestSingleInstanceLock()) {
     appQuit();
@@ -403,28 +427,6 @@ app.on('second-instance', () => {
         mainWindow.focus();
     }
 });
-
-autoUpdater.on('error', (error: Error) => {
-    mainWindow.webContents.send('updateError', error);
-});
-
-if (!isDevelopment) {
-    autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
-        mainWindow.webContents.send('updateAvailable', updateInfo);
-    });
-
-    autoUpdater.on('update-not-available', (updateInfo: UpdateInfo) => {
-        mainWindow.webContents.send('updateNotAvailable', updateInfo);
-    });
-
-    autoUpdater.on('download-progress', (progress: ProgressInfo) => {
-        mainWindow.webContents.send('updateDownloadProgress', progress);
-    });
-
-    autoUpdater.on('update-downloaded', (updateInfo: UpdateInfo) => {
-        mainWindow.webContents.send('updateDownloaded', updateInfo);
-    });
-}
 
 ipcMain.handle('listEnvironmentVariables', async () => {
     return Promise.all([listSystemEnvironmentVariables(), listDatabaseEnvironmentVariables()]).then((resultArray: Array<Result>) => {
