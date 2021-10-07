@@ -20,7 +20,12 @@ export default defineConfig({
                     from: 'node_modules/regedit/vbs',
                     to: 'vbs',
                 },
-                'data',
+            ],
+            extraResources: [
+                {
+                    from: 'data/data.zip',
+                    to: 'data.zip',
+                },
             ],
             win: {
                 icon: 'public/favicon256.ico',
