@@ -20,6 +20,9 @@ import {LowSync, JSONFileSync} from 'lowdb';
 import {createLogger, format, Logger} from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import {autoUpdater, UpdateCheckResult, UpdateInfo, ProgressInfo} from 'electron-updater';
+import os from 'os';
+import fsExtra from 'fs-extra';
+import extractZip from 'extract-zip';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -95,7 +98,7 @@ const createLogger1 = (): void => {
     if (isDevelopment) {
         filename = path.join(__dirname, '..', '..', '..', 'log', '%DATE%.log');
     } else {
-        filename = 'c://log/%DATE%.log';
+        filename = getDataDir() + path.sep + 'log' + path.sep + '%DATE%.log';
     }
     const transport: DailyRotateFile = new DailyRotateFile({
         filename,
@@ -116,14 +119,37 @@ const createLogger1 = (): void => {
     });
 };
 
+const getDataDir = (): string => {
+    return os.homedir() + path.sep + 'AppData' + path.sep + 'Local' + path.sep + 'env-options';
+};
+
+const checkDataFile = async () => {
+    const dataDir = getDataDir();
+    const baseDBExists = fsExtra.pathExistsSync(dataDir + path.sep + 'base.db3');
+    const settingsExists = fsExtra.pathExistsSync(dataDir + path.sep + 'settings.json');
+    if (!baseDBExists || !settingsExists) {
+        let dataZipPath;
+        if (isDevelopment) {
+            dataZipPath = path.join(__dirname, '..', '..', '..', 'data', 'data.zip');
+        } else {
+            dataZipPath = path.join(__dirname, '..', 'data.zip');
+        }
+        const tempPath = path.join(dataZipPath, '..', 'temp');
+        await extractZip(dataZipPath, {dir: tempPath});
+        fsExtra.ensureDirSync(dataDir);
+        if (!baseDBExists) {
+            fsExtra.copySync(tempPath + path.sep + 'base.db3', dataDir + path.sep + 'base.db3');
+        }
+        if (!settingsExists) {
+            fsExtra.copySync(tempPath + path.sep + 'settings.json', dataDir + path.sep + 'settings.json');
+        }
+        fsExtra.removeSync(tempPath);
+    }
+};
+
 const connectBaseDB = (): Promise<Result> => {
     return new Promise((resolve) => {
-        let baseDBPath;
-        if (isDevelopment) {
-            baseDBPath = path.join(__dirname, '../../../data/base.db3');
-        } else {
-            baseDBPath = path.join(__dirname, '../../data/base.db3');
-        }
+        const baseDBPath = getDataDir() + path.sep + 'base.db3';
         baseDB = new sqlite3.Database(baseDBPath, (err) => {
             if (err) {
                 resolve({code: 1, message: err.message});
@@ -135,12 +161,7 @@ const connectBaseDB = (): Promise<Result> => {
 };
 
 const connectSettingDB = () => {
-    let settingDBPath;
-    if (isDevelopment) {
-        settingDBPath = path.join(__dirname, '../../../data/settings.json');
-    } else {
-        settingDBPath = path.join(__dirname, '../../data/settings.json');
-    }
+    const settingDBPath = getDataDir() + path.sep + 'settings.json';
     const adapter = new JSONFileSync(settingDBPath);
     settingDB = new LowSync(adapter);
     settingDB.read();
@@ -408,6 +429,7 @@ app.on('ready', async () => {
         await installExtension(REACT_DEVELOPER_TOOLS);
         await installExtension(REDUX_DEVTOOLS);
     }*/
+    await checkDataFile();
     setVBS();
     createLogger1();
     await connectBaseDB();
