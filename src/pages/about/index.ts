@@ -32,7 +32,7 @@ const onUpdate = ({dispatch}: IProps) => () => {
     dispatch(downloadUpdate());
 };
 
-const updateAvailable = ({setUpdateInfo}: IProps) => (updateInfo: UpdateInfo) => {
+const updateAvailable = ({setUpdateInfo}: IProps) => (event, updateInfo: UpdateInfo) => {
     message.info('有新版本');
     setUpdateInfo(updateInfo);
 };
