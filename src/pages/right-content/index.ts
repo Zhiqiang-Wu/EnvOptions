@@ -62,14 +62,9 @@ const selector = createSelector((state: any) => ({
 
 const mapStateToProps = (state) => selector(state);
 
-const test = () => (event, arg) => {
-    console.log('right ' + arg);
-};
-
 export default toFunction(compose(
     withDva(mapStateToProps),
     withHandlers({onUpdate}),
-    withMain('mainTestChannel', test),
     withMain('updateDownloadProgress', updateDownloadProgress),
     withMain('updateError', updateError),
     withMain('updateDownloaded', updateDownloaded),

@@ -56,9 +56,6 @@ const localFunctions: any = {
         const listener: any = ipcRenderer.listeners(channel).find((value: any) => value.key === key);
         ipcRenderer.removeListener(channel, listener);
     },
-    mainTest: () => {
-        ipcRenderer.send('mainTest');
-    },
     log: {
         info: (message: any, ...meta: any[]): void => {
             ipcRenderer.send('log', {level: 'info', message, meta});
