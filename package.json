@@ -13,7 +13,6 @@
         "electron:build:win": "umi build electron --win",
         "electron:build:mac": "umi build electron --mac",
         "electron:build:linux": "umi build electron --linux",
-        "gulp:resetDB": "gulp resetDB",
         "gulp:deleteDistElectron": "gulp deleteDistElectron",
         "gulp:writeReleaseNotes": "gulp writeReleaseNotes"
     },
