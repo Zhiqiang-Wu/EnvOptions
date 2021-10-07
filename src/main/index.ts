@@ -35,14 +35,14 @@ const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Envi
 
 const setVBS = () => {
     if (!isDevelopment) {
-        regedit.setExternalVBSLocation(path.join(__dirname, '../../vbs'));
+        regedit.setExternalVBSLocation(path.join(__dirname, '..', '..', 'vbs'));
     }
 };
 
 const createWindow = (): void => {
     let iconPath;
     if (isDevelopment) {
-        iconPath = path.join(__dirname, '../../../public/favicon128.ico');
+        iconPath = path.join(__dirname, '..', '..', '..', 'public', 'favicon128.ico');
     } else {
         iconPath = path.join(__dirname, 'favicon128.ico');
     }
@@ -73,7 +73,7 @@ const createWindow = (): void => {
 const createTray = (): void => {
     let iconPath;
     if (isDevelopment) {
-        iconPath = path.join(__dirname, '../../../public/favicon128.ico');
+        iconPath = path.join(__dirname, '..', '..', '..', 'public', 'favicon128.ico');
     } else {
         iconPath = path.join(__dirname, 'favicon128.ico');
     }
@@ -102,7 +102,7 @@ const createLogger1 = (): void => {
     }
     const transport: DailyRotateFile = new DailyRotateFile({
         filename,
-        datePattern: 'YYYY-MM/YYYY-MM-DD',
+        datePattern: 'YYYY-MM' + path.sep + 'YYYY-MM-DD',
         zippedArchive: true,
         maxFiles: '30d',
     });
