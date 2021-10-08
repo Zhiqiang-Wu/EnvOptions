@@ -103,7 +103,7 @@ const createLogger1 = (): void => {
     }
     const transport: DailyRotateFile = new DailyRotateFile({
         filename,
-        datePattern: 'YYYY-MM' + path.sep + 'YYYY-MM-DD',
+        datePattern: 'YYYY-MM/YYYY-MM-DD',
         zippedArchive: true,
         maxFiles: '30d',
     });
