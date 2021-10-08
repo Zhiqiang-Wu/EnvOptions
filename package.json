@@ -35,6 +35,7 @@
         "lowdb": "^3.0.0",
         "react": "17.x",
         "react-dom": "17.x",
+        "react-highlight-words": "^0.17.0",
         "recompose": "^0.30.0",
         "redux-actions": "^2.6.5",
         "regedit": "^5.0.0",
@@ -74,5 +75,5 @@
         "yorkie": "^2.0.0"
     },
     "name": "env-options",
-    "version": "1.0.0"
+    "version": "1.0.2"
 }

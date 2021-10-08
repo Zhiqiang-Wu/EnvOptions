@@ -2,6 +2,7 @@
 // @date 2021/9/11
 
 import React, {useEffect, useState} from 'react';
+import FilterDropdown from '@/pages/home/filter-dropdown';
 import {
     Tooltip,
     Table,
@@ -24,43 +25,63 @@ import {
     UnlockOutlined,
     EditOutlined,
     DeleteOutlined,
+    SearchOutlined,
 } from '@ant-design/icons';
 import styles from './index.scss';
+import Highlighter from 'react-highlight-words';
+import toFunction from '@/components/to-function';
 
 const {Item, useForm} = Form;
 
 const HomeView = ({
-                   dataSource,
-                   onDelete,
-                   tableLoading,
-                   selectedRowKeys,
-                   onSelectedChange,
-                   visible,
-                   onCancel,
-                   onOk,
-                   onInsert,
-                   okButtonLoading,
-                   onReload,
-                   onEdit,
-                   onLock,
-                   onUnlock,
-                   onSwitchChange,
-                   typeChecked,
-                   pageSize,
-                   onPageSizeChange,
-                   showEditAction,
-                   showDeleteAction,
-                   showLockAction,
-                   showUnlockAction,
-                   disabledCheckbox,
-                   sorter
-               }: any) => {
+                      dataSource,
+                      onDelete,
+                      tableLoading,
+                      selectedRowKeys,
+                      onSelectedChange,
+                      visible,
+                      onCancel,
+                      onOk,
+                      onInsert,
+                      okButtonLoading,
+                      onReload,
+                      onEdit,
+                      onLock,
+                      onUnlock,
+                      onSwitchChange,
+                      typeChecked,
+                      pageSize,
+                      onPageSizeChange,
+                      showEditAction,
+                      showDeleteAction,
+                      showLockAction,
+                      showUnlockAction,
+                      disabledCheckbox,
+                      sorter,
+                      onFilter,
+                      onSearch,
+                      onReset,
+                      searchText,
+                  }: any) => {
     const columns = [
         {
             key: 'key',
             title: '变量',
             dataIndex: 'key',
             sorter,
+            filterDropdown: toFunction(FilterDropdown, (props) => ({...props, onSearch, onReset})),
+            filterIcon: (filtered) => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
+            onFilter,
+            render: (key: string) => {
+                return (
+                    <Highlighter
+                        highlightStyle={{backgroundColor: '#ffc069', padding: 0}}
+                        searchWords={[searchText]}
+                        autoEscape
+                        textToHighlight={key}
+                    />
+                );
+            },
         },
         {
             key: 'value',

@@ -37,6 +37,7 @@ interface IProps {
     setTypeChecked: Function;
     history: any;
     setPageSize: Function;
+    setSearchText: Function;
 }
 
 const onInsert = (props: IProps) => () => {
@@ -245,6 +246,10 @@ const disabledCheckbox = () => (environmentVariable: EnvironmentVariable) => {
     return environmentVariable.locked === 1;
 };
 
+const onFilter = (value: string, record: EnvironmentVariable): boolean => {
+    return record.key.toLocaleUpperCase().includes(value.toLocaleUpperCase());
+};
+
 const withLifecycle = lifecycle({
     componentDidMount() {
         const {dispatch, setDataSource, setSelectedRowKeys, setTypeChecked, setPageSize}: any = this.props;
@@ -277,6 +282,16 @@ const sorter = (record1, record2): number => {
     return record1.key.localeCompare(record2.key);
 };
 
+const onSearch = ({setSearchText}: IProps) => (selectedKeys, confirm) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+};
+
+const onReset = ({setSearchText}: IProps) => (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+};
+
 const selector = createSelector((state: any) => ({
     loadings: state.loading.effects,
 }), ({loadings}) => ({
@@ -297,6 +312,7 @@ export default compose(
     withState('typeChecked', 'setTypeChecked', false),
     withState('visible', 'setVisible', false),
     withState('pageSize', 'setPageSize', 10),
+    withState('searchText', 'setSearchText', ''),
     withHandlers({
         onInsert,
         onSelectedChange,
@@ -313,9 +329,11 @@ export default compose(
         showDeleteAction,
         showLockAction,
         showUnlockAction,
-        disabledCheckbox
+        disabledCheckbox,
+        onSearch,
+        onReset,
     }),
-    withProps(() => ({sorter})),
+    withProps(() => ({sorter, onFilter})),
     withLifecycle,
     pure,
 )(HomeView);
