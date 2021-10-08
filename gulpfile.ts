@@ -14,7 +14,7 @@ const deleteDistElectron = (cb) => {
 const writeReleaseNotes = (cb) => {
     const updateInfoPath = path.join(__dirname, 'dist_electron', 'latest.yml');
     const updateInfo = jsYaml.load(fs.readFileSync(updateInfoPath));
-    let releaseNotes: any = ['更新内容1', '更新内容2', '更新内容3'];
+    let releaseNotes: any = ['增加筛选功能'];
     releaseNotes = releaseNotes.map((note) => ({
         version: updateInfo.version,
         note
