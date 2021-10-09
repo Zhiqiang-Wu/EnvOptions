@@ -7,6 +7,7 @@ export default defineConfig({
     layout: {
         name: 'Env Options',
         local: false,
+        // 必需要放在public目录
         logo: 'favicon.png',
     },
     electronBuilder: {
