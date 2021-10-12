@@ -1,4 +1,4 @@
-import {contextBridge, ipcRenderer, OpenDialogSyncOptions} from 'electron';
+import {contextBridge, ipcRenderer, OpenDialogReturnValue} from 'electron';
 
 const localServices: any = {
     // versions: process.versions,
@@ -44,8 +44,8 @@ const localServices: any = {
 };
 
 const localFunctions: any = {
-    showOpenDialogSync: (options: OpenDialogSyncOptions): Array<string> | undefined => {
-        return ipcRenderer.sendSync('showOpenDialogSync', options);
+    showOpenDialog: (options: OpenDialogOptions1): Promise<OpenDialogReturnValue> => {
+        return ipcRenderer.invoke('showOpenDialog', options);
     },
     addMainListener: (channel: string, mainListener: MainListener): void => {
         const listener: any = mainListener.listener;

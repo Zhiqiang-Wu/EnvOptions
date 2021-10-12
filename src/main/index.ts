@@ -9,7 +9,7 @@ import {
     Tray,
     ipcMain,
     dialog,
-    OpenDialogSyncOptions,
+    OpenDialogReturnValue,
 } from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
@@ -557,8 +557,12 @@ ipcMain.on('quitAndInstall', (): void => {
     quitAndInstall();
 });
 
-ipcMain.on('showOpenDialogSync', (event, options: OpenDialogSyncOptions) => {
-    event.returnValue = dialog.showOpenDialogSync(mainWindow, options);
+ipcMain.handle('showOpenDialog', (event, options: OpenDialogOptions1): Promise<OpenDialogReturnValue> => {
+    if (options.modal) {
+        return dialog.showOpenDialog(mainWindow, options);
+    } else {
+        return dialog.showOpenDialog(options);
+    }
 });
 
 ipcMain.on('log', (event, args) => {

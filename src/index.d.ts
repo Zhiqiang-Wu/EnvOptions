@@ -1,4 +1,4 @@
-import {OpenDialogSyncOptions, IpcRendererEvent} from 'electron';
+import {OpenDialogOptions, IpcRendererEvent, OpenDialogReturnValue} from 'electron';
 
 interface LeveledLogMethod {
     (message: string, ...meta: any[]): void;
@@ -34,6 +34,10 @@ declare global {
 
     type MainHandler = (props: any) => (event: IpcRendererEvent, ...arg: any[]) => void;
 
+    interface OpenDialogOptions1 extends OpenDialogOptions {
+        modal?: boolean;
+    }
+
     interface Window {
         localServices: {
             setEnvironmentVariable: (environmentVariable: EnvironmentVariable) => Promise<Result>;
@@ -51,7 +55,7 @@ declare global {
             quitAndInstall: () => void;
         };
         localFunctions: {
-            showOpenDialogSync: (options: OpenDialogSyncOptions) => Array<string> | undefined;
+            showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;
             log: {
                 info: LeveledLogMethod,
                 debug: LeveledLogMethod,
