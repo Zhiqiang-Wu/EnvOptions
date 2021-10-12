@@ -63,12 +63,13 @@ const HomeView = ({
                       onReset,
                       searchText,
                   }: any) => {
-    const columns = [
+    const columns: Array<any> = [
         {
             key: 'key',
             title: '变量',
             dataIndex: 'key',
             sorter,
+            defaultSortOrder: 'ascend',
             filterDropdown: toFunction(FilterDropdown, (props) => ({...props, onSearch, onReset})),
             filterIcon: (filtered) => <SearchOutlined style={{color: filtered ? '#1890ff' : undefined}}/>,
             onFilter,

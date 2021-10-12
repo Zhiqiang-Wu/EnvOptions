@@ -31,7 +31,7 @@ const AboutView = ({onCheck, checkLoading, updateLoading, onUpdate, updateInfo}:
                                 <Space direction='vertical'>
                                     {
                                         updateInfo.releaseNotes ? updateInfo.releaseNotes.map((releaseNote, index) => (
-                                            <span key={String(index)}>{index + 1}、{releaseNote.note}</span>
+                                            <span key={String(index)}>{releaseNote.note}</span>
                                         )) : null
                                     }
                                 </Space>
