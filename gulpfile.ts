@@ -2,9 +2,7 @@
 // @date 2021/9/28
 
 const path = require('path');
-const fs = require('fs');
 const fsExtra = require('fs-extra');
-const jsYaml = require('js-yaml');
 
 const deleteDistElectron = (cb) => {
     fsExtra.removeSync(path.join(__dirname, 'dist_electron'));
@@ -12,16 +10,25 @@ const deleteDistElectron = (cb) => {
 };
 
 const writeReleaseNotes = (cb) => {
+    const jsYaml = require('js-yaml');
+    const csvParser = require('csv-parser');
+
     const updateInfoPath = path.join(__dirname, 'dist_electron', 'latest.yml');
-    const updateInfo = jsYaml.load(fs.readFileSync(updateInfoPath));
-    let releaseNotes: any = ['1、优化'];
-    releaseNotes = releaseNotes.map((note) => ({
-        version: updateInfo.version,
-        note
-    }));
-    updateInfo.releaseNotes = releaseNotes;
-    fs.writeFileSync(updateInfoPath, jsYaml.dump(updateInfo, {lineWidth: 500}));
-    cb();
+    const updateInfo = jsYaml.load(fsExtra.readFileSync(updateInfoPath));
+
+    const releaseNotesPath = path.join(__dirname, 'releaseNotes', `${updateInfo.version}.csv`);
+    const releaseNotes: Array<{version: string; note: string}> = [];
+
+    fsExtra.createReadStream(releaseNotesPath)
+        .pipe(csvParser(['version', 'note']))
+        .on('data', (data) => {
+            releaseNotes.push(data);
+        })
+        .on('end', () => {
+            updateInfo.releaseNotes = releaseNotes;
+            fsExtra.writeFileSync(updateInfoPath, jsYaml.dump(updateInfo, {lineWidth: 500}));
+            cb();
+        });
 };
 
 exports.deleteDistElectron = deleteDistElectron;
