@@ -235,6 +235,7 @@ const updateDatabaseEnvironmentVariable = (environmentVariable: EnvironmentVaria
     return new Promise<Result>((resolve) => {
         baseDB.exec(`UPDATE variable
                      SET key   = ${'\''}${environmentVariable.key}${'\''},
+                         type  = ${'\''}${environmentVariable.type}${'\''},
                          value = ${'\''}${environmentVariable.value}${'\''}
                      WHERE id = ${environmentVariable.id}`, (err) => {
             if (err) {

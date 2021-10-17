@@ -59,7 +59,7 @@ const EditView = ({getLoading, updateLoading, value, onOk}: any) => {
                     rules={[{required: true, message: '请选择类型'}]}
                     initialValue='REG_SZ'
                 >
-                    <Select disabled={true}>
+                    <Select>
                         <Select.Option value='REG_SZ'>REG_SZ</Select.Option>
                         <Select.Option value='REG_EXPAND_SZ'>REG_EXPAND_SZ</Select.Option>
                     </Select>

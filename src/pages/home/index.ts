@@ -45,7 +45,7 @@ const onInsert = (props: IProps) => () => {
     setVisible(true);
 };
 
-const onOk = (props: IProps) => (value: {key: string, value: string}) => {
+const onOk = (props: IProps) => (value: {key: string, value: string, type: string}) => {
     const {dispatch, dataSource, setDataSource, setSelectedRowKeys, setVisible} = props;
     const exists = dataSource.some((environmentVariable) => {
         return environmentVariable.key === value.key && environmentVariable.value === value.value;
@@ -54,11 +54,7 @@ const onOk = (props: IProps) => (value: {key: string, value: string}) => {
         message.warn('已存在');
         return;
     }
-    const environmentVariable = {
-        ...value,
-        type: 'REG_SZ',
-    };
-    dispatch(insertEnvironmentVariable(environmentVariable)).then(async (result: Result) => {
+    dispatch(insertEnvironmentVariable(value)).then(async (result: Result) => {
         if (result.code === 200) {
             setVisible(false);
             message.success('添加成功');

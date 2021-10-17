@@ -16,6 +16,7 @@ import {
     Typography,
     Radio,
     Popconfirm,
+    Select,
 } from 'antd';
 import {
     ReloadOutlined,
@@ -234,6 +235,18 @@ const HomeView = ({
                         rules={[{required: true, message: '请输入变量名'}]}
                     >
                         <Input/>
+                    </Item>
+                    <Item
+                        name='type'
+                        label='类型'
+                        required={true}
+                        rules={[{required: true, message: '请选择类型'}]}
+                        initialValue='REG_SZ'
+                    >
+                        <Select>
+                            <Select.Option value='REG_SZ'>REG_SZ</Select.Option>
+                            <Select.Option value='REG_EXPAND_SZ'>REG_EXPAND_SZ</Select.Option>
+                        </Select>
                     </Item>
                     <Item
                         name='value'
