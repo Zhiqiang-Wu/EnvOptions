@@ -52,6 +52,7 @@ export default defineConfig({
             icon: 'home',
             exact: true,
             component: '@/pages/home',
+            footerRender: false,
         },
         {
             path: '/edit',
@@ -59,6 +60,7 @@ export default defineConfig({
             exact: true,
             component: '@/pages/edit',
             hideInMenu: true,
+            footerRender: false,
         },
         {
             path: '/setting',
@@ -66,6 +68,7 @@ export default defineConfig({
             icon: 'setting',
             exact: true,
             component: '@/pages/setting',
+            footerRender: false,
         },
         {
             path: '/about',
