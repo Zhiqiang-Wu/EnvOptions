@@ -11,14 +11,17 @@ const EditView = ({getLoading, updateLoading, value, onOk}: any) => {
     const [form] = useForm();
     const [valueType, setValueType] = useState<'directory' | 'file'>('directory');
     const onBrowse = () => {
-        const result: Array<string> | undefined = window.localFunctions.showOpenDialogSync({
+        const options: OpenDialogOptions1 = {
             properties: [valueType === 'directory' ? 'openDirectory' : 'openFile'],
+            modal: true,
+        };
+        window.localFunctions.showOpenDialog(options).then((result) => {
+            if (!result.canceled && result.filePaths[0]) {
+                form.setFieldsValue({
+                    value: result.filePaths[0],
+                });
+            }
         });
-        if (result) {
-            form.setFieldsValue({
-                value: result[0],
-            });
-        }
     };
     useEffect(() => {
         if (value) {
