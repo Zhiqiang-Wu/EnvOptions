@@ -42,6 +42,7 @@
         "reselect": "^4.0.0",
         "sqlite3": "^5.0.2",
         "umi": "3.5.20",
+        "umi-plugin-keep-alive": "^0.0.1-beta.29",
         "winston": "^3.3.3",
         "winston-daily-rotate-file": "^4.5.5"
     },

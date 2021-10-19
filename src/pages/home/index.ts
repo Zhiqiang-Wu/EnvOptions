@@ -302,6 +302,7 @@ const selector = createSelector((state: any) => ({
 const mapStateToProps = (state) => selector(state);
 
 export default compose(
+    pure,
     withDva(mapStateToProps),
     withState('dataSource', 'setDataSource', []),
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
@@ -331,5 +332,4 @@ export default compose(
     }),
     withProps(() => ({sorter, onFilter})),
     withLifecycle,
-    pure,
 )(HomeView);
