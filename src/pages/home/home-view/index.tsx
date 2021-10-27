@@ -27,6 +27,7 @@ import {
     EditOutlined,
     DeleteOutlined,
     SearchOutlined,
+    ProfileOutlined,
 } from '@ant-design/icons';
 import styles from './index.scss';
 import Highlighter from 'react-highlight-words';
@@ -49,6 +50,7 @@ const HomeView = ({
                       onEdit,
                       onLock,
                       onUnlock,
+                      onDetail,
                       onSwitchChange,
                       typeChecked,
                       pageSize,
@@ -94,7 +96,7 @@ const HomeView = ({
         {
             key: 'action',
             title: '操作',
-            width: 100,
+            width: 120,
             render: (record: EnvironmentVariable) => {
                 const editAction = showEditAction && showEditAction(record) ? (
                     <Tooltip title='编辑'>
@@ -129,12 +131,20 @@ const HomeView = ({
                         </Typography.Link>
                     </Tooltip>
                 ) : null;
+                const detailAction = (
+                    <Tooltip title='详情'>
+                        <Typography.Link>
+                            <ProfileOutlined onClick={() => onDetail(record)}/>
+                        </Typography.Link>
+                    </Tooltip>
+                );
                 return (
                     <Space>
                         {editAction}
                         {deleteAction}
                         {lockAction}
                         {unlockAction}
+                        {detailAction}
                     </Space>
                 );
             },

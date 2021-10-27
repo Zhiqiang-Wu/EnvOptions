@@ -48,9 +48,9 @@ const selector = createSelector((state: any) => ({
 const mapStateToProps = (state) => selector(state);
 
 export default compose(
+    pure,
     withDva(mapStateToProps),
     withState('value', 'setValue', null),
     withHandlers({onOk}),
     withLifecycle,
-    pure,
 )(EditView);

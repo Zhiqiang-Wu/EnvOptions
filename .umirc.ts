@@ -63,6 +63,14 @@ export default defineConfig({
             footerRender: false,
         },
         {
+            path: '/detail',
+            name: '详情',
+            exact: true,
+            component: '@/pages/detail',
+            hideInMenu: true,
+            footerRender: false,
+        },
+        {
             path: '/setting',
             name: '设置',
             icon: 'setting',

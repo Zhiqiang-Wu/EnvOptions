@@ -283,6 +283,16 @@ const onSearch = ({setSearchText}: IProps) => (selectedKeys, confirm) => {
     setSearchText(selectedKeys[0]);
 };
 
+const onDetail = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
+    const {history} = props;
+    history.push({
+        pathname: '/detail',
+        params: {
+            id: environmentVariable.id,
+        },
+    });
+};
+
 const onReset = ({setSearchText}: IProps) => (clearFilters) => {
     clearFilters();
     setSearchText('');
@@ -329,6 +339,7 @@ export default compose(
         disabledCheckbox,
         onSearch,
         onReset,
+        onDetail,
     }),
     withProps(() => ({sorter, onFilter})),
     withLifecycle,
