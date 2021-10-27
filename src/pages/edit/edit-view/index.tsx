@@ -70,12 +70,7 @@ const EditView = ({getLoading, updateLoading, value, onOk}: any) => {
                     required={true}
                     rules={[{required: true, message: '请输入值'}]}
                 >
-                    <Input
-                        disabled={updateLoading}
-                        addonAfter={valueType === 'directory' ?
-                            <FolderOpenOutlined disabled={updateLoading} onClick={onBrowse}/> :
-                            <FileOutlined disabled={updateLoading} onClick={onBrowse}/>}
-                    />
+                    <Input disabled={updateLoading}/>
                 </Item>
                 <Item>
                     <Radio.Group
@@ -85,6 +80,17 @@ const EditView = ({getLoading, updateLoading, value, onOk}: any) => {
                         <Radio value='directory'>文件夹</Radio>
                         <Radio value='file'>文件</Radio>
                     </Radio.Group>
+                    <Button
+                        disabled={updateLoading}
+                        onClick={onBrowse}
+                        icon={
+                            valueType === 'directory' ?
+                                <FolderOpenOutlined disabled={updateLoading}/> :
+                                <FileOutlined disabled={updateLoading}/>
+                        }
+                    >
+                        选择
+                    </Button>
                 </Item>
                 <Item>
                     <Button htmlType='submit' type='primary' loading={updateLoading}>确认</Button>
