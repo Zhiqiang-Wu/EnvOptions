@@ -14,7 +14,6 @@ const withLifecycle = lifecycle({
         const {dispatch, location, setValue}: any = this.props;
         dispatch(getEnvironmentVariable(location.params.id)).then((result: Result) => {
             if (result.code === 200) {
-                console.log(result);
                 setValue(result.data.environmentVariable);
             } else {
                 message.warn(result.message);
