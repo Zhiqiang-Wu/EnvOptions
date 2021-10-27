@@ -48,7 +48,7 @@ const onInsert = (props: IProps) => () => {
 const onOk = (props: IProps) => (value: {key: string, value: string, type: string}) => {
     const {dispatch, dataSource, setDataSource, setSelectedRowKeys, setVisible} = props;
     const exists = dataSource.some((environmentVariable) => {
-        return environmentVariable.key === value.key && environmentVariable.value === value.value;
+        return environmentVariable.key.toUpperCase() === value.key.toUpperCase() && environmentVariable.value === value.value;
     });
     if (exists) {
         message.warn('已存在');
@@ -175,7 +175,7 @@ const onSelectedChange = (props: IProps) => (keys: Array<number>, selectedRows: 
         const id = loadsh.difference(keys, selectedRowKeys)[0];
         environmentVariable = selectedRows.find((value) => value.id === id);
         const index = loadsh.findIndex(dataSource, (value: EnvironmentVariable) => {
-            return value.key === environmentVariable.key && value.selected && value.locked === 1;
+            return value.key.toUpperCase() === environmentVariable.key.toUpperCase() && value.selected && value.locked === 1;
         });
         if (index >= 0) {
             message.warn(`存在锁定的 ${environmentVariable.key}`);
