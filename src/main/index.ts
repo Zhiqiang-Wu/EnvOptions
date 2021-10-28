@@ -219,6 +219,10 @@ const deleteSystemEnvironmentVariable = (key: string): Promise<Result> => {
             if (err) {
                 resolve({code: 1, message: err.message});
             } else {
+                if (!dll) {
+                    loadDLL();
+                }
+                dll.sendSettingChange();
                 resolve({code: 200});
             }
         });
