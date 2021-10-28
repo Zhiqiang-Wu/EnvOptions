@@ -11,7 +11,7 @@ export default defineConfig({
         logo: 'favicon.png',
     },
     electronBuilder: {
-        externals: ['regedit', 'sqlite3', 'winston', 'winston-daily-rotate-file', 'electron-updater'],
+        externals: ['regedit', 'sqlite3', 'ffi-napi', 'winston', 'winston-daily-rotate-file', 'electron-updater'],
         builderOptions: {
             appId: 'wzq.env.options',
             productName: 'Env Options',
@@ -103,7 +103,7 @@ export default defineConfig({
         implementation: require('node-sass'),
     },
     // 开启mfsu功能后会自动开启webpack5和dynamicImport
-    mfsu: {},
+    // mfsu: {},
     mock: false,
     fastRefresh: {},
 });
