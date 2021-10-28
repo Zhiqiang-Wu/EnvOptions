@@ -24,6 +24,7 @@ import os from 'os';
 import fsExtra from 'fs-extra';
 import extractZip from 'extract-zip';
 import {Library} from 'ffi-napi';
+import ref from 'ref-napi';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -38,12 +39,12 @@ const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Envi
 const loadDLL = () => {
     let dllPath;
     if (isDevelopment) {
-        dllPath = path.resolve('..', '..', '..', 'extra', 'env_options.dll');
+        dllPath = path.join(__dirname, '..', '..', '..', 'extra', 'env_options.dll');
     } else {
-        dllPath = path.resolve('..', 'env_options.dll');
+        dllPath = path.join(__dirname, '..', 'env_options.dll');
     }
     dll = Library(dllPath, {
-        sendSettingChange: ['int', []],
+        sendSettingChange: [ref.types.void, []],
     });
 };
 
