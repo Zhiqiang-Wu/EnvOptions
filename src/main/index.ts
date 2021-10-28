@@ -23,6 +23,7 @@ import {autoUpdater, UpdateCheckResult, UpdateInfo, ProgressInfo} from 'electron
 import os from 'os';
 import fsExtra from 'fs-extra';
 import extractZip from 'extract-zip';
+import {Library} from 'ffi-napi';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -31,7 +32,20 @@ let tray: Tray;
 let baseDB: sqlite3.Database;
 let settingDB: LowSync;
 let logger: Logger;
+let dll;
 const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment';
+
+const loadDLL = () => {
+    let dllPath;
+    if (isDevelopment) {
+        dllPath = path.resolve('..', '..', '..', 'extra', 'env_options.dll');
+    } else {
+        dllPath = path.resolve('..', 'env_options.dll');
+    }
+    dll = Library(dllPath, {
+        sendSettingChange: ['int', []],
+    });
+};
 
 const setVBS = () => {
     if (!isDevelopment) {
@@ -131,7 +145,7 @@ const checkDataFile = async () => {
     if (!baseDBExists || !settingsExists) {
         let dataZipPath;
         if (isDevelopment) {
-            dataZipPath = path.join(__dirname, '..', '..', '..', 'data', 'data.zip');
+            dataZipPath = path.join(__dirname, '..', '..', '..', 'extra', 'data.zip');
         } else {
             dataZipPath = path.join(__dirname, '..', 'data.zip');
         }
@@ -225,6 +239,10 @@ const insertSystemEnvironmentVariable = (environmentVariable: EnvironmentVariabl
             if (err) {
                 resolve({code: 1, message: err.message});
             } else {
+                if (!dll) {
+                    loadDLL();
+                }
+                dll.sendSettingChange();
                 resolve({code: 200});
             }
         });

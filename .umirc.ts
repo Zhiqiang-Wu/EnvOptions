@@ -24,9 +24,13 @@ export default defineConfig({
             ],
             extraResources: [
                 {
-                    from: 'data/data.zip',
+                    from: 'extra/data.zip',
                     to: 'data.zip',
                 },
+                {
+                    from: 'extra/env_options.dll',
+                    to: 'env_options.dll'
+                }
             ],
             win: {
                 icon: 'public/favicon256.ico',
