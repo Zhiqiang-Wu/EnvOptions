@@ -570,12 +570,7 @@ ipcMain.handle('lockDatabaseEnvironmentVariable', (event, id: number): Promise<R
 });
 
 ipcMain.handle('checkForUpdates', (): Promise<Result> => {
-    if (!dll) {
-        loadDLL();
-        dll.sendSettingChange();
-    }
-    return Promise.resolve({code: 1, message: '123'});
-    // return checkForUpdates();
+    return checkForUpdates();
 });
 
 ipcMain.handle('downloadUpdate', (): Promise<Result> => {
