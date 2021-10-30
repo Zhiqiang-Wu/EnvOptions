@@ -14,7 +14,24 @@ interface IProps {
     history: any;
 }
 
-const onOk = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
+const onOk = (props: IProps) => (data: {id: number; key: string; type: string; value: Array<any>}) => {
+    const value = data.value.filter((value) => {
+        if (value) {
+            return value.trim();
+        } else {
+            return false;
+        }
+    }).map((value) => {
+        return value.trim() + ';';
+    }).reduce((pre, value) => {
+        return pre + value;
+    }, '');
+    const environmentVariable  = {
+        id : data.id,
+        key: data.key,
+        type: data.type,
+        value
+    };
     const {dispatch, history} = props;
     dispatch(updateEnvironmentVariable(environmentVariable)).then((result: Result) => {
         if (result.code === 200) {
