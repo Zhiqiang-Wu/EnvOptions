@@ -10,7 +10,7 @@ import {message} from 'antd';
 import withDva from '@/components/with-dva';
 import {createSelector} from 'reselect';
 import {updateUpdateModel, quitAndInstall} from '@/actions/actions';
-import loadsh from 'loadsh';
+import lodash from 'lodash';
 
 interface IProps {
     progressVisible: boolean;
@@ -23,7 +23,7 @@ const onUpdate = ({dispatch}: IProps) => () => {
 
 const updateDownloadProgress = ({dispatch}: IProps) => (event, progress: ProgressInfo) => {
     dispatch(updateUpdateModel({
-        progressPercent: loadsh.round(progress.percent),
+        progressPercent: lodash.round(progress.percent),
     }));
 };
 

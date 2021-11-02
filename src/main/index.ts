@@ -13,7 +13,7 @@ import {
 } from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
-import loadsh from 'loadsh';
+import lodash from 'lodash';
 import regedit from 'regedit';
 import sqlite3 from 'sqlite3';
 import {LowSync, JSONFileSync} from 'lowdb';
@@ -202,7 +202,7 @@ const listSystemEnvironmentVariables = (): Promise<Result> => {
                 resolve({code: 1, message: err.message});
             } else {
                 const environmentVariableObject = result[envPath].values;
-                const environmentVariables: Array<EnvironmentVariable> = loadsh.keys(environmentVariableObject).map((key) => ({
+                const environmentVariables: Array<any> = lodash.keys(environmentVariableObject).map((key) => ({
                     key,
                     type: environmentVariableObject[key].type,
                     value: environmentVariableObject[key].value,
@@ -282,17 +282,6 @@ const deleteDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
             }
         });
     });
-};
-
-const existsSystemEnvironmentVariable = async (key: string): Promise<Result> => {
-    const result: Result = await listSystemEnvironmentVariables();
-    if (result.code !== 200) {
-        return result;
-    }
-    const index = loadsh.findIndex(result.data.environmentVariables, (systemEnvironmentVariable: EnvironmentVariable) => {
-        return systemEnvironmentVariable.key === key;
-    });
-    return {code: 200, data: {exists: index >= 0}};
 };
 
 const insertDatabaseEnvironmentVariable = (environmentVariable: EnvironmentVariable): Promise<Result> => {
@@ -487,7 +476,7 @@ ipcMain.handle('listEnvironmentVariables', async () => {
         }
         const systemEnvironmentVariables: Array<EnvironmentVariable> = result1.data.environmentVariables;
         const databaseEnvironmentVariables: Array<EnvironmentVariable> = result2.data.environmentVariables;
-        const newDatabaseEnvironmentVariables: Array<EnvironmentVariable> = loadsh.differenceWith(systemEnvironmentVariables, databaseEnvironmentVariables, (systemEnvironmentVariable: EnvironmentVariable, databaseEnvironmentVariable: EnvironmentVariable) => {
+        const newDatabaseEnvironmentVariables: Array<EnvironmentVariable> = lodash.differenceWith(systemEnvironmentVariables, databaseEnvironmentVariables, (systemEnvironmentVariable: EnvironmentVariable, databaseEnvironmentVariable: EnvironmentVariable) => {
             return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
         });
         if (newDatabaseEnvironmentVariables.length > 0) {
@@ -502,7 +491,7 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                     } else {
                         const result = await listDatabaseEnvironmentVariables();
                         const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
-                            const index = loadsh.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
+                            const index = lodash.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
                                 return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
                             });
                             return {
@@ -516,7 +505,7 @@ ipcMain.handle('listEnvironmentVariables', async () => {
             });
         } else {
             const environmentVariables: Array<EnvironmentVariable> = databaseEnvironmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
-                const index = loadsh.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
+                const index = lodash.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
                     return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
                 });
                 return {

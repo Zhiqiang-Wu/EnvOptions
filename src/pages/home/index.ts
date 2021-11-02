@@ -11,7 +11,7 @@ import {
     UNLOCK_ENVIRONMENT_VARIABLE,
     LOCK_ENVIRONMENT_VARIABLE,
 } from '@/actions/actionTypes';
-import loadsh from 'loadsh';
+import lodash from 'lodash';
 import {compose, lifecycle, withState, pure, withHandlers, withProps} from 'recompose';
 import HomeView from '@/pages/home/home-view';
 import withDva from '@/components/with-dva';
@@ -171,14 +171,14 @@ const onSelectedChange = (props: IProps) => (keys: Array<number>, selectedRows: 
     let selected;
     if (keys.length < selectedRowKeys.length) {
         // 取消选中的id
-        const id = loadsh.difference(selectedRowKeys, keys)[0];
+        const id = lodash.difference(selectedRowKeys, keys)[0];
         environmentVariable = dataSource.find((value) => value.id === id);
         selected = false;
     } else {
         // 新选中的id
-        const id = loadsh.difference(keys, selectedRowKeys)[0];
+        const id = lodash.difference(keys, selectedRowKeys)[0];
         environmentVariable = selectedRows.find((value) => value.id === id);
-        const index = loadsh.findIndex(dataSource, (value: EnvironmentVariable) => {
+        const index = lodash.findIndex(dataSource, (value: EnvironmentVariable) => {
             return value.key.toUpperCase() === environmentVariable.key.toUpperCase() && value.selected && value.locked === 1;
         });
         if (index >= 0) {
