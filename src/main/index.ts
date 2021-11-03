@@ -341,6 +341,20 @@ const unlockDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
     });
 };
 
+const updateDatabaseEnvironmentVariableKey = ({id, key}: {id: number; key:string}): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        baseDB.exec(`UPDATE variable
+                     SET key = ${'\''}${key}${'\''}
+                     WHERE id = ${id}`, (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
 const getSetting = (key: string): Result => {
     const {data}: any = settingDB;
     const value = data[key];
@@ -476,45 +490,60 @@ ipcMain.handle('listEnvironmentVariables', async () => {
         }
         const systemEnvironmentVariables: Array<EnvironmentVariable> = result1.data.environmentVariables;
         const databaseEnvironmentVariables: Array<EnvironmentVariable> = result2.data.environmentVariables;
-        const newDatabaseEnvironmentVariables: Array<EnvironmentVariable> = lodash.differenceWith(systemEnvironmentVariables, databaseEnvironmentVariables, (systemEnvironmentVariable: EnvironmentVariable, databaseEnvironmentVariable: EnvironmentVariable) => {
-            return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
+
+        const statement: sqlite3.Statement = baseDB.prepare('INSERT INTO variable (key, type, value) VALUES (?, ?, ?)');
+        const statement2: sqlite3.Statement = baseDB.prepare('UPDATE variable SET key = ? WHERE id = ?');
+        systemEnvironmentVariables.forEach((systemEnvironmentVariable) => {
+            const databaseEnvironmentVariable = databaseEnvironmentVariables.find((databaseEnvironmentVariable) => {
+                return systemEnvironmentVariable.key.toUpperCase() === databaseEnvironmentVariable.key.toUpperCase() && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
+            });
+            if (databaseEnvironmentVariable) {
+                if (databaseEnvironmentVariable.key !== systemEnvironmentVariable.key) {
+                    statement2.run([systemEnvironmentVariable.key, databaseEnvironmentVariable.id]);
+                }
+            } else {
+                statement.run([systemEnvironmentVariable.key, systemEnvironmentVariable.type, systemEnvironmentVariable.value]);
+            }
         });
-        if (newDatabaseEnvironmentVariables.length > 0) {
-            const statement: sqlite3.Statement = baseDB.prepare('INSERT INTO variable (key, type, value) VALUES (?, ?, ?)');
-            newDatabaseEnvironmentVariables.forEach((environmentVariable: EnvironmentVariable) => {
-                statement.run([environmentVariable.key, environmentVariable.type, environmentVariable.value]);
+
+        // 新增
+        const p1 = new Promise<boolean>((resolve) => {
+            statement.finalize((err) => {
+                if (err) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
             });
-            return new Promise<Result>((resolve) => {
-                statement.finalize(async (err) => {
-                    if (err) {
-                        resolve({code: 1, message: err.message});
-                    } else {
-                        const result = await listDatabaseEnvironmentVariables();
-                        const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
-                            const index = lodash.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
-                                return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
-                            });
-                            return {
-                                ...databaseEnvironmentVariable,
-                                selected: index >= 0,
-                            };
-                        });
-                        resolve({code: 200, data: {environmentVariables}});
-                    }
+        });
+        // 同步key大小写
+        const p2 = new Promise<boolean>((resolve) => {
+            statement2.finalize((err) => {
+                if (err) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
+            });
+        });
+
+        return Promise.all([p1, p2]).then(async (value) => {
+            if (value[0] && value[1]) {
+                const result = await listDatabaseEnvironmentVariables();
+                const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
+                    const index = systemEnvironmentVariables.findIndex((systemEnvironmentVariable) => {
+                        return systemEnvironmentVariable.key.toUpperCase() === databaseEnvironmentVariable.key.toUpperCase() && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
+                    });
+                    return {
+                        ...databaseEnvironmentVariable,
+                        selected: index >= 0,
+                    };
                 });
-            });
-        } else {
-            const environmentVariables: Array<EnvironmentVariable> = databaseEnvironmentVariables.map((databaseEnvironmentVariable: EnvironmentVariable) => {
-                const index = lodash.findIndex(systemEnvironmentVariables, (systemEnvironmentVariable) => {
-                    return systemEnvironmentVariable.key === databaseEnvironmentVariable.key && systemEnvironmentVariable.value === databaseEnvironmentVariable.value;
-                });
-                return {
-                    ...databaseEnvironmentVariable,
-                    selected: index >= 0,
-                };
-            });
-            return {code: 200, data: {environmentVariables}};
-        }
+                return {code: 200, data: {environmentVariables}};
+            } else {
+                return {code:1, message: '获取环境变量失败'};
+            }
+        });
     });
 });
 

@@ -178,7 +178,7 @@ const onSelectedChange = (props: IProps) => (keys: Array<number>, selectedRows: 
         // 新选中的id
         const id = lodash.difference(keys, selectedRowKeys)[0];
         environmentVariable = selectedRows.find((value) => value.id === id);
-        const index = lodash.findIndex(dataSource, (value: EnvironmentVariable) => {
+        const index = dataSource.findIndex((value: EnvironmentVariable) => {
             return value.key.toUpperCase() === environmentVariable.key.toUpperCase() && value.selected && value.locked === 1;
         });
         if (index >= 0) {
