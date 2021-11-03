@@ -48,7 +48,7 @@ const onInsert = (props: IProps) => () => {
 const onOk = (props: IProps) => (value: {key: string, value: string, type: string}) => {
     const {dispatch, dataSource, setDataSource, setSelectedRowKeys, setVisible} = props;
     const exists = dataSource.some((environmentVariable) => {
-        return environmentVariable.key.toUpperCase() === value.key.toUpperCase() && environmentVariable.value === value.value;
+        return environmentVariable.key.toUpperCase() === value.key.trim().toUpperCase() && environmentVariable.value === value.value.trim();
     });
     if (exists) {
         message.warn('已存在');

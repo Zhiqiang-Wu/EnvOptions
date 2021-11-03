@@ -8,6 +8,7 @@ import {createSelector} from 'reselect';
 import {GET_ENVIRONMENT_VARIABLE, UPDATE_ENVIRONMENT_VARIABLE} from '@/actions/actionTypes';
 import {getEnvironmentVariable, updateEnvironmentVariable} from '@/actions/actions';
 import {message} from 'antd';
+import lodash from 'lodash';
 
 interface IProps {
     dispatch: Function;
@@ -15,7 +16,7 @@ interface IProps {
 }
 
 const onOk = (props: IProps) => (data: {id: number; key: string; type: string; value: Array<any>}) => {
-    const value = data.value.filter((value) => {
+    let value = data.value.filter((value) => {
         if (value) {
             return value.trim();
         } else {
@@ -23,7 +24,10 @@ const onOk = (props: IProps) => (data: {id: number; key: string; type: string; v
         }
     }).map((value) => {
         return value.trim() + ';';
-    }).reduce((pre, value) => {
+    });
+    // 去重
+    value = lodash.uniq(value);
+    value.reduce((pre, value) => {
         return pre + value;
     }, '');
     const environmentVariable  = {
