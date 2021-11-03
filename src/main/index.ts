@@ -341,20 +341,6 @@ const unlockDatabaseEnvironmentVariable = (id: number): Promise<Result> => {
     });
 };
 
-const updateDatabaseEnvironmentVariableKey = ({id, key}: {id: number; key:string}): Promise<Result> => {
-    return new Promise<Result>((resolve) => {
-        baseDB.exec(`UPDATE variable
-                     SET key = ${'\''}${key}${'\''}
-                     WHERE id = ${id}`, (err) => {
-            if (err) {
-                resolve({code: 1, message: err.message});
-            } else {
-                resolve({code: 200});
-            }
-        });
-    });
-};
-
 const getSetting = (key: string): Result => {
     const {data}: any = settingDB;
     const value = data[key];
