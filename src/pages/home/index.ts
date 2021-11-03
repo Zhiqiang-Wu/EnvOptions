@@ -247,7 +247,7 @@ const disabledCheckbox = () => (environmentVariable: EnvironmentVariable) => {
 };
 
 const onFilter = (value: string, record: EnvironmentVariable): boolean => {
-    return record.key.toLocaleUpperCase().includes(value.toLocaleUpperCase());
+    return record.key.toUpperCase().includes(value.toUpperCase());
 };
 
 const withLifecycle = lifecycle({
