@@ -527,7 +527,7 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                 });
                 return {code: 200, data: {environmentVariables}};
             } else {
-                return {code:1, message: '获取环境变量失败'};
+                return {code: 1, message: '获取环境变量失败'};
             }
         });
     });
