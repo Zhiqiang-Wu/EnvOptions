@@ -27,14 +27,14 @@ const onOk = (props: IProps) => (data: {id: number; key: string; type: string; v
     });
     // 去重
     value = lodash.uniq(value);
-    value.reduce((pre, value) => {
+    let str = value.reduce((pre, value) => {
         return pre + value;
     }, '');
     const environmentVariable  = {
         id : data.id,
         key: data.key,
         type: data.type,
-        value
+        value: str
     };
     const {dispatch, history} = props;
     dispatch(updateEnvironmentVariable(environmentVariable)).then((result: Result) => {
