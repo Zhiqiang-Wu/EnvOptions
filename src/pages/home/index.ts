@@ -277,27 +277,39 @@ const onPageSizeChange = (props: IProps) => (pageSize) => {
 };
 
 const showEditAction = () => (environmentVariable: EnvironmentVariable): boolean => {
+    if (environmentVariable.key.toUpperCase() === 'PATH' || environmentVariable.key.toUpperCase() === 'PATHEXT') {
+        return false;
+    }
     return !environmentVariable.locked && !environmentVariable.selected;
 };
 
 const showDeleteAction = () => (environmentVariable: EnvironmentVariable): boolean => {
+    if (environmentVariable.key.toUpperCase() === 'PATH' || environmentVariable.key.toUpperCase() === 'PATHEXT') {
+        return false;
+    }
     return !environmentVariable.locked && !environmentVariable.selected;
 };
 
 const showLockAction = () => (environmentVariable: EnvironmentVariable): boolean => {
+    if (environmentVariable.key.toUpperCase() === 'PATH' || environmentVariable.key.toUpperCase() === 'PATHEXT') {
+        return false;
+    }
     return environmentVariable.locked === 0;
 };
 
 const showUnlockAction = () => (environmentVariable: EnvironmentVariable): boolean => {
+    if (environmentVariable.key.toUpperCase() === 'PATH' || environmentVariable.key.toUpperCase() === 'PATHEXT') {
+        return false;
+    }
     return environmentVariable.locked === 1;
 };
 
 const showCopyAction = () => (environmentVariable: EnvironmentVariable) => {
-    return environmentVariable.key.toUpperCase() !== 'PATH';
+    return environmentVariable.key.toUpperCase() !== 'PATH' && environmentVariable.key.toUpperCase() !== 'PATHEXT';
 };
 
 const disabledCheckbox = () => (environmentVariable: EnvironmentVariable) => {
-    return environmentVariable.locked === 1;
+    return environmentVariable.locked === 1 || environmentVariable.key.toUpperCase() === 'PATH' || environmentVariable.key.toUpperCase() === 'PATHEXT';
 };
 
 const onFilter = (value: string, record: EnvironmentVariable): boolean => {
