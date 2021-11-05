@@ -15,6 +15,10 @@ interface IProps {
 }
 
 const onOk = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
+    if (environmentVariable.key.toUpperCase().trim() === 'PATH') {
+        message.warn('key不能为Path');
+        return;
+    }
     const {dispatch, history} = props;
     dispatch(updateEnvironmentVariable(environmentVariable)).then((result: Result) => {
         if (result.code === 200) {

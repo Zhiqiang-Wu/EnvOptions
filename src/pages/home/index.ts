@@ -46,6 +46,10 @@ const onInsert = (props: IProps) => () => {
 };
 
 const onOk = (props: IProps) => (value: {key: string, value: string, type: string}) => {
+    if (value.key.toUpperCase().trim() === 'PATH') {
+        message.warn('不能添加Path变量');
+        return;
+    }
     const {dispatch, dataSource, setDataSource, setSelectedRowKeys, setVisible} = props;
     const exists = dataSource.some((environmentVariable) => {
         return environmentVariable.key.toUpperCase() === value.key.trim().toUpperCase() && environmentVariable.value === value.value.trim();
@@ -112,11 +116,17 @@ const onEdit = (props: IProps) => (environmentVariable: EnvironmentVariable) => 
     });
 };
 
-const onCopy = ({dataSource, dispatch, setVisible, setDataSource, setSelectedRowKeys}: IProps) => (environmentVariable: EnvironmentVariable) => {
+const onCopy = ({
+                    dataSource,
+                    dispatch,
+                    setVisible,
+                    setDataSource,
+                    setSelectedRowKeys,
+                }: IProps) => (environmentVariable: EnvironmentVariable) => {
     const value = {
         key: `${environmentVariable.key}_bak`,
         type: environmentVariable.type,
-        value: environmentVariable.value
+        value: environmentVariable.value,
     };
     for (let i = 1; ; i++) {
         let newKey;
@@ -282,6 +292,10 @@ const showUnlockAction = () => (environmentVariable: EnvironmentVariable): boole
     return environmentVariable.locked === 1;
 };
 
+const showCopyAction = () => (environmentVariable: EnvironmentVariable) => {
+    return environmentVariable.key.toUpperCase() !== 'PATH';
+};
+
 const disabledCheckbox = () => (environmentVariable: EnvironmentVariable) => {
     return environmentVariable.locked === 1;
 };
@@ -380,6 +394,7 @@ export default compose(
         showDeleteAction,
         showLockAction,
         showUnlockAction,
+        showCopyAction,
         disabledCheckbox,
         onSearch,
         onReset,

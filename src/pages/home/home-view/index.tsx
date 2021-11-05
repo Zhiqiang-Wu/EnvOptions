@@ -60,6 +60,7 @@ const HomeView = ({
                       showDeleteAction,
                       showLockAction,
                       showUnlockAction,
+                      showCopyAction,
                       disabledCheckbox,
                       sorter,
                       onFilter,
@@ -140,13 +141,13 @@ const HomeView = ({
                         </Typography.Link>
                     </Tooltip>
                 );
-                const copyAction = (
+                const copyAction = showCopyAction && showCopyAction(record) ? (
                     <Tooltip title='备份'>
                         <Typography.Link>
                             <CopyOutlined onClick={() => onCopy(record)}/>
                         </Typography.Link>
                     </Tooltip>
-                );
+                ) : null;
                 return (
                     <Space>
                         {editAction}
