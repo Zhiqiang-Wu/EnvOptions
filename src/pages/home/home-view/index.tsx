@@ -28,6 +28,7 @@ import {
     DeleteOutlined,
     SearchOutlined,
     ProfileOutlined,
+    CopyOutlined,
 } from '@ant-design/icons';
 import styles from './index.scss';
 import Highlighter from 'react-highlight-words';
@@ -65,6 +66,7 @@ const HomeView = ({
                       onSearch,
                       onReset,
                       searchText,
+                      onCopy,
                   }: any) => {
     const columns: Array<any> = [
         {
@@ -96,7 +98,7 @@ const HomeView = ({
         {
             key: 'action',
             title: '操作',
-            width: 120,
+            width: 140,
             render: (record: EnvironmentVariable) => {
                 const editAction = showEditAction && showEditAction(record) ? (
                     <Tooltip title='编辑'>
@@ -138,6 +140,13 @@ const HomeView = ({
                         </Typography.Link>
                     </Tooltip>
                 );
+                const copyAction = (
+                    <Tooltip title='备份'>
+                        <Typography.Link>
+                            <CopyOutlined onClick={() => onCopy(record)}/>
+                        </Typography.Link>
+                    </Tooltip>
+                );
                 return (
                     <Space>
                         {editAction}
@@ -145,6 +154,7 @@ const HomeView = ({
                         {lockAction}
                         {unlockAction}
                         {detailAction}
+                        {copyAction}
                     </Space>
                 );
             },

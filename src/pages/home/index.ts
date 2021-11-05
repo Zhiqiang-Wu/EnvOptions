@@ -54,7 +54,7 @@ const onOk = (props: IProps) => (value: {key: string, value: string, type: strin
         message.warn('已存在');
         return;
     }
-    dispatch(insertEnvironmentVariable(value)).then(async (result: Result) => {
+    dispatch(insertEnvironmentVariable(value)).then((result: Result) => {
         if (result.code === 200) {
             setVisible(false);
             message.success('添加成功');
@@ -109,6 +109,46 @@ const onEdit = (props: IProps) => (environmentVariable: EnvironmentVariable) => 
         params: {
             id: environmentVariable.id,
         },
+    });
+};
+
+const onCopy = ({dataSource, dispatch, setVisible, setDataSource, setSelectedRowKeys}: IProps) => (environmentVariable: EnvironmentVariable) => {
+    const value = {
+        key: `${environmentVariable.key}_bak`,
+        type: environmentVariable.type,
+        value: environmentVariable.value
+    };
+    for (let i = 1; ; i++) {
+        let newKey;
+        if (i === 1) {
+            newKey = value.key;
+        } else {
+            newKey = `${value.key}${i}`;
+        }
+        const exists = dataSource.some((environmentVariable) => {
+            return newKey.toUpperCase() === environmentVariable.key.toUpperCase();
+        });
+        if (!exists) {
+            value.key = newKey;
+            break;
+        }
+    }
+    dispatch(insertEnvironmentVariable(value)).then((result: Result) => {
+        if (result.code === 200) {
+            setVisible(false);
+            message.success('备份成功');
+            return dispatch(listEnvironmentVariables());
+        } else {
+            return result;
+        }
+    }).then((result: Result) => {
+        if (result.code === 200) {
+            const environmentVariables: Array<EnvironmentVariable> = result.data.environmentVariables;
+            setDataSource(environmentVariables);
+            setSelectedRowKeys(environmentVariables.filter((value => value.selected)).map((value) => value.id));
+        } else {
+            message.warn(result.message);
+        }
     });
 };
 
@@ -344,6 +384,7 @@ export default compose(
         onSearch,
         onReset,
         onDetail,
+        onCopy,
     }),
     withProps(() => ({sorter, onFilter})),
     withLifecycle,
