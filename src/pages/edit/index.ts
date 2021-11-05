@@ -19,6 +19,10 @@ const onOk = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
         message.warn('key不能为Path');
         return;
     }
+    if (environmentVariable.key.toUpperCase().trim() === 'PATHEXT') {
+        message.warn('key不能为PATHEXT');
+        return;
+    }
     const {dispatch, history} = props;
     dispatch(updateEnvironmentVariable(environmentVariable)).then((result: Result) => {
         if (result.code === 200) {

@@ -50,6 +50,10 @@ const onOk = (props: IProps) => (value: {key: string, value: string, type: strin
         message.warn('不能添加Path变量');
         return;
     }
+    if (value.key.toUpperCase().trim() === 'PATHEXT') {
+        message.warn('不能添加PATHEXT变量');
+        return;
+    }
     const {dispatch, dataSource, setDataSource, setSelectedRowKeys, setVisible} = props;
     const exists = dataSource.some((environmentVariable) => {
         return environmentVariable.key.toUpperCase() === value.key.trim().toUpperCase() && environmentVariable.value === value.value.trim();
