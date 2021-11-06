@@ -202,12 +202,15 @@ const listSystemEnvironmentVariables = (): Promise<Result> => {
                 resolve({code: 1, message: err.message});
             } else {
                 const environmentVariableObject = result[envPath].values;
-                const environmentVariables: Array<any> = lodash.keys(environmentVariableObject).map((key) => ({
+                let environmentVariables: Array<any> = lodash.keys(environmentVariableObject).map((key) => ({
                     key,
                     type: environmentVariableObject[key].type,
                     value: environmentVariableObject[key].value,
                     selected: true,
                 }));
+                environmentVariables = environmentVariables.filter((environmentVariable) => {
+                    return environmentVariable.key.toUpperCase().trim() !== 'PATH';
+                });
                 resolve({code: 200, data: {environmentVariables}});
             }
         });
