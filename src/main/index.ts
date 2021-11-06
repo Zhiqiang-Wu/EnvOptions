@@ -530,6 +530,13 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                         selected: index >= 0,
                     };
                 });
+                const pathext = systemEnvironmentVariables.find((value) => value.key.toUpperCase().trim() === 'PATHEXT');
+                if (pathext) {
+                    environmentVariables.push({
+                        ...pathext,
+                        selected: true
+                    });
+                }
                 return {code: 200, data: {environmentVariables}};
             } else {
                 return {code: 1, message: '获取环境变量失败'};
