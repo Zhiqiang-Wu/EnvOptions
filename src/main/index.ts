@@ -488,7 +488,9 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                     statement2.run([systemEnvironmentVariable.key, databaseEnvironmentVariable.id]);
                 }
             } else {
-                statement.run([systemEnvironmentVariable.key, systemEnvironmentVariable.type, systemEnvironmentVariable.value]);
+                if (systemEnvironmentVariable.key.toUpperCase().trim() !== 'PATH' && systemEnvironmentVariable.key.toUpperCase().trim() !== 'PATHEXT') {
+                    statement.run([systemEnvironmentVariable.key, systemEnvironmentVariable.type, systemEnvironmentVariable.value]);
+                }
             }
         });
 
