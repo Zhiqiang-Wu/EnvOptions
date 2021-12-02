@@ -387,6 +387,12 @@ const downloadUpdate = (): Promise<Result> => {
     });
 };
 
+const listDependencies = (pomPath: string): Promise<Result> => {
+    return Promise.resolve({
+       code: 200
+    });
+};
+
 const quitAndInstall = (): void => {
     if (baseDB) {
         baseDB.close(() => {
@@ -591,6 +597,10 @@ ipcMain.handle('checkForUpdates', (): Promise<Result> => {
 
 ipcMain.handle('downloadUpdate', (): Promise<Result> => {
     return downloadUpdate();
+});
+
+ipcMain.handle('listDependencies', (event, args): Promise<Result> => {
+    return listDependencies(args);
 });
 
 ipcMain.on('quitAndInstall', (): void => {

@@ -67,6 +67,12 @@ export default defineConfig({
             footerRender: false,
         },
         {
+            path: '/maven',
+            name: 'maven',
+            exact: true,
+            component: '@/pages/maven'
+        },
+        {
             path: '/edit',
             name: '编辑',
             exact: true,

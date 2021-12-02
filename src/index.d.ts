@@ -53,6 +53,7 @@ declare global {
             checkForUpdates: () => Promise<Result>;
             downloadUpdate: () => Promise<Result>;
             quitAndInstall: () => void;
+            listDependencies: (pomPath: string) => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;

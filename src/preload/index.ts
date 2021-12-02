@@ -41,6 +41,9 @@ const localServices: any = {
     quitAndInstall: (): void => {
         ipcRenderer.send('quitAndInstall');
     },
+    listDependencies: (pomPath: string): Promise<Result> => {
+        return ipcRenderer.invoke('listDependencies', pomPath);
+    },
 };
 
 const localFunctions: any = {

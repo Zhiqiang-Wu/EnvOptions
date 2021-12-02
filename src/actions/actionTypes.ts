@@ -1,6 +1,8 @@
 // @author 吴志强
 // @date 2021/9/11
 
+import {listDependencies} from '@/services/mavenService';
+
 export const LIST_ENVIRONMENT_VARIABLES = 'environmentModel/listEnvironmentVariables';
 export const DELETE_ENVIRONMENT_VARIABLE = 'environmentModel/deleteEnvironmentVariable';
 export const SET_ENVIRONMENT_VARIABLE = 'environmentModel/setEnvironmentVariable';
@@ -17,3 +19,5 @@ export const CHECK_FOR_UPDATES = 'updateModel/checkForUpdates';
 export const DOWNLOAD_UPDATE = 'updateModel/downloadUpdate';
 export const QUID_AND_INSTALL = 'updateModel/quitAndInstall';
 export const UPDATE_UPDATE_MODEL = 'updateModel/updateUpdateModel';
+
+export const LIST_DEPENDENCIES = 'mavenModel/listDependencies';
