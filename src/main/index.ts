@@ -25,6 +25,7 @@ import fsExtra from 'fs-extra';
 import extractZip from 'extract-zip';
 import {Library} from 'ffi-napi';
 import ref from 'ref-napi';
+import {Parser} from 'xml2js';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -34,6 +35,7 @@ let baseDB: sqlite3.Database;
 let settingDB: LowSync;
 let logger: Logger;
 let dll;
+const parser = new Parser();
 const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment';
 
 const loadDLL = () => {
@@ -388,8 +390,34 @@ const downloadUpdate = (): Promise<Result> => {
 };
 
 const listDependencies = (pomPath: string): Promise<Result> => {
+    const data = fsExtra.readFileSync(pomPath, 'utf-8');
+    return parser.parseStringPromise(data).then((result) => {
+        let dependencies: Array<any> = result.project.dependencies[0].dependency;
+        dependencies = dependencies.map((dependency) => ({
+            groupId: dependency.groupId[0],
+            artifactId: dependency.artifactId[0],
+            version: dependency.version ? dependency.version[0] : '',
+        }));
+        return {
+            code: 200,
+            data: {
+                dependencies,
+            },
+        };
+    }).catch((e) => {
+        return {
+            code: 1,
+            message: e.message,
+        };
+    });
+};
+
+const exportDependency = ({
+                              targetPath,
+                              dependencies,
+                          }: {targetPath: string, dependencies: Array<Dependency>}): Promise<Result> => {
     return Promise.resolve({
-       code: 200
+        code: 200,
     });
 };
 
@@ -540,7 +568,7 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                 if (pathext) {
                     environmentVariables.push({
                         ...pathext,
-                        selected: true
+                        selected: true,
                     });
                 }
                 return {code: 200, data: {environmentVariables}};
@@ -601,6 +629,10 @@ ipcMain.handle('downloadUpdate', (): Promise<Result> => {
 
 ipcMain.handle('listDependencies', (event, args): Promise<Result> => {
     return listDependencies(args);
+});
+
+ipcMain.handle('exportDependency', (event, args): Promise<Result> => {
+    return exportDependency(args);
 });
 
 ipcMain.on('quitAndInstall', (): void => {

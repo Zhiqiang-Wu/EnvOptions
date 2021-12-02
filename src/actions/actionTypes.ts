@@ -19,3 +19,4 @@ export const QUID_AND_INSTALL = 'updateModel/quitAndInstall';
 export const UPDATE_UPDATE_MODEL = 'updateModel/updateUpdateModel';
 
 export const LIST_DEPENDENCIES = 'mavenModel/listDependencies';
+export const EXPORT_DEPENDENCY = 'mavenModel/exportDependency';

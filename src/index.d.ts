@@ -27,6 +27,12 @@ declare global {
         value: any;
     }
 
+    type Dependency = {
+        groupId: string;
+        artifactId: string;
+        version: string;
+    }
+
     type MainListener = {
         key: symbol;
         listener: (event: IpcRendererEvent, ...arg: any[]) => void;
@@ -54,6 +60,7 @@ declare global {
             downloadUpdate: () => Promise<Result>;
             quitAndInstall: () => void;
             listDependencies: (pomPath: string) => Promise<Result>;
+            exportDependency: (data: {targetPath: string, dependencies: Array<Dependency>}) => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;

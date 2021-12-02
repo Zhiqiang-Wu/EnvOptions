@@ -60,7 +60,7 @@ export default defineConfig({
     routes: [
         {
             path: '/home',
-            name: '首页',
+            name: 'env',
             icon: 'home',
             exact: true,
             component: '@/pages/home',
@@ -69,6 +69,7 @@ export default defineConfig({
         {
             path: '/maven',
             name: 'maven',
+            icon: 'export',
             exact: true,
             component: '@/pages/maven'
         },
