@@ -26,6 +26,7 @@ import extractZip from 'extract-zip';
 import {Library} from 'ffi-napi';
 import ref from 'ref-napi';
 import {Parser} from 'xml2js';
+import {v4 as uuidV4} from 'uuid';
 // import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -394,6 +395,7 @@ const listDependencies = (pomPath: string): Promise<Result> => {
     return parser.parseStringPromise(data).then((result) => {
         let dependencies: Array<any> = result.project.dependencies[0].dependency;
         dependencies = dependencies.map((dependency) => ({
+            id: uuidV4(),
             groupId: dependency.groupId[0],
             artifactId: dependency.artifactId[0],
             version: dependency.version ? dependency.version[0] : '',
@@ -413,9 +415,18 @@ const listDependencies = (pomPath: string): Promise<Result> => {
 };
 
 const exportDependency = ({
+                              sourcePath,
                               targetPath,
                               dependencies,
-                          }: {targetPath: string, dependencies: Array<Dependency>}): Promise<Result> => {
+                          }: {sourcePath: string, targetPath: string, dependencies: Array<Dependency>}): Promise<Result> => {
+    dependencies.forEach((dependency) => {
+        const groupId = dependency.groupId.replaceAll('.', path.sep);
+        const dependencyPath = `${groupId}${path.sep}${dependency.artifactId}${path.sep}${dependency.version}`;
+        const pathFrom = `${sourcePath}${path.sep}${dependencyPath}`;
+        if (fsExtra.pathExistsSync(pathFrom)) {
+            fsExtra.copySync(pathFrom, `${targetPath}${path.sep}${dependencyPath}`);
+        }
+    });
     return Promise.resolve({
         code: 200,
     });

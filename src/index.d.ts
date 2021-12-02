@@ -28,6 +28,7 @@ declare global {
     }
 
     type Dependency = {
+        id: string,
         groupId: string;
         artifactId: string;
         version: string;
@@ -60,7 +61,7 @@ declare global {
             downloadUpdate: () => Promise<Result>;
             quitAndInstall: () => void;
             listDependencies: (pomPath: string) => Promise<Result>;
-            exportDependency: (data: {targetPath: string, dependencies: Array<Dependency>}) => Promise<Result>;
+            exportDependency: (data: {sourcePath: string, targetPath: string, dependencies: Array<Dependency>}) => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;

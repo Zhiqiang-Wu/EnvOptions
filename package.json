@@ -45,6 +45,7 @@
         "sqlite3": "^5.0.2",
         "umi": "3.5.20",
         "umi-plugin-keep-alive": "^0.0.1-beta.29",
+        "uuid": "^8.3.2",
         "winston": "^3.3.3",
         "winston-daily-rotate-file": "^4.5.5",
         "xml2js": "^0.4.23"
@@ -64,6 +65,7 @@
         "@types/redux-actions": "^2.6.2",
         "@types/reselect": "^2.2.0",
         "@types/sqlite3": "^3.1.7",
+        "@types/uuid": "^8.3.3",
         "@types/winston": "^2.4.4",
         "@types/xml2js": "^0.4.9",
         "@umijs/plugin-sass": "^1.1.1",

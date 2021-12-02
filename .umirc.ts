@@ -18,7 +18,8 @@ export default defineConfig({
             'ref-napi',
             'winston',
             'winston-daily-rotate-file',
-            'electron-updater'
+            'electron-updater',
+            'uuid'
         ],
         builderOptions: {
             appId: 'wzq.env.options',

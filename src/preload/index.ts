@@ -45,7 +45,7 @@ const localServices: any = {
     listDependencies: (pomPath: string): Promise<Result> => {
         return ipcRenderer.invoke('listDependencies', pomPath);
     },
-    exportDependency: (data: {targetPath: string, dependencies: Array<Dependency>}): Promise<Result> => {
+    exportDependency: (data: {sourcePath: string, targetPath: string, dependencies: Array<Dependency>}): Promise<Result> => {
         return ipcRenderer.invoke('exportDependency', data);
     },
 };
