@@ -2,6 +2,7 @@
 // @date 2021/10/5
 
 import {createFactory, Component} from 'react';
+import mapValues from '@/utils/mapValues';
 
 const withMain = (channel: string, mainHandler: MainHandler) => (BaseComponent) => {
     const factory = createFactory(BaseComponent);
@@ -11,16 +12,21 @@ const withMain = (channel: string, mainHandler: MainHandler) => (BaseComponent) 
     class WithMain extends Component {
 
         componentDidMount() {
-            window.localFunctions.addMainListener(channel, {key, listener: mainHandler(this.props)})
+            window.localFunctions.addMainListener(channel, {key, listener: this.handlers[channel]})
         }
 
         componentWillUnmount() {
             window.localFunctions.removeMainListener(channel, key);
         }
 
+        handlers = mapValues({[channel]: mainHandler}, (createHandler) => (...args) => {
+            const handler = createHandler(this.props);
+            return handler(...args);
+        });
+
         render() {
-            const {props}: any = this;
-            return factory({...props});
+            const {props, handlers}: any = this;
+            return factory({...props, ...handlers});
         }
     }
 
