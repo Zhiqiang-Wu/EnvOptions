@@ -28,10 +28,15 @@ declare global {
     }
 
     type Dependency = {
-        id: string,
+        id: string;
         groupId: string;
         artifactId: string;
         version: string;
+    }
+
+    type ExportInfo = {
+        id: string;
+        status: 'success' | 'fail' | 'wait' | 'run';
     }
 
     type MainListener = {
