@@ -46,7 +46,8 @@
         "umi": "3.5.20",
         "umi-plugin-keep-alive": "^0.0.1-beta.29",
         "winston": "^3.3.3",
-        "winston-daily-rotate-file": "^4.5.5"
+        "winston-daily-rotate-file": "^4.5.5",
+        "xml2js": "^0.4.23"
     },
     "devDependencies": {
         "@types/extract-zip": "^2.0.1",
@@ -64,6 +65,7 @@
         "@types/reselect": "^2.2.0",
         "@types/sqlite3": "^3.1.7",
         "@types/winston": "^2.4.4",
+        "@types/xml2js": "^0.4.9",
         "@umijs/plugin-sass": "^1.1.1",
         "@umijs/preset-react": "1.x",
         "@umijs/test": "3.5.20",

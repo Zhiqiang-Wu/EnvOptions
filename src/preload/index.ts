@@ -1,4 +1,5 @@
 import {contextBridge, ipcRenderer, OpenDialogReturnValue} from 'electron';
+import {exportDependency} from '@/services/mavenService';
 
 const localServices: any = {
     // versions: process.versions,
@@ -40,6 +41,12 @@ const localServices: any = {
     },
     quitAndInstall: (): void => {
         ipcRenderer.send('quitAndInstall');
+    },
+    listDependencies: (pomPath: string): Promise<Result> => {
+        return ipcRenderer.invoke('listDependencies', pomPath);
+    },
+    exportDependency: (data: {targetPath: string, dependencies: Array<Dependency>}): Promise<Result> => {
+        return ipcRenderer.invoke('exportDependency', data);
     },
 };
 
