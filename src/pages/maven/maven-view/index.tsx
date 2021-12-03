@@ -2,12 +2,11 @@
 // @date 2021/12/2
 
 import React, {useMemo} from 'react';
-import {Table, Button, Space, Typography, Tooltip} from 'antd';
+import {Table, Button, Space, Typography, Badge} from 'antd';
 import styles from './index.scss';
-import {ExportOutlined} from '@ant-design/icons';
 
 const MavenView = ({
-                       dataSource,
+                       dependencies,
                        onPomClick,
                        onSourceClick,
                        disabledCheckbox,
@@ -34,18 +33,22 @@ const MavenView = ({
                 dataIndex: 'version',
             },
             {
-                key: 'action',
-                title: '操作',
-                width: 70,
-                render: () => {
-                    return (
-                        <Tooltip title='导出'>
-                            <Typography.Link>
-                                <ExportOutlined/>
-                            </Typography.Link>
-                        </Tooltip>
-                    );
-                },
+                key: 'status',
+                title: '状态',
+                render: (record) => {
+                    switch (record.status) {
+                        case 'success':
+                            return <Badge status='success' text='成功'/>;
+                        case 'fail':
+                            return <Badge status='error' text='失败'/>;
+                        case 'run':
+                            return <Badge status='processing' text='正在导出'/>;
+                        case 'wait':
+                            return <Badge status='warning' text='等待'/>
+                        default:
+                            return null;
+                    }
+                }
             },
         ];
     }, []);
@@ -68,7 +71,7 @@ const MavenView = ({
                 </Button>
             </div>
             <Table
-                dataSource={dataSource}
+                dataSource={dependencies}
                 columns={columns}
                 rowSelection={{
                     selectedRowKeys,
