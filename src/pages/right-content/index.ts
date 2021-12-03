@@ -51,16 +51,28 @@ const mapPropsToComponent = (props) => {
     };
 };
 
-const selector = createSelector((state: any) => ({
-    updateModel: state.updateModel,
-}), ({updateModel}) => ({
-    progressVisible: updateModel.progressVisible,
-    progressPercent: updateModel.progressPercent,
-    progressStatus: updateModel.progressStatus,
-    updateButtonVisible: updateModel.updateButtonVisible,
-}));
-
-const mapStateToProps = (state) => selector(state);
+const mapStateToProps = (state) => ({
+    progressVisible: createSelector((state: any) => {
+        return state.updateModel.get('progressVisible');
+    }, (progressVisible) => {
+        return progressVisible;
+    })(state),
+    progressPercent: createSelector((state: any) => {
+        return state.updateModel.get('progressPercent');
+    }, (progressPercent) => {
+        return progressPercent;
+    })(state),
+    progressStatus: createSelector((state: any) => {
+        return state.updateModel.get('progressStatus');
+    }, (progressStatus) => {
+        return progressStatus;
+    })(state),
+    updateButtonVisible: createSelector((state: any) => {
+        return state.updateModel.get('updateButtonVisible');
+    }, (updateButtonVisible) => {
+        return updateButtonVisible;
+    })(state),
+});
 
 export default toFunction(compose(
     withDva(mapStateToProps),

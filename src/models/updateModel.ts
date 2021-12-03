@@ -14,9 +14,11 @@ export default {
     }),
     reducers: {
         updateUpdateModel(state, action) {
-            const keyPath = action.payload.keyPath;
-            const value = fromJS(action.payload.value);
-            return state.setIn(keyPath, value);
+            let newState = state;
+            action.payload.forEach((value) => {
+                newState = newState.setIn(value.keyPath, fromJS(value.value));
+            });
+            return newState;
         },
     },
     effects: {
