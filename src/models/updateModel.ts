@@ -2,21 +2,21 @@
 // @date 2021/10/6
 
 import {checkForUpdates, downloadUpdate, quitAndInstall} from '@/services/upateService';
+import {fromJS, Map} from 'immutable';
 
 export default {
     namespace: 'updateModel',
-    state: {
+    state: Map({
         progressVisible: false,
         progressPercent: 0,
         progressStatus: 'normal',
         updateButtonVisible: false,
-    },
+    }),
     reducers: {
         updateUpdateModel(state, action) {
-            return {
-                ...state,
-                ...action.payload,
-            };
+            const keyPath = action.payload.keyPath;
+            const value = fromJS(action.payload.value);
+            return state.setIn(keyPath, value);
         },
     },
     effects: {
