@@ -2,10 +2,11 @@
 // @date 2021/12/2
 
 import {listDependencies, exportDependency} from '@/services/mavenService';
+import {Map} from 'immutable';
 
 export default {
     namespace: 'mavenModel',
-    state: {},
+    state: Map({}),
     effects: {
         * listDependencies({payload}, {call}) {
             return yield call(listDependencies, payload);
