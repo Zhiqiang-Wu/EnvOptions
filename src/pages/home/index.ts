@@ -1,7 +1,7 @@
 // @author 吴志强
 // @date 2021/9/11
 
-import {message} from 'antd';
+import {InputNumber, message} from 'antd';
 import {createSelector} from 'reselect';
 import {
     LIST_ENVIRONMENT_VARIABLES,
@@ -372,18 +372,22 @@ const onReset = ({setSearchText}: IProps) => (clearFilters) => {
     setSearchText('');
 };
 
-const selector = createSelector((state: any) => ({
-    loadings: state.loading.effects,
-}), ({loadings}) => ({
-    tableLoading: loadings[LIST_ENVIRONMENT_VARIABLES] === true
-        || loadings[DELETE_ENVIRONMENT_VARIABLE] === true
-        || loadings[SET_ENVIRONMENT_VARIABLE] === true
-        || loadings[UNLOCK_ENVIRONMENT_VARIABLE] === true
-        || loadings[LOCK_ENVIRONMENT_VARIABLE] === true,
-    okButtonLoading: loadings[INSERT_ENVIRONMENT_VARIABLE] === true,
-}));
-
-const mapStateToProps = (state) => selector(state);
+const mapStateToProps = (state) => ({
+    tableLoading: createSelector([
+        (state: any) => state.loading.effects[LIST_ENVIRONMENT_VARIABLES],
+        (state: any) => state.loading.effects[DELETE_ENVIRONMENT_VARIABLE],
+        (state: any) => state.loading.effects[SET_ENVIRONMENT_VARIABLE],
+        (state: any) => state.loading.effects[UNLOCK_ENVIRONMENT_VARIABLE],
+        (state: any) => state.loading.effects[LOCK_ENVIRONMENT_VARIABLE],
+    ], (loading1, loading2, loading3, loading4, loading5) => {
+        return loading1 === true || loading2 === true || loading3 === true || loading4 === true || loading5 === true;
+    })(state),
+    okButtonLoading: createSelector([
+        (state) => state.loading.effects[INSERT_ENVIRONMENT_VARIABLE],
+    ], (loading1) => {
+        return loading1 === true;
+    }),
+});
 
 export default compose(
     pure,

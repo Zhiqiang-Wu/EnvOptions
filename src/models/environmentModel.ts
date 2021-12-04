@@ -11,10 +11,11 @@ import {
     unlockEnvironmentVariable,
     lockEnvironmentVariable,
 } from '@/services/environmentService';
+import {Map} from 'immutable';
 
 export default {
     namespace: 'environmentModel',
-    state: {},
+    state: Map({}),
     effects: {
         * listEnvironmentVariables({payload}, {call}) {
             return yield call(listEnvironmentVariables, payload);
