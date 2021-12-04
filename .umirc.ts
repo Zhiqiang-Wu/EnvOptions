@@ -82,14 +82,14 @@ export default defineConfig({
             hideInMenu: true,
             footerRender: false,
         },
-        {
+        /*{
             path: '/edit2',
             name: '编辑',
             exact: true,
             component: '@/pages/edit2',
             hideInMenu: true,
             footerRender: false,
-        },
+        },*/
         {
             path: '/detail',
             name: '详情',
