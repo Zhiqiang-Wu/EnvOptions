@@ -22,27 +22,27 @@ const onUpdate = ({dispatch}: IProps) => () => {
 };
 
 const updateDownloadProgress = ({dispatch}: IProps) => (event, progress: ProgressInfo) => {
-    dispatch(updateUpdateModel({
-        progressPercent: lodash.round(progress.percent),
-    }));
+    dispatch(updateUpdateModel([
+        {keyPath: ['progressPercent'], value: lodash.round(progress.percent)}
+    ]));
 };
 
 const updateError = ({progressVisible, dispatch}: IProps) => (event, err: Error) => {
     message.warn(err.message);
     if (progressVisible) {
-        dispatch(updateUpdateModel({
-            progressStatus: 'exception',
-        }));
+        dispatch(updateUpdateModel([
+            {keyPath: ['progressStatus'], value: 'exception'}
+        ]));
     }
 };
 
 const updateDownloaded = ({dispatch}: IProps) => () => {
     message.info('下载完毕');
-    dispatch(updateUpdateModel({
-        progressStatus: 'success',
-        progressPercent: 100,
-        updateButtonVisible: true,
-    }));
+    dispatch(updateUpdateModel([
+        {keyPath: ['progressStatus'], value: 'success'},
+        {keyPath: ['progressPercent'], value: '100'},
+        {keyPath: ['updateButtonVisible'], value: true}
+    ]));
 };
 
 const mapPropsToComponent = (props) => {
