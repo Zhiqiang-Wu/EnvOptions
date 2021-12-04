@@ -67,6 +67,7 @@ declare global {
             quitAndInstall: () => void;
             listDependencies: (pomPath: string) => Promise<Result>;
             exportDependency: (data: {sourcePath: string, targetPath: string, dependencies: Array<Dependency>}) => Promise<Result>;
+            listSourcePaths: () => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;

@@ -19,6 +19,7 @@ import {
     QUID_AND_INSTALL,
     LIST_DEPENDENCIES,
     EXPORT_DEPENDENCY,
+    LIST_SOURCE_PATHS,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -40,3 +41,4 @@ export const updateUpdateModel = createAction(UPDATE_UPDATE_MODEL);
 
 export const listDependencies = createAction(LIST_DEPENDENCIES);
 export const exportDependency = createAction(EXPORT_DEPENDENCY);
+export const listSourcePaths = createAction(LIST_SOURCE_PATHS);

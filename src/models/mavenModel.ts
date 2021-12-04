@@ -1,7 +1,7 @@
 // @author 吴志强
 // @date 2021/12/2
 
-import {listDependencies, exportDependency} from '@/services/mavenService';
+import {listDependencies, exportDependency, listSourcePaths} from '@/services/mavenService';
 import {Map} from 'immutable';
 
 export default {
@@ -14,5 +14,8 @@ export default {
         * exportDependency({payload}, {call}) {
             return yield call(exportDependency, payload);
         },
+        * listSourcePaths({payload}, {call}) {
+            return yield call(listSourcePaths, payload);
+        }
     },
 };
