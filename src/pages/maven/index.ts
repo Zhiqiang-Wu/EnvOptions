@@ -3,8 +3,8 @@
 
 import MavenView from '@/pages/maven/maven-view';
 import withDva from '@/components/with-dva';
-import {compose, withState, withHandlers} from 'recompose';
-import {listDependencies, exportDependency} from '@/actions/actions';
+import {compose, withState, withHandlers, lifecycle} from 'recompose';
+import {listDependencies, exportDependency, listSourcePaths} from '@/actions/actions';
 import {message} from 'antd';
 import lodash from 'lodash';
 import withMain from '@/components/with-main';
@@ -134,11 +134,25 @@ const onVersionSave = ({dependencies, setDependencies}: IProps) => (values) => {
     }));
 };
 
+const withLifecycle = lifecycle({
+    componentDidMount() {
+        const {dispatch, setSourcePaths}: any = this.props;
+        dispatch(listSourcePaths()).then((result: Result) => {
+            if (result.code !== 200) {
+                message.warn(result.message);
+                return;
+            }
+            setSourcePaths(result.data.sourcePaths);
+        });
+    }
+});
+
 export default compose(
     withDva(),
     withState('dependencies', 'setDependencies', []),
     withMain('exportProgress', exportProgress),
-    withState('sourcePath', 'setSourcePath', ''),
+    withState('sourcePath', 'setSourcePath', undefined),
+    withState('sourcePaths', 'setSourcePaths', []),
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
     withHandlers({
         onPomClick,
@@ -150,4 +164,5 @@ export default compose(
         onSelectedChange,
         onVersionSave,
     }),
+    withLifecycle,
 )(MavenView);

@@ -28,6 +28,7 @@ import {Library} from 'ffi-napi';
 import ref from 'ref-napi';
 import {Parser} from 'xml2js';
 import {v4 as uuidV4} from 'uuid';
+// import semver from 'semver';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
@@ -479,6 +480,17 @@ const appQuit = (): void => {
     }
 };
 
+const listSourcePaths = (): Promise<Result> => {
+    return Promise.resolve({
+        code: 200,
+        data: {
+            sourcePaths: [
+                'D:\\mvnrepository',
+            ]
+        }
+    });
+};
+
 protocol.registerSchemesAsPrivileged([
     {scheme: 'app', privileges: {secure: true, standard: true}},
 ]);
@@ -677,4 +689,8 @@ ipcMain.handle('showOpenDialog', (event, options: OpenDialogOptions1): Promise<O
 
 ipcMain.on('log', (event, args) => {
     logger.log(args.level, args.message, ...args.meta);
+});
+
+ipcMain.handle('listSourcePaths', (): Promise<Result> => {
+    return listSourcePaths();
 });

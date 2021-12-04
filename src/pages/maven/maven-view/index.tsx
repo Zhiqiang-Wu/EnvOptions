@@ -2,7 +2,7 @@
 // @date 2021/12/2
 
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import {Table, Button, Space, Typography, Badge, Form, FormInstance, Input} from 'antd';
+import {Table, Button, Space, Badge, Form, FormInstance, Input, Select} from 'antd';
 import styles from './index.scss';
 
 const EditableContext = React.createContext<FormInstance | null>(null);
@@ -83,6 +83,7 @@ const MavenView = ({
                        onGroupIdSave,
                        onArtifactIdSave,
                        onVersionSave,
+                       sourcePaths,
                    }: any) => {
     const columns = useMemo(() => {
         return [
@@ -149,14 +150,33 @@ const MavenView = ({
     }), []);
     return (
         <Space direction='vertical' style={{width: '100%'}}>
-            <Space>
+            <Select
+                value={sourcePath}
+                placeholder='选择源'
+                style={{width: '100%'}}
+                dropdownRender={(menu) => {
+                    return (
+                        <div>
+                            {menu}
+                            <Button onClick={onSourceClick} type='link'>选择文件夹</Button>
+                        </div>
+                    );
+                }}
+            >
+                {
+                    sourcePaths.map((sourcePath) => (
+                        <Select.Option key={sourcePath} value={sourcePath}>{sourcePath}</Select.Option>
+                    ))
+                }
+            </Select>
+            {/*<Space>
                 <Button type='primary' onClick={onSourceClick}>选择源</Button>
                 <Typography.Text>{sourcePath || ''}</Typography.Text>
-            </Space>
+            </Space>*/}
             <div className={styles.actions}>
                 <Button type='primary' onClick={onPomClick}>选择pom文件</Button>
                 <Button
-                    disabled={selectedRowKeys.length === 0}
+                    disabled={selectedRowKeys.length === 0 || !sourcePath}
                     className={styles.insert}
                     onClick={() => {
                         export1(selectedRowKeys);
