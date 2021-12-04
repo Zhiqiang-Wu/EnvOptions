@@ -2,7 +2,6 @@
 // @date 2021/10/5
 
 import {createFactory, Component} from 'react';
-import mapValues from '@/utils/mapValues';
 
 const withMain = (channel: string, mainHandler: MainHandler) => (BaseComponent) => {
     const factory = createFactory(BaseComponent);
@@ -12,21 +11,26 @@ const withMain = (channel: string, mainHandler: MainHandler) => (BaseComponent) 
     class WithMain extends Component {
 
         componentDidMount() {
-            window.localFunctions.addMainListener(channel, {key, listener: this.handlers[channel]})
+            const mainListener = {
+                key,
+                // 错误的，每次调用必须重新把this.props传递进去
+                // listener: mainHandler(this.props),
+                listener: (...args) => {
+                    // 重新把this.props传递进去
+                    const func: Function = mainHandler(this.props);
+                    func(...args);
+                }
+            }
+            window.localFunctions.addMainListener(channel, mainListener);
         }
 
         componentWillUnmount() {
             window.localFunctions.removeMainListener(channel, key);
         }
 
-        handlers = mapValues({[channel]: mainHandler}, (createHandler) => (...args) => {
-            const handler = createHandler(this.props);
-            return handler(...args);
-        });
-
         render() {
-            const {props, handlers}: any = this;
-            return factory({...props, ...handlers});
+            const {props}: any = this;
+            return factory({...props});
         }
     }
 
