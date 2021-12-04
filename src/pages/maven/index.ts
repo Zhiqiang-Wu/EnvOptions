@@ -7,17 +7,18 @@ import {compose, withState, withHandlers} from 'recompose';
 import {listDependencies, exportDependency} from '@/actions/actions';
 import {message} from 'antd';
 import lodash from 'lodash';
+import withMain from '@/components/with-main';
 
 interface IProps {
-    setDataSource,
-    dispatch,
-    setSourcePath,
-    setSelectedRowKeys,
-    dataSource,
-    sourcePath
+    setDependencies: Function;
+    dispatch: Function;
+    setSourcePath: Function;
+    setSelectedRowKeys: Function;
+    dependencies: Array<any>;
+    sourcePath: string;
 }
 
-const onPomClick = ({setDataSource, dispatch}: IProps) => () => {
+const onPomClick = ({setDependencies, dispatch}: IProps) => () => {
     const options: OpenDialogOptions1 = {
         modal: true,
         properties: ['openFile'],
@@ -41,7 +42,7 @@ const onPomClick = ({setDataSource, dispatch}: IProps) => () => {
             message.warn('没有依赖信息');
             return;
         }
-        setDataSource(dependencies);
+        setDependencies(dependencies);
     });
 };
 
@@ -66,7 +67,7 @@ const onSelectedChange = ({setSelectedRowKeys}: IProps) => (keys) => {
     setSelectedRowKeys(keys);
 };
 
-const export1 = ({dispatch, dataSource, sourcePath}: IProps) => (keys: Array<string>) => {
+const export1 = ({dispatch, dependencies, sourcePath}: IProps) => (keys: Array<string>) => {
     const options: OpenDialogOptions1 = {
         modal: true,
         properties: ['openDirectory'],
@@ -75,20 +76,32 @@ const export1 = ({dispatch, dataSource, sourcePath}: IProps) => (keys: Array<str
         if (result.canceled || !result.filePaths[0]) {
             return;
         }
-        const dependencies = keys.map((key) => {
-            return dataSource.find((value) => value.id === key);
+        const dependencies1 = keys.map((key) => {
+            return dependencies.find((value) => value.id === key);
         });
-        return dispatch(exportDependency({
+        dispatch(exportDependency({
             targetPath: result.filePaths[0],
-            dependencies,
-            sourcePath
+            dependencies: dependencies1,
+            sourcePath,
         }));
     });
 };
 
+const exportProgress = ({dependencies, setDependencies}: IProps) => (event, exportInfo: ExportInfo) => {
+    setDependencies(dependencies.map((dependency) => {
+        if (dependency.id === exportInfo.id) {
+            dependency.status = exportInfo.status;
+            return dependency;
+        } else {
+            return dependency;
+        }
+    }));
+};
+
 export default compose(
     withDva(),
-    withState('dataSource', 'setDataSource', []),
+    withState('dependencies', 'setDependencies', []),
+    withMain('exportProgress', exportProgress),
     withState('sourcePath', 'setSourcePath', ''),
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
     withHandlers({
@@ -96,6 +109,6 @@ export default compose(
         onSourceClick,
         disabledCheckbox,
         export1,
-        onSelectedChange
+        onSelectedChange,
     }),
 )(MavenView);
