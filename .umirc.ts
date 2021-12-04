@@ -61,8 +61,8 @@ export default defineConfig({
     routes: [
         {
             path: '/home',
-            name: 'env',
-            icon: 'home',
+            name: '环境变量',
+            icon: 'windows',
             exact: true,
             component: '@/pages/home',
             footerRender: false,
@@ -119,7 +119,7 @@ export default defineConfig({
         implementation: require('node-sass'),
     },
     // 开启mfsu功能后会自动开启webpack5和dynamicImport
-    // mfsu: {},
+    mfsu: {},
     mock: false,
     fastRefresh: {},
 });
