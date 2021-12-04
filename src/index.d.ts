@@ -36,7 +36,7 @@ declare global {
 
     type ExportInfo = {
         id: string;
-        status: 'success' | 'fail' | 'wait' | 'run';
+        status: 'success' | 'fail' | 'run';
     }
 
     type MainListener = {

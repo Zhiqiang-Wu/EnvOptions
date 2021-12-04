@@ -98,6 +98,42 @@ const exportProgress = ({dependencies, setDependencies}: IProps) => (event, expo
     }));
 };
 
+const onGroupIdSave = ({dependencies, setDependencies}: IProps) => (values) => {
+    if(!lodash.trim(values.groupId)) {
+        return;
+    }
+    setDependencies(dependencies.map((dependency) => {
+        if (dependency.id === values.id) {
+            dependency.groupId = values.groupId;
+        }
+        return dependency;
+    }));
+};
+
+const onArtifactIdSave = ({dependencies, setDependencies}: IProps) => (values) => {
+    if (!lodash.trim(values.artifactId)) {
+        return;
+    }
+    setDependencies(dependencies.map((dependency) => {
+        if (dependency.id === values.id) {
+            dependency.artifactId = values.artifactId;
+        }
+        return dependency;
+    }));
+};
+
+const onVersionSave = ({dependencies, setDependencies}: IProps) => (values) => {
+    if (!lodash.trim(values.version)) {
+        return;
+    }
+    setDependencies(dependencies.map((dependency) => {
+        if (dependency.id === values.id) {
+            dependency.version = values.version;
+        }
+        return dependency;
+    }));
+};
+
 export default compose(
     withDva(),
     withState('dependencies', 'setDependencies', []),
@@ -109,6 +145,9 @@ export default compose(
         onSourceClick,
         disabledCheckbox,
         export1,
+        onGroupIdSave,
+        onArtifactIdSave,
         onSelectedChange,
+        onVersionSave,
     }),
 )(MavenView);
