@@ -10,6 +10,7 @@ import {
     ipcMain,
     dialog,
     OpenDialogReturnValue,
+    session,
 } from 'electron';
 import createProtocol from 'umi-plugin-electron-builder/lib/createProtocol';
 import path from 'path';
@@ -27,7 +28,6 @@ import {Library} from 'ffi-napi';
 import ref from 'ref-napi';
 import {Parser} from 'xml2js';
 import {v4 as uuidV4} from 'uuid';
-// import installExtension, {REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS} from 'electron-devtools-installer';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 let mainWindow: BrowserWindow;
@@ -419,12 +419,39 @@ const exportDependency = ({
                               targetPath,
                               dependencies,
                           }: {sourcePath: string, targetPath: string, dependencies: Array<Dependency>}): Promise<Result> => {
-    dependencies.forEach((dependency) => {
+    /*dependencies.forEach((dependency) => {
+        mainWindow.webContents.send('exportProgress', {
+            id: dependency.id,
+            status: 'wait',
+        });
+    });*/
+    dependencies.forEach(async (dependency) => {
         const groupId = dependency.groupId.replaceAll('.', path.sep);
         const dependencyPath = `${groupId}${path.sep}${dependency.artifactId}${path.sep}${dependency.version}`;
         const pathFrom = `${sourcePath}${path.sep}${dependencyPath}`;
-        if (fsExtra.pathExistsSync(pathFrom)) {
-            fsExtra.copySync(pathFrom, `${targetPath}${path.sep}${dependencyPath}`);
+        try {
+            if (fsExtra.pathExistsSync(pathFrom)) {
+                mainWindow.webContents.send('exportProgress', {
+                    id: dependency.id,
+                    status: 'run',
+                });
+                fsExtra.copySync(pathFrom, `${targetPath}${path.sep}${dependencyPath}`);
+                mainWindow.webContents.send('exportProgress', {
+                    id: dependency.id,
+                    status: 'success',
+                });
+            } else {
+                mainWindow.webContents.send('exportProgress', {
+                    id: dependency.id,
+                    status: 'fail',
+                });
+            }
+        } catch (err: any) {
+            mainWindow.webContents.send('exportProgress', {
+                id: dependency.id,
+                status: 'fail',
+                message: err.message,
+            });
         }
     });
     return Promise.resolve({
@@ -487,10 +514,9 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 app.on('ready', async () => {
-    /*if (isDevelopment) {
-        await installExtension(REACT_DEVELOPER_TOOLS);
-        await installExtension(REDUX_DEVTOOLS);
-    }*/
+    if (isDevelopment) {
+        await session.defaultSession.loadExtension(path.join(__dirname, '..', '..', '..', 'extension', 'React Developer Tools', '4.21.0_0'));
+    }
     await checkDataFile();
     setVBS();
     createLogger1();
