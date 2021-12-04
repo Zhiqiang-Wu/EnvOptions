@@ -21,12 +21,12 @@ const onCheck = ({dispatch}: IProps) => () => {
 };
 
 const onUpdate = ({dispatch}: IProps) => () => {
-    dispatch(updateUpdateModel({
-        progressVisible: true,
-        progressPercent: 0,
-        progressStatus: 'normal',
-        updateButtonVisible: false,
-    }));
+    dispatch(updateUpdateModel([
+        {keyPath: ['progressVisible'], value: true},
+        {keyPath: ['progressPercent'], value: 0},
+        {keyPath: ['progressStatus'], value: 'normal'},
+        {keyPath: ['updateButtonVisible'], value: false}
+    ]));
     message.info('开始下载');
     // 只有下载结束或出异常后返回
     dispatch(downloadUpdate());
@@ -49,7 +49,7 @@ const mapStateToProps = (state) => ({
         return checkLoading === true;
     })(state),
     updateLoading: createSelector((state: any) => {
-        return state.loadings.effects[DOWNLOAD_UPDATE];
+        return state.loading.effects[DOWNLOAD_UPDATE];
     }, (updateLoading) => {
         return updateLoading === true;
     })(state),
