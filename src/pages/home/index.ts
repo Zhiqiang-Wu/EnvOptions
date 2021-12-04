@@ -109,9 +109,9 @@ const onDelete = (props: IProps) => (environmentVariable: EnvironmentVariable) =
 const onEdit = (props: IProps) => (environmentVariable: EnvironmentVariable) => {
     const {history} = props;
     let pathname = '/edit';
-    if (environmentVariable.key.toUpperCase() === 'PATH') {
+    /*if (environmentVariable.key.toUpperCase() === 'PATH') {
         pathname = '/edit2';
-    }
+    }*/
     history.push({
         pathname,
         params: {

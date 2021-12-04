@@ -8,6 +8,11 @@ const Item = Descriptions.Item;
 
 const getValue = (value: EnvironmentVariable | null) => {
     if (value) {
+        return value.value;
+    } else {
+        return '';
+    }
+    /*if (value) {
         if (value.key.toUpperCase() === 'PATH') {
             const dataSource = value.value.split(';').filter((value) => value);
             return (
@@ -22,7 +27,7 @@ const getValue = (value: EnvironmentVariable | null) => {
             return value.value;
         }
     }
-    return '';
+    return '';*/
 };
 
 const DetailView = ({value, loading}: any) => {
