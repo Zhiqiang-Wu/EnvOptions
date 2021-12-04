@@ -42,14 +42,18 @@ const updateNotAvailable = ({setUpdateInfo}: IProps) => () => {
     setUpdateInfo(null);
 };
 
-const selector = createSelector((state: any) => ({
-    loadings: state.loading.effects,
-}), ({loadings}) => ({
-    checkLoading: loadings[CHECK_FOR_UPDATES] === true,
-    updateLoading: loadings[DOWNLOAD_UPDATE] === true,
-}));
-
-const mapStateToProps = (state) => selector(state);
+const mapStateToProps = (state) => ({
+    checkLoading: createSelector((state: any) => {
+        return state.loading.effects[CHECK_FOR_UPDATES];
+    }, (checkLoading) => {
+        return checkLoading === true;
+    })(state),
+    updateLoading: createSelector((state: any) => {
+        return state.loadings.effects[DOWNLOAD_UPDATE];
+    }, (updateLoading) => {
+        return updateLoading === true;
+    })(state),
+});
 
 export default compose(
     withDva(mapStateToProps),
@@ -60,5 +64,5 @@ export default compose(
     withState('updateInfo', 'setUpdateInfo', null),
     withMain('updateAvailable', updateAvailable),
     withMain('updateNotAvailable', updateNotAvailable),
-    pure
+    pure,
 )(AboutView);
