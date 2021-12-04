@@ -212,7 +212,7 @@ const listSystemEnvironmentVariables = (): Promise<Result> => {
                     selected: true,
                 }));
                 environmentVariables = environmentVariables.filter((environmentVariable) => {
-                    return environmentVariable.key.toUpperCase().trim() !== 'PATH';
+                    return environmentVariable.key.toUpperCase().trim() !== 'PATH' && environmentVariable.key.toUpperCase().trim() !== 'PATHEXT';
                 });
                 resolve({code: 200, data: {environmentVariables}});
             }
@@ -562,9 +562,7 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                     statement2.run([systemEnvironmentVariable.key, databaseEnvironmentVariable.id]);
                 }
             } else {
-                if (systemEnvironmentVariable.key.toUpperCase().trim() !== 'PATH' && systemEnvironmentVariable.key.toUpperCase().trim() !== 'PATHEXT') {
-                    statement.run([systemEnvironmentVariable.key, systemEnvironmentVariable.type, systemEnvironmentVariable.value]);
-                }
+                statement.run([systemEnvironmentVariable.key, systemEnvironmentVariable.type, systemEnvironmentVariable.value]);
             }
         });
 
@@ -601,13 +599,6 @@ ipcMain.handle('listEnvironmentVariables', async () => {
                         selected: index >= 0,
                     };
                 });
-                const pathext = systemEnvironmentVariables.find((value) => value.key.toUpperCase().trim() === 'PATHEXT');
-                if (pathext) {
-                    environmentVariables.push({
-                        ...pathext,
-                        selected: true,
-                    });
-                }
                 return {code: 200, data: {environmentVariables}};
             } else {
                 return {code: 1, message: '获取环境变量失败'};
