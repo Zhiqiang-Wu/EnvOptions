@@ -1,7 +1,7 @@
 // @author 吴志强
 // @date 2021/9/11
 
-import {InputNumber, message} from 'antd';
+import {message} from 'antd';
 import {createSelector} from 'reselect';
 import {
     LIST_ENVIRONMENT_VARIABLES,
