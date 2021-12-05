@@ -99,7 +99,7 @@ const exportProgress = ({dependencies, setDependencies}: IProps) => (event, expo
 };
 
 const onGroupIdSave = ({dependencies, setDependencies}: IProps) => (values) => {
-    if(!lodash.trim(values.groupId)) {
+    if (!lodash.trim(values.groupId)) {
         return;
     }
     setDependencies(dependencies.map((dependency) => {
@@ -134,6 +134,12 @@ const onVersionSave = ({dependencies, setDependencies}: IProps) => (values) => {
     }));
 };
 
+const onDelete = ({setDependencies, dependencies}: IProps) => (dependency: Dependency) => {
+    setDependencies(dependencies.filter((item: Dependency) => {
+        return item.id !== dependency.id;
+    }));
+};
+
 const withLifecycle = lifecycle({
     componentDidMount() {
         const {dispatch, setSourcePaths, setPageSize}: any = this.props;
@@ -152,7 +158,7 @@ const withLifecycle = lifecycle({
                 }
             }
         });
-    }
+    },
 });
 
 export default compose(
@@ -172,6 +178,7 @@ export default compose(
         onArtifactIdSave,
         onSelectedChange,
         onVersionSave,
+        onDelete,
     }),
     withLifecycle,
 )(MavenView);

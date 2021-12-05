@@ -2,8 +2,9 @@
 // @date 2021/12/2
 
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import {Table, Button, Space, Badge, Form, FormInstance, Input, Select} from 'antd';
+import {Table, Button, Space, Badge, Form, FormInstance, Input, Select, Typography, Tooltip} from 'antd';
 import styles from './index.scss';
+import {DeleteOutlined} from '@ant-design/icons';
 
 const EditableContext = React.createContext<FormInstance | null>(null);
 
@@ -85,6 +86,7 @@ const MavenView = ({
                        onVersionSave,
                        sourcePaths,
                        pageSize,
+                       onDelete,
                    }: any) => {
     const columns = useMemo(() => {
         return [
@@ -123,6 +125,18 @@ const MavenView = ({
                     title: 'version',
                     onSave: onVersionSave,
                 }),
+            },
+            {
+                key: 'action',
+                title: '操作',
+                width: 60,
+                render: (record) => (
+                    <Tooltip title='删除'>
+                        <Typography.Link>
+                            <DeleteOutlined onClick={() => onDelete(record)}/>
+                        </Typography.Link>
+                    </Tooltip>
+                ),
             },
             {
                 key: 'status',
