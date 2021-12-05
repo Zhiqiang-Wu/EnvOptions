@@ -12,3 +12,11 @@ export const exportDependency = (data: {sourcePath: string, targetPath: string, 
 export const listSourcePaths = (): Promise<Result> => {
     return window.localServices.listSourcePaths();
 };
+
+export const insertSourcePath = (sourcePath:string): Promise<Result> => {
+    return window.localServices.insertSourcePath(sourcePath);
+};
+
+export const deleteSourcePath = (sourcePath:string): Promise<Result> => {
+    return window.localServices.deleteSourcePath(sourcePath);
+};

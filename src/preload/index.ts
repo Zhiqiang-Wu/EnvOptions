@@ -51,6 +51,12 @@ const localServices: any = {
     listSourcePaths: (): Promise<Result> => {
         return ipcRenderer.invoke('listSourcePaths');
     },
+    insertSourcePath: (sourcePath: string): Promise<Result> => {
+        return ipcRenderer.invoke('insertSourcePath', sourcePath);
+    },
+    deleteSourcePath: (sourcePath: string): Promise<Result> => {
+        return ipcRenderer.invoke('deleteSourcePath', sourcePath);
+    },
 };
 
 const localFunctions: any = {

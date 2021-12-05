@@ -2,9 +2,22 @@
 // @date 2021/12/2
 
 import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
-import {Table, Button, Space, Badge, Form, FormInstance, Input, Select, Typography, Tooltip} from 'antd';
+import {
+    Table,
+    Button,
+    Space,
+    Badge,
+    Form,
+    FormInstance,
+    Input,
+    Select,
+    Typography,
+    Tooltip,
+    Row,
+    Col,
+} from 'antd';
 import styles from './index.scss';
-import {DeleteOutlined} from '@ant-design/icons';
+import {DeleteOutlined, CloseOutlined} from '@ant-design/icons';
 
 const EditableContext = React.createContext<FormInstance | null>(null);
 
@@ -87,6 +100,8 @@ const MavenView = ({
                        sourcePaths,
                        pageSize,
                        onDelete,
+                       onSourcePathChange,
+                       onSourcePathDelete,
                    }: any) => {
     const columns = useMemo(() => {
         return [
@@ -169,6 +184,8 @@ const MavenView = ({
                 value={sourcePath}
                 placeholder='选择源'
                 style={{width: '100%'}}
+                optionLabelProp='label'
+                onChange={onSourcePathChange}
                 dropdownRender={(menu) => {
                     return (
                         <div>
@@ -180,14 +197,26 @@ const MavenView = ({
             >
                 {
                     sourcePaths.map((sourcePath) => (
-                        <Select.Option key={sourcePath} value={sourcePath}>{sourcePath}</Select.Option>
+                        <Select.Option key={sourcePath} value={sourcePath} label={sourcePath}>
+                            <Row wrap={false}>
+                                <Col flex='auto' className={styles.sourcePath}>
+                                    {sourcePath}
+                                </Col>
+                                <Col flex='25px'>
+                                    <Typography.Text className={styles.deleteButton}>
+                                        <CloseOutlined
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onSourcePathDelete(sourcePath);
+                                            }}
+                                        />
+                                    </Typography.Text>
+                                </Col>
+                            </Row>
+                        </Select.Option>
                     ))
                 }
             </Select>
-            {/*<Space>
-                <Button type='primary' onClick={onSourceClick}>选择源</Button>
-                <Typography.Text>{sourcePath || ''}</Typography.Text>
-            </Space>*/}
             <div className={styles.actions}>
                 <Button type='primary' onClick={onPomClick}>选择pom文件</Button>
                 <Button

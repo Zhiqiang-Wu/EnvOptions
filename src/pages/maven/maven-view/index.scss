@@ -14,3 +14,17 @@
         right: 0;
     }
 }
+
+.sourcePath {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.deleteButton {
+    float: right;
+
+    &:hover {
+        color: red;
+    }
+}

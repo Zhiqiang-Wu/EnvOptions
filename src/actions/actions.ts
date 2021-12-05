@@ -20,6 +20,8 @@ import {
     LIST_DEPENDENCIES,
     EXPORT_DEPENDENCY,
     LIST_SOURCE_PATHS,
+    INSERT_SOURCE_PATH,
+    DELETE_SOURCE_PATH,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -42,3 +44,5 @@ export const updateUpdateModel = createAction(UPDATE_UPDATE_MODEL);
 export const listDependencies = createAction(LIST_DEPENDENCIES);
 export const exportDependency = createAction(EXPORT_DEPENDENCY);
 export const listSourcePaths = createAction(LIST_SOURCE_PATHS);
+export const insertSourcePath = createAction(INSERT_SOURCE_PATH);
+export const deleteSourcePath = createAction(DELETE_SOURCE_PATH);

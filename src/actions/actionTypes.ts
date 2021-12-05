@@ -21,3 +21,5 @@ export const UPDATE_UPDATE_MODEL = 'updateModel/updateUpdateModel';
 export const LIST_DEPENDENCIES = 'mavenModel/listDependencies';
 export const EXPORT_DEPENDENCY = 'mavenModel/exportDependency';
 export const LIST_SOURCE_PATHS = 'mavenModel/listSourcePaths';
+export const INSERT_SOURCE_PATH = 'mavenModel/insertSourcePath';
+export const DELETE_SOURCE_PATH = 'mavenModel/deleteSourcePath';

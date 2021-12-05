@@ -68,6 +68,8 @@ declare global {
             listDependencies: (pomPath: string) => Promise<Result>;
             exportDependency: (data: {sourcePath: string, targetPath: string, dependencies: Array<Dependency>}) => Promise<Result>;
             listSourcePaths: () => Promise<Result>;
+            insertSourcePath: (sourcePath: string) => Promise<Result>;
+            deleteSourcePath: (sourcePath: string) => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;

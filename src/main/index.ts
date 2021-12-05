@@ -480,15 +480,26 @@ const appQuit = (): void => {
     }
 };
 
+// TODO 待开发 database
+let sourcePaths: Array<string> = [];
+
 const listSourcePaths = (): Promise<Result> => {
     return Promise.resolve({
         code: 200,
         data: {
-            sourcePaths: [
-                'D:\\mvnrepository',
-            ]
+            sourcePaths,
         }
     });
+};
+
+const insertSourcePath = (sourcePath: string): Promise<Result> => {
+    sourcePaths = [sourcePath, ...sourcePaths];
+    return Promise.resolve({code: 200});
+};
+
+const deleteSourcePath = (sourcePath: string): Promise<Result> => {
+    sourcePaths = sourcePaths.filter((item) => item !== sourcePath);
+    return Promise.resolve({code: 200});
 };
 
 protocol.registerSchemesAsPrivileged([
@@ -694,3 +705,11 @@ ipcMain.on('log', (event, args) => {
 ipcMain.handle('listSourcePaths', (): Promise<Result> => {
     return listSourcePaths();
 });
+
+ipcMain.handle('insertSourcePath', ((event, args): Promise<Result> => {
+    return insertSourcePath(args);
+}));
+
+ipcMain.handle('deleteSourcePath', ((event, args): Promise<Result> => {
+    return deleteSourcePath(args);
+}));

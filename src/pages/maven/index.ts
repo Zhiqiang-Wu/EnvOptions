@@ -4,7 +4,14 @@
 import MavenView from '@/pages/maven/maven-view';
 import withDva from '@/components/with-dva';
 import {compose, withState, withHandlers, lifecycle} from 'recompose';
-import {listDependencies, exportDependency, listSourcePaths, getSetting} from '@/actions/actions';
+import {
+    listDependencies,
+    insertSourcePath,
+    exportDependency,
+    listSourcePaths,
+    getSetting,
+    deleteSourcePath,
+} from '@/actions/actions';
 import {message} from 'antd';
 import lodash from 'lodash';
 import withMain from '@/components/with-main';
@@ -16,6 +23,8 @@ interface IProps {
     setSelectedRowKeys: Function;
     dependencies: Array<any>;
     sourcePath: string;
+    sourcePaths: Array<string>;
+    setSourcePaths: Function;
 }
 
 const onPomClick = ({setDependencies, dispatch}: IProps) => () => {
@@ -46,7 +55,7 @@ const onPomClick = ({setDependencies, dispatch}: IProps) => () => {
     });
 };
 
-const onSourceClick = ({setSourcePath}: IProps) => () => {
+const onSourceClick = ({setSourcePath, dispatch, setSourcePaths, sourcePaths}: IProps) => () => {
     const options: OpenDialogOptions1 = {
         modal: true,
         properties: ['openDirectory'],
@@ -55,8 +64,31 @@ const onSourceClick = ({setSourcePath}: IProps) => () => {
         if (result.canceled || !result.filePaths[0]) {
             return;
         }
-        setSourcePath(result.filePaths[0]);
+        const newPath = result.filePaths[0];
+        setSourcePath(newPath);
+        if (!sourcePaths.includes(newPath)) {
+            setSourcePaths([newPath, ...sourcePaths]);
+            dispatch(insertSourcePath(newPath));
+        }
     });
+};
+
+const onSourcePathChange = ({setSourcePath}: IProps) => (value) => {
+    setSourcePath(value);
+};
+
+const onSourcePathDelete = ({
+                                dispatch,
+                                setSourcePath,
+                                setSourcePaths,
+                                sourcePaths,
+                                sourcePath,
+                            }: IProps) => (value: string) => {
+    if (sourcePath === value) {
+        setSourcePath(undefined);
+    }
+    setSourcePaths(sourcePaths.filter((item) => item !== value));
+    dispatch(deleteSourcePath(value));
 };
 
 const disabledCheckbox = () => (dependency: Dependency) => {
@@ -179,6 +211,8 @@ export default compose(
         onSelectedChange,
         onVersionSave,
         onDelete,
+        onSourcePathChange,
+        onSourcePathDelete,
     }),
     withLifecycle,
 )(MavenView);
