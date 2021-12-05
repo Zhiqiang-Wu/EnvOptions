@@ -539,6 +539,7 @@ if (!app.requestSingleInstanceLock()) {
 app.on('ready', async () => {
     if (isDevelopment) {
         await session.defaultSession.loadExtension(path.join(__dirname, '..', '..', '..', 'extension', 'React Developer Tools', '4.21.0_0'));
+        await session.defaultSession.loadExtension(path.join(__dirname, '..', '..', '..', 'extension', 'Redux DevTools', '2.17.2_0'));
     }
     await checkDataFile();
     setVBS();
