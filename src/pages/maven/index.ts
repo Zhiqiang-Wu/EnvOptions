@@ -4,7 +4,7 @@
 import MavenView from '@/pages/maven/maven-view';
 import withDva from '@/components/with-dva';
 import {compose, withState, withHandlers, lifecycle} from 'recompose';
-import {listDependencies, exportDependency, listSourcePaths} from '@/actions/actions';
+import {listDependencies, exportDependency, listSourcePaths, getSetting} from '@/actions/actions';
 import {message} from 'antd';
 import lodash from 'lodash';
 import withMain from '@/components/with-main';
@@ -136,13 +136,21 @@ const onVersionSave = ({dependencies, setDependencies}: IProps) => (values) => {
 
 const withLifecycle = lifecycle({
     componentDidMount() {
-        const {dispatch, setSourcePaths}: any = this.props;
+        const {dispatch, setSourcePaths, setPageSize}: any = this.props;
         dispatch(listSourcePaths()).then((result: Result) => {
             if (result.code !== 200) {
                 message.warn(result.message);
                 return;
             }
             setSourcePaths(result.data.sourcePaths);
+        });
+        dispatch(getSetting('pageSize')).then((result: Result) => {
+            if (result.code === 200) {
+                const pageSize = result.data.pageSize;
+                if (pageSize && pageSize >= 1 && pageSize <= 20) {
+                    setPageSize(pageSize);
+                }
+            }
         });
     }
 });
@@ -151,6 +159,7 @@ export default compose(
     withDva(),
     withState('dependencies', 'setDependencies', []),
     withMain('exportProgress', exportProgress),
+    withState('pageSize', 'setPageSize', 10),
     withState('sourcePath', 'setSourcePath', undefined),
     withState('sourcePaths', 'setSourcePaths', []),
     withState('selectedRowKeys', 'setSelectedRowKeys', []),

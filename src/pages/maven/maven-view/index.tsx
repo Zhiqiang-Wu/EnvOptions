@@ -84,6 +84,7 @@ const MavenView = ({
                        onArtifactIdSave,
                        onVersionSave,
                        sourcePaths,
+                       pageSize,
                    }: any) => {
     const columns = useMemo(() => {
         return [
@@ -199,6 +200,7 @@ const MavenView = ({
                     },
                 }}
                 rowKey={(record) => record.id}
+                pagination={{pageSize}}
             />
         </Space>
     );

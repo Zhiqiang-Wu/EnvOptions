@@ -72,7 +72,8 @@ export default defineConfig({
             name: 'maven',
             icon: 'export',
             exact: true,
-            component: '@/pages/maven'
+            component: '@/pages/maven',
+            footerRender: false,
         },
         {
             path: '/edit',

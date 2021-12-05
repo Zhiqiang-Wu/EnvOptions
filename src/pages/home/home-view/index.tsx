@@ -55,7 +55,6 @@ const HomeView = ({
                       onSwitchChange,
                       typeChecked,
                       pageSize,
-                      onPageSizeChange,
                       showEditAction,
                       showDeleteAction,
                       showLockAction,
@@ -199,15 +198,6 @@ const HomeView = ({
                         unCheckedChildren='类型'
                         onChange={onSwitchChange}
                     />
-                    <Space size={2}>
-                        <Typography.Text>每页展示数量:</Typography.Text>
-                        <InputNumber
-                            value={pageSize}
-                            min={1}
-                            max={20}
-                            onChange={onPageSizeChange}
-                        />
-                    </Space>
                 </Space>
                 <Button type='primary' className={styles.insert} onClick={onInsert}>添加</Button>
             </div>

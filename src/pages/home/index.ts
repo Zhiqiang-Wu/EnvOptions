@@ -265,21 +265,6 @@ const onSwitchChange = (props: IProps) => (selected) => {
     dispatch(updateSetting([{key: 'type', value: selected}]));
 };
 
-let timer;
-
-const onPageSizeChange = (props: IProps) => (pageSize) => {
-    if (!pageSize) {
-        return;
-    }
-    const {dispatch, setPageSize} = props;
-    setPageSize(pageSize);
-    // 限流
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-        dispatch(updateSetting([{key: 'pageSize', value: pageSize}]));
-    }, 500);
-};
-
 const showEditAction = () => (environmentVariable: EnvironmentVariable): boolean => {
     if (environmentVariable.key.toUpperCase() === 'PATH' || environmentVariable.key.toUpperCase() === 'PATHEXT') {
         return false;
@@ -409,7 +394,6 @@ export default compose(
         onLock,
         onUnlock,
         onSwitchChange,
-        onPageSizeChange,
         showEditAction,
         showDeleteAction,
         showLockAction,
