@@ -22,6 +22,7 @@ import {
     LIST_SOURCE_PATHS,
     INSERT_SOURCE_PATH,
     DELETE_SOURCE_PATH,
+    UPDATE_MAVEN_MODEL,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -46,3 +47,4 @@ export const exportDependency = createAction(EXPORT_DEPENDENCY);
 export const listSourcePaths = createAction(LIST_SOURCE_PATHS);
 export const insertSourcePath = createAction(INSERT_SOURCE_PATH);
 export const deleteSourcePath = createAction(DELETE_SOURCE_PATH);
+export const updateMavenModel = createAction(UPDATE_MAVEN_MODEL);

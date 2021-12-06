@@ -8,11 +8,22 @@ import {
     insertSourcePath,
     deleteSourcePath,
 } from '@/services/mavenService';
-import {Map} from 'immutable';
+import {Map, List, fromJS} from 'immutable';
 
 export default {
     namespace: 'mavenModel',
-    state: Map({}),
+    state: Map({
+        exportTask: List([]),
+    }),
+    reducers: {
+        updateMavenModel(state, action) {
+            let newState = state;
+            action.payload.forEach((value) => {
+                newState = newState.setIn(value.keyPath, fromJS(value.value));
+            });
+            return newState;
+        },
+    },
     effects: {
         * listDependencies({payload}, {call}) {
             return yield call(listDependencies, payload);
