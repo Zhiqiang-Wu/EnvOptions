@@ -8,7 +8,7 @@ import {CopyrightCircleOutlined} from '@ant-design/icons';
 const FooterView = () => {
     return (
         <div className={styles.footer}>
-            Copyright <CopyrightCircleOutlined/> 2021-2021 Wuzhiqiang
+            Copyright <CopyrightCircleOutlined/> 2021-2022 Wuzhiqiang
         </div>
     );
 };
