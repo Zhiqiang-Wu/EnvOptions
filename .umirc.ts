@@ -76,6 +76,14 @@ export default defineConfig({
             footerRender: false,
         },
         {
+            path: '/scan',
+            name: '扫码',
+            icon: 'scan',
+            exact: true,
+            component: '@/pages/scan',
+            footerRender: false,
+        },
+        {
             path: '/edit',
             name: '编辑',
             exact: true,
