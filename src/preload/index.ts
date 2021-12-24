@@ -1,5 +1,4 @@
 import {contextBridge, ipcRenderer, OpenDialogReturnValue} from 'electron';
-import {exportDependency} from '@/services/mavenService';
 import adapter from 'webrtc-adapter';
 
 console.log(adapter);
