@@ -23,6 +23,8 @@ import {
     INSERT_SOURCE_PATH,
     DELETE_SOURCE_PATH,
     UPDATE_MAVEN_MODEL,
+    UPDATE_SCAN_MODEL,
+    LIST_VIDEO_INPUT_DEVICES,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -48,3 +50,6 @@ export const listSourcePaths = createAction(LIST_SOURCE_PATHS);
 export const insertSourcePath = createAction(INSERT_SOURCE_PATH);
 export const deleteSourcePath = createAction(DELETE_SOURCE_PATH);
 export const updateMavenModel = createAction(UPDATE_MAVEN_MODEL);
+
+export const updateScanModel = createAction(UPDATE_SCAN_MODEL);
+export const listVideoInputDevices = createAction(LIST_VIDEO_INPUT_DEVICES);

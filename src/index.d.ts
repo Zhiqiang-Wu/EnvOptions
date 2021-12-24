@@ -44,6 +44,12 @@ declare global {
         listener: (event: IpcRendererEvent, ...arg: any[]) => void;
     }
 
+    type VideoInputDevice = {
+        deviceId: string;
+        groupId: string;
+        label: string;
+    }
+
     type MainHandler = (props: any) => (event: IpcRendererEvent, ...arg: any[]) => void;
 
     interface OpenDialogOptions1 extends OpenDialogOptions {

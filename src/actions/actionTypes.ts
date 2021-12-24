@@ -24,3 +24,6 @@ export const LIST_SOURCE_PATHS = 'mavenModel/listSourcePaths';
 export const INSERT_SOURCE_PATH = 'mavenModel/insertSourcePath';
 export const DELETE_SOURCE_PATH = 'mavenModel/deleteSourcePath';
 export const UPDATE_MAVEN_MODEL = 'mavenModel/updateMavenModel';
+
+export const UPDATE_SCAN_MODEL = 'scanModel/updateScanModel';
+export const LIST_VIDEO_INPUT_DEVICES = 'scanModel/listVideoInputDevices';
