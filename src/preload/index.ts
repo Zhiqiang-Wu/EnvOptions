@@ -59,6 +59,9 @@ const localServices: any = {
     deleteSourcePath: (sourcePath: string): Promise<Result> => {
         return ipcRenderer.invoke('deleteSourcePath', sourcePath);
     },
+    sendChar: (str: string): void => {
+        ipcRenderer.send('sendChar', str);
+    },
 };
 
 const localFunctions: any = {

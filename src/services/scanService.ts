@@ -28,7 +28,7 @@ let timer;
 
 const decode = (deviceId, delay) => {
     reader.decodeOnceFromVideoDevice(deviceId).then((r) => {
-        console.log(r.getText());
+        window.localServices.sendChar(r.getText());
         timer = setTimeout(() => {
             decode(deviceId, delay);
         }, delay);

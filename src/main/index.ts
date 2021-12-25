@@ -49,6 +49,7 @@ const loadDLL = () => {
     }
     dll = Library(dllPath, {
         sendSettingChange: [ref.types.void, []],
+        sendChar: [ref.types.void, [ref.types.CString]],
     });
 };
 
@@ -488,7 +489,7 @@ const listSourcePaths = (): Promise<Result> => {
         code: 200,
         data: {
             sourcePaths,
-        }
+        },
     });
 };
 
@@ -500,6 +501,13 @@ const insertSourcePath = (sourcePath: string): Promise<Result> => {
 const deleteSourcePath = (sourcePath: string): Promise<Result> => {
     sourcePaths = sourcePaths.filter((item) => item !== sourcePath);
     return Promise.resolve({code: 200});
+};
+
+const sendChar = (str: string): void => {
+    if (!dll) {
+        loadDLL();
+    }
+    dll.sendChar(str);
 };
 
 protocol.registerSchemesAsPrivileged([
@@ -714,3 +722,7 @@ ipcMain.handle('insertSourcePath', ((event, args): Promise<Result> => {
 ipcMain.handle('deleteSourcePath', ((event, args): Promise<Result> => {
     return deleteSourcePath(args);
 }));
+
+ipcMain.on('sendChar', (event, args) => {
+    sendChar(args);
+});
