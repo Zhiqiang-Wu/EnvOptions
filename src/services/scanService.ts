@@ -4,6 +4,7 @@
 import {BrowserMultiFormatReader} from '@zxing/library';
 
 let reader: BrowserMultiFormatReader;
+const audio = new Audio('https://env-options.oss-cn-hangzhou.aliyuncs.com/resources/sound.wav');
 
 export const listVideoInputDevices = (): Promise<Result> => {
     if (!reader) {
@@ -30,6 +31,9 @@ let enter;
 
 const decode = (deviceId, delay) => {
     reader.decodeOnceFromVideoDevice(deviceId).then((r) => {
+        if (audio.networkState === 1) {
+            audio.play();
+        }
         if (enter) {
             window.localServices.sendChar(r.getText() + suffix + '\n');
         } else {
