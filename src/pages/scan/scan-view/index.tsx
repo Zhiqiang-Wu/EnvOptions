@@ -2,7 +2,7 @@
 // @date 2021/12/24
 
 import React from 'react';
-import {Switch, Table, Space, InputNumber, Typography} from 'antd';
+import {Switch, Table, Space, InputNumber, Typography, Input, Checkbox} from 'antd';
 import styles from './index.scss';
 
 const ScanView = ({
@@ -14,6 +14,10 @@ const ScanView = ({
                       loading,
                       selectedRowKeys,
                       onDelayChange,
+                      suffix,
+                      onSuffixChange,
+                      enter,
+                      onEnterChange,
                   }: any) => {
     const columns = [
         {
@@ -56,6 +60,21 @@ const ScanView = ({
                             onChange={onDelayChange}
                         />
                     </Space>
+                    <Space size={2}>
+                        <Typography.Text>后缀:</Typography.Text>
+                        <Input
+                            disabled={enable}
+                            value={suffix}
+                            onChange={onSuffixChange}
+                        />
+                    </Space>
+                    <Checkbox
+                        disabled={enable}
+                        checked={enter}
+                        onChange={onEnterChange}
+                    >
+                        追加回车
+                    </Checkbox>
                 </Space>
             </div>
             <Table

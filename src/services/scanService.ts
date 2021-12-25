@@ -25,10 +25,16 @@ export const listVideoInputDevices = (): Promise<Result> => {
 };
 
 let timer;
+let suffix = '';
+let enter;
 
 const decode = (deviceId, delay) => {
     reader.decodeOnceFromVideoDevice(deviceId).then((r) => {
-        window.localServices.sendChar(r.getText());
+        if (enter) {
+            window.localServices.sendChar(r.getText() + suffix + '\n');
+        } else {
+            window.localServices.sendChar(r.getText() + suffix);
+        }
         timer = setTimeout(() => {
             decode(deviceId, delay);
         }, delay);
@@ -37,8 +43,10 @@ const decode = (deviceId, delay) => {
     });
 }
 
-export const openScan = ({deviceId, delay}): void => {
-    decode(deviceId, delay);
+export const openScan = (data: {deviceId, delay, suffix, enter}): void => {
+    suffix = data.suffix;
+    enter = data.enter;
+    decode(data.deviceId, data.delay);
 };
 
 export const closeScan = (): void => {

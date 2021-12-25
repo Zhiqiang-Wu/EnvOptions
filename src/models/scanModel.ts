@@ -10,6 +10,8 @@ export default {
         enable: false,
         selectedRowKeys: List([]),
         delay: 2000,
+        suffix: '',
+        enter: false,
     }),
     reducers: {
         updateScanModel(state, action) {

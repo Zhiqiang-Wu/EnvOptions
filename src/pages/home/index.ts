@@ -371,7 +371,7 @@ const mapStateToProps = (state) => ({
         (state) => state.loading.effects[INSERT_ENVIRONMENT_VARIABLE],
     ], (loading1) => {
         return loading1 === true;
-    }),
+    })(state),
 });
 
 export default compose(
