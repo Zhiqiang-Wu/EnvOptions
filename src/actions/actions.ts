@@ -25,6 +25,8 @@ import {
     UPDATE_MAVEN_MODEL,
     UPDATE_SCAN_MODEL,
     LIST_VIDEO_INPUT_DEVICES,
+    OPEN_SCAN,
+    CLOSE_SCAN,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -53,3 +55,5 @@ export const updateMavenModel = createAction(UPDATE_MAVEN_MODEL);
 
 export const updateScanModel = createAction(UPDATE_SCAN_MODEL);
 export const listVideoInputDevices = createAction(LIST_VIDEO_INPUT_DEVICES);
+export const openScan = createAction(OPEN_SCAN);
+export const closeScan = createAction(CLOSE_SCAN);
