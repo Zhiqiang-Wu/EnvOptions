@@ -2,15 +2,18 @@
 // @date 2021/12/24
 
 import React from 'react';
-import {Switch, Table} from 'antd';
+import {Switch, Table, Space, InputNumber, Typography} from 'antd';
+import styles from './index.scss';
 
 const ScanView = ({
+                      delay,
                       onSelectedChange,
                       enable,
                       onSwitchChange,
                       videoInputDevices,
                       loading,
                       selectedRowKeys,
+                      onDelayChange,
                   }: any) => {
     const columns = [
         {
@@ -33,14 +36,28 @@ const ScanView = ({
         },
     ];
     return (
-        <div>
-            <Switch
-                disabled={selectedRowKeys.length <= 0}
-                onChange={onSwitchChange}
-                checked={enable}
-                checkedChildren='开启'
-                unCheckedChildren='关闭'
-            />
+        <>
+            <div className={styles.actions}>
+                <Space size={'large'}>
+                    <Switch
+                        disabled={selectedRowKeys.length <= 0}
+                        onChange={onSwitchChange}
+                        checked={enable}
+                        checkedChildren='开启'
+                        unCheckedChildren='关闭'
+                    />
+                    <Space size={2}>
+                        <Typography.Text>延迟:</Typography.Text>
+                        <InputNumber
+                            disabled={enable}
+                            value={delay}
+                            min={1000}
+                            max={10000}
+                            onChange={onDelayChange}
+                        />
+                    </Space>
+                </Space>
+            </div>
             <Table
                 loading={loading}
                 columns={columns}
@@ -52,7 +69,7 @@ const ScanView = ({
                     onChange: onSelectedChange,
                 }}
             />
-        </div>
+        </>
     );
 };
 

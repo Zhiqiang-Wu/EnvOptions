@@ -5,7 +5,7 @@ import ScanView from '@/pages/scan/scan-view';
 import {compose, withHandlers, lifecycle, withState} from 'recompose';
 import withDva from '@/components/with-dva';
 import {createSelector} from 'reselect';
-import {updateScanModel, listVideoInputDevices} from '@/actions/actions';
+import {updateScanModel, listVideoInputDevices, openScan, closeScan} from '@/actions/actions';
 import {message} from 'antd';
 import {LIST_VIDEO_INPUT_DEVICES} from '@/actions/actionTypes';
 import lodash from 'lodash';
@@ -15,12 +15,18 @@ interface IProps {
     enable: boolean;
     selectedRowKeys: Array<string>;
     setSelectedRowKeys: Function;
+    delay: number;
 }
 
-const onSwitchChange = ({dispatch}: IProps) => (enable) => {
+const onSwitchChange = ({dispatch, selectedRowKeys, delay}: IProps) => (enable) => {
     dispatch(updateScanModel([
         {keyPath: ['enable'], value: enable}
     ]));
+    if (enable) {
+        dispatch(openScan({deviceId: selectedRowKeys[0], delay}));
+    } else {
+        dispatch(closeScan());
+    }
 };
 
 const onSelectedChange = ({selectedRowKeys, enable, dispatch}: IProps) => (keys: Array<string>) => {
@@ -30,6 +36,15 @@ const onSelectedChange = ({selectedRowKeys, enable, dispatch}: IProps) => (keys:
     dispatch(updateScanModel([
         {keyPath: ['selectedRowKeys'], value: lodash.xor(selectedRowKeys, keys)}
     ]));
+};
+
+const onDelayChange = ({dispatch}: IProps) => (delay) => {
+    if (!delay) {
+        return;
+    }
+    dispatch(updateScanModel([{
+        keyPath: ['delay'], value: delay
+    }]));
 };
 
 const withLifecycle = lifecycle({
@@ -59,6 +74,11 @@ const mapStateToProps = (state) => ({
     }, (enable) => {
         return enable;
     })(state),
+    delay: createSelector(() => {
+        return state.scanModel.get('delay');
+    }, (delay) => {
+        return delay;
+    })(state),
     loading: createSelector(() => {
         return state.loading.effects[LIST_VIDEO_INPUT_DEVICES]
     }, (loading) => {
@@ -77,6 +97,7 @@ export default compose(
     withHandlers({
         onSwitchChange,
         onSelectedChange,
+        onDelayChange,
     }),
     withLifecycle,
 )(ScanView);

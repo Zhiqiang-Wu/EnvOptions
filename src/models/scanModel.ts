@@ -2,13 +2,14 @@
 // @date 2021/12/24
 
 import {fromJS, Map, List} from 'immutable';
-import {listVideoInputDevices} from '@/services/scanService';
+import {listVideoInputDevices, openScan, closeScan} from '@/services/scanService';
 
 export default {
     namespace: 'scanModel',
     state: Map({
         enable: false,
         selectedRowKeys: List([]),
+        delay: 2000,
     }),
     reducers: {
         updateScanModel(state, action) {
@@ -22,6 +23,12 @@ export default {
     effects: {
         * listVideoInputDevices({payload}, {call}) {
             return yield call(listVideoInputDevices, payload);
+        },
+        * openScan({payload}, {call}) {
+            return yield call(openScan, payload);
+        },
+        * closeScan({payload}, {call}) {
+            return yield call(closeScan, payload);
         },
     },
 };
