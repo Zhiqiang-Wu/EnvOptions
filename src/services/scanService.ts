@@ -3,7 +3,7 @@
 
 import {BrowserMultiFormatReader} from '@zxing/library';
 
-let reader;
+let reader: BrowserMultiFormatReader;
 
 export const listVideoInputDevices = (): Promise<Result> => {
     if (!reader) {
@@ -22,4 +22,26 @@ export const listVideoInputDevices = (): Promise<Result> => {
             message: e.message
         };
     });
+};
+
+let timer;
+
+const decode = (deviceId, delay) => {
+    reader.decodeOnceFromVideoDevice(deviceId).then((r) => {
+        console.log(r.getText());
+        timer = setTimeout(() => {
+            decode(deviceId, delay);
+        }, delay);
+    }).catch((err) => {
+
+    });
+}
+
+export const openScan = ({deviceId, delay}): void => {
+    decode(deviceId, delay);
+};
+
+export const closeScan = (): void => {
+    clearTimeout(timer);
+    reader.reset();
 };
