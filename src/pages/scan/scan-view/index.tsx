@@ -60,14 +60,14 @@ const ScanView = ({
                             onChange={onDelayChange}
                         />
                     </Space>
-                    <Space size={2}>
+                    {/*<Space size={2}>
                         <Typography.Text>后缀:</Typography.Text>
                         <Input
                             disabled={enable}
                             value={suffix}
                             onChange={onSuffixChange}
                         />
-                    </Space>
+                    </Space>*/}
                     {/*<Checkbox
                         disabled={enable}
                         checked={enter}
