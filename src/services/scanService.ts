@@ -35,7 +35,7 @@ const decode = (deviceId, delay) => {
             audio.play();
         }
         if (enter) {
-            window.localServices.sendChar(r.getText() + suffix + '\n');
+            window.localServices.sendChar(r.getText() + suffix + '\r');
         } else {
             window.localServices.sendChar(r.getText() + suffix);
         }

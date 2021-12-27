@@ -68,13 +68,13 @@ const ScanView = ({
                             onChange={onSuffixChange}
                         />
                     </Space>*/}
-                    {/*<Checkbox
+                    <Checkbox
                         disabled={enable}
                         checked={enter}
                         onChange={onEnterChange}
                     >
                         追加回车
-                    </Checkbox>*/}
+                    </Checkbox>
                 </Space>
             </div>
             <Table
