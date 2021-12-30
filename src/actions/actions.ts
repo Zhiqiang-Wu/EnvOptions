@@ -27,6 +27,7 @@ import {
     LIST_VIDEO_INPUT_DEVICES,
     OPEN_SCAN,
     CLOSE_SCAN,
+    PASSWORD_CRACKING,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -57,3 +58,5 @@ export const updateScanModel = createAction(UPDATE_SCAN_MODEL);
 export const listVideoInputDevices = createAction(LIST_VIDEO_INPUT_DEVICES);
 export const openScan = createAction(OPEN_SCAN);
 export const closeScan = createAction(CLOSE_SCAN);
+
+export const passwordCracking = createAction(PASSWORD_CRACKING);
