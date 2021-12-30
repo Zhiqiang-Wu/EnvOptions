@@ -84,6 +84,14 @@ export default defineConfig({
             footerRender: false,
         },
         {
+            path: '/pos',
+            name: 'POS',
+            icon: 'experiment',
+            exact: true,
+            component: '@/pages/pos',
+            footerRender: false,
+        },
+        {
             path: '/edit',
             name: '编辑',
             exact: true,
