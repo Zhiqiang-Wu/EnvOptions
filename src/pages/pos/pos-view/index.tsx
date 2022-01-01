@@ -4,7 +4,13 @@
 import React from 'react';
 import {Typography, Input, Button, Space} from 'antd';
 
-const PosView = ({passwordCracking, password, onCiphertextChange, ciphertext, loading}: any) => {
+const PosView = ({
+                     passwordCracking,
+                     password,
+                     onCiphertextChange,
+                     ciphertext,
+                     loading,
+                 }: any) => {
     return (
         <div>
             <Typography.Title level={3}>JavaPOS密码破解</Typography.Title>
