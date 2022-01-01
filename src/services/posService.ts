@@ -1,6 +1,8 @@
 // @author 吴志强
 // @date 2021/12/30
 
+import lodash from 'lodash';
+
 /**
  * 加密
  */
@@ -11,7 +13,7 @@ const encrypt = (plaintext: string) => {
     for (let i = 0; i < length; i++) {
         let k = 255 - plaintext.charCodeAt(i);
         for (let j = 0; j < (length - i); j++) {
-            k = ((2 * k) % 256) + (k / 128);
+            k = lodash.floor(((2 * k) % 256) + (k / 128), 0);
         }
         ciphertext += ',';
         ciphertext += k;
@@ -23,7 +25,19 @@ const encrypt = (plaintext: string) => {
             }
         }
     }
-    return ciphertext.substring(0, ciphertext.length - 1);
+    return ciphertext.substring(1);
+};
+
+const leftPad = (str: string, size: number, padChar: string): string => {
+    const n = size - str.length;
+    if (n <= 0) {
+        return str;
+    }
+    let left = '';
+    for (let i = 0; i < n; i++) {
+        left += padChar;
+    }
+    return left + str;
 };
 
 export const passwordCracking = (ciphertext: string): Promise<Result> => {
@@ -31,17 +45,18 @@ export const passwordCracking = (ciphertext: string): Promise<Result> => {
         const length = ciphertext.split(',').length;
 
         let str = '1';
-        for (let i = 0; i < length - 1; i++) {
+        for (let i = 0; i < length; i++) {
             str += '0';
         }
-        const begin = Number(str);
-        const end = Number(str + '0') - 1;
+        const begin = 0;
+        const end = Number(str) - 1;
 
         let password;
         for (let i = begin; i <= end; i++) {
-            const ciphertextTemp = encrypt(String(i));
+            const str = leftPad(String(i), length, '0');
+            const ciphertextTemp = encrypt(str);
             if (ciphertextTemp === ciphertext) {
-                password = String(i);
+                password = str;
                 break;
             }
         }
