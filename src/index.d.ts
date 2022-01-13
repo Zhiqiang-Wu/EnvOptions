@@ -22,6 +22,14 @@ declare global {
         locked: 0 | 1;
     }
 
+    type Host = {
+        id: number;
+        ip: string;
+        domain: string;
+        selected: boolean;
+        description?: string;
+    }
+
     type Setting = {
         key: string;
         value: any;
