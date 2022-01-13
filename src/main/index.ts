@@ -39,6 +39,7 @@ let logger: Logger;
 let dll;
 const parser = new Parser();
 const envPath = 'HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment';
+const hostsPath = 'C:\\Windows\\System32\\drivers\\etc\\hosts';
 
 const loadDLL = () => {
     let dllPath;
@@ -465,8 +466,22 @@ const listDatabaseHosts = () => {
 
 };
 
-const listSystemHosts = () => {
-
+const listSystemHosts = (): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        const str = fsExtra.readFileSync(hostsPath, 'utf-8');
+        const systemHosts = str.split('\n').filter((value) => value).map((value) => {
+            const arr = value.trim().split(' ');
+            const ip = arr.shift();
+            const domain = arr.join(' ');
+            return {ip, domain};
+        });
+        resolve({
+            code: 200,
+            data: {
+                systemHosts,
+            },
+        });
+    });
 };
 
 const quitAndInstall = (): void => {
@@ -735,6 +750,28 @@ ipcMain.on('sendChar', (event, args) => {
     sendChar(args);
 });
 
-ipcMain.handle('listHosts', () => {
-
+ipcMain.handle('listHosts', (): Promise<Result> => {
+    listSystemHosts();
+    return Promise.resolve({
+        code: 200,
+        data: {
+            hosts: [
+                {
+                    id: 1,
+                    ip: '123',
+                    domain: '321',
+                },
+                {
+                    id: 2,
+                    ip: '1asda',
+                    domain: '213123123',
+                },
+                {
+                    id: 3,
+                    ip: '12312312312',
+                    domain: '123333333333',
+                },
+            ],
+        },
+    });
 });

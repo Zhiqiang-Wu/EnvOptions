@@ -85,6 +85,7 @@ declare global {
             insertSourcePath: (sourcePath: string) => Promise<Result>;
             deleteSourcePath: (sourcePath: string) => Promise<Result>;
             sendChar: (str: string) => void;
+            listHosts: () => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;

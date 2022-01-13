@@ -62,6 +62,9 @@ const localServices: any = {
     sendChar: (str: string): void => {
         ipcRenderer.send('sendChar', str);
     },
+    listHosts: (): Promise<Result> => {
+        return ipcRenderer.invoke('listHosts');
+    },
 };
 
 const localFunctions: any = {
