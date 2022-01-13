@@ -92,6 +92,14 @@ export default defineConfig({
             footerRender: false,
         },
         {
+            path: '/hosts',
+            name: 'hosts',
+            icon: 'shareAlt',
+            exact: true,
+            component: '@/pages/hosts',
+            footerRender: false,
+        },
+        {
             path: '/edit',
             name: '编辑',
             exact: true,
