@@ -2,7 +2,7 @@
 // @date 2021/12/24
 
 import React from 'react';
-import {Switch, Table, Space, InputNumber, Typography, Input, Checkbox} from 'antd';
+import {Switch, Table, Space, InputNumber, Typography, Checkbox} from 'antd';
 import styles from './index.scss';
 
 const ScanView = ({
