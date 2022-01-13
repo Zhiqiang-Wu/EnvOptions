@@ -28,6 +28,7 @@ import {
     OPEN_SCAN,
     CLOSE_SCAN,
     PASSWORD_CRACKING,
+    LIST_HOSTS,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -60,3 +61,5 @@ export const openScan = createAction(OPEN_SCAN);
 export const closeScan = createAction(CLOSE_SCAN);
 
 export const passwordCracking = createAction(PASSWORD_CRACKING);
+
+export const listHosts = createAction(LIST_HOSTS);

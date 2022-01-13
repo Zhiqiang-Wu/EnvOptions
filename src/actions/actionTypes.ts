@@ -31,3 +31,5 @@ export const OPEN_SCAN = 'scanModel/openScan';
 export const CLOSE_SCAN = 'scanModel/closeScan';
 
 export const PASSWORD_CRACKING = 'posModel/passwordCracking';
+
+export const LIST_HOSTS = 'hostModel/listHosts';
