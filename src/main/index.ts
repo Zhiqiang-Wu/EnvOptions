@@ -461,6 +461,14 @@ const exportDependency = ({
     });
 };
 
+const listDatabaseHosts = () => {
+
+};
+
+const listSystemHosts = () => {
+
+};
+
 const quitAndInstall = (): void => {
     if (baseDB) {
         baseDB.close(() => {
@@ -725,4 +733,8 @@ ipcMain.handle('deleteSourcePath', ((event, args): Promise<Result> => {
 
 ipcMain.on('sendChar', (event, args) => {
     sendChar(args);
+});
+
+ipcMain.handle('listHosts', () => {
+
 });
