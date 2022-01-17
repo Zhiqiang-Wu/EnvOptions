@@ -2,9 +2,11 @@
 // @date 2021/1/14
 
 import React from 'react';
-import {Table} from 'antd';
+import {Table, Tooltip, Button} from 'antd';
+import styles from './index.scss';
+import {ReloadOutlined} from '@ant-design/icons';
 
-const HostsView = ({hosts, loading}: any) => {
+const HostsView = ({hosts, tableLoading, reloadButtonDisabled, onReload, selectedRowKeys, onSelectedChange}: any) => {
     const columns = [
         {
             key: 'ip',
@@ -16,22 +18,30 @@ const HostsView = ({hosts, loading}: any) => {
             title: '域名',
             dataIndex: 'domain',
         },
-        {
-            key: 'description',
-            title: '描述',
-            dataIndex: 'description'
-        }
     ];
     return (
-        <Table
-            loading={loading}
-            columns={columns}
-            dataSource={hosts}
-            rowKey={(record) => record.id}
-            rowSelection={{
-                hideSelectAll: true,
-            }}
-        />
+        <>
+            <div className={styles.action}>
+                <Tooltip title='刷新'>
+                    <Button
+                        icon={<ReloadOutlined/>}
+                        disabled={reloadButtonDisabled}
+                        onClick={onReload}
+                    />
+                </Tooltip>
+            </div>
+            <Table
+                loading={tableLoading}
+                columns={columns}
+                dataSource={hosts}
+                rowKey={(record) => record.id}
+                rowSelection={{
+                    hideSelectAll: true,
+                    selectedRowKeys,
+                    onChange: onSelectedChange,
+                }}
+            />
+        </>
     );
 };
 

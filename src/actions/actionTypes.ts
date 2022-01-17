@@ -33,3 +33,5 @@ export const CLOSE_SCAN = 'scanModel/closeScan';
 export const PASSWORD_CRACKING = 'posModel/passwordCracking';
 
 export const LIST_HOSTS = 'hostModel/listHosts';
+export const SET_HOST = 'hostModel/setHost';
+export const DELETE_HOST = 'hostModel/deleteHost';

@@ -28,6 +28,7 @@ import {Library} from 'ffi-napi';
 import ref from 'ref-napi';
 import {Parser} from 'xml2js';
 import {v4 as uuidV4} from 'uuid';
+import {isHost} from '../utils/hostUtil';
 // import semver from 'semver';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -462,14 +463,22 @@ const exportDependency = ({
     });
 };
 
-const listDatabaseHosts = () => {
-
+const listDatabaseHosts = (): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        baseDB.all('SELECT * FROM host', (err, result) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200, data: {databaseHosts: result}});
+            }
+        });
+    });
 };
 
 const listSystemHosts = (): Promise<Result> => {
     return new Promise<Result>((resolve) => {
         const str = fsExtra.readFileSync(hostsPath, 'utf-8');
-        const systemHosts = str.split('\n').filter((value) => value).map((value) => {
+        const systemHosts = str.split('\n').filter((value) => isHost(value)).map((value) => {
             const arr = value.trim().split(' ');
             const ip = arr.shift();
             const domain = arr.join(' ');
@@ -481,6 +490,50 @@ const listSystemHosts = (): Promise<Result> => {
                 systemHosts,
             },
         });
+    });
+};
+
+const setHost = (host: Host): Promise<Result> => {
+    const str = fsExtra.readFileSync(hostsPath, 'utf-8');
+    let arr = str.split('\n');
+    if (host.selected) {
+        let flag = false;
+        arr = arr.map((value) => {
+            if (isHost(value)) {
+                const arr = value.trim().split(' ');
+                const ip = arr.shift();
+                const domain = arr.join(' ');
+                if (domain === host.domain) {
+                    flag = true;
+                    return host.ip + ' ' + domain;
+                } else {
+                    return value;
+                }
+            } else {
+                return value;
+            }
+        });
+        if (!flag) {
+            arr.push(host.ip + ' ' + host.domain);
+        }
+    } else {
+        arr = arr.filter((value) => {
+            if (isHost(value)) {
+                const arr = value.trim().split(' ');
+                const ip = arr.shift();
+                const domain = arr.join(' ');
+                return domain !== host.domain;
+            } else {
+                return true;
+            }
+        });
+    }
+
+    const newStr = arr.join('\n');
+    fsExtra.writeFileSync(hostsPath, newStr, 'utf-8');
+
+    return Promise.resolve({
+        code: 200
     });
 };
 
@@ -751,27 +804,75 @@ ipcMain.on('sendChar', (event, args) => {
 });
 
 ipcMain.handle('listHosts', (): Promise<Result> => {
-    listSystemHosts();
-    return Promise.resolve({
-        code: 200,
-        data: {
-            hosts: [
-                {
-                    id: 1,
-                    ip: '123',
-                    domain: '321',
-                },
-                {
-                    id: 2,
-                    ip: '1asda',
-                    domain: '213123123',
-                },
-                {
-                    id: 3,
-                    ip: '12312312312',
-                    domain: '123333333333',
-                },
-            ],
-        },
+    return Promise.all([listSystemHosts(), listDatabaseHosts()]).then(async (resultArray: Array<Result>) => {
+        const result1 = resultArray[0];
+        if (result1.code !== 200) {
+            return result1;
+        }
+        const result2 = resultArray[1];
+        if (result2.code !== 200) {
+            return result2;
+        }
+        const systemHosts: Array<Host> = result1.data.systemHosts;
+        let databaseHosts: Array<Host> = result2.data.databaseHosts;
+
+        const statement: sqlite3.Statement = baseDB.prepare('INSERT INTO host (ip, domain) VALUES (?, ?)');
+
+        systemHosts.forEach((systemHost) => {
+            const dataHost = databaseHosts.find((dataHost) => {
+                return systemHost.ip === dataHost.ip && systemHost.domain === dataHost.domain;
+            });
+            if (!dataHost) {
+                statement.run([systemHost.ip, systemHost.domain]);
+            }
+        });
+
+        const insertResult: Result = await new Promise<Result>((resolve) => {
+            statement.finalize((err) => {
+                if (err) {
+                    resolve({
+                        code: 1,
+                        message: err.message
+                    });
+                } else {
+                    resolve({code: 200});
+                }
+            });
+        });
+
+        if (insertResult.code !== 200) {
+            return insertResult;
+        }
+
+        const listDatabaseHostsResult: Result = await listDatabaseHosts();
+        if (listDatabaseHostsResult.code !== 200) {
+            return listDatabaseHostsResult;
+        }
+
+        databaseHosts = listDatabaseHostsResult.data.databaseHosts;
+
+        const hosts = databaseHosts.map((databaseHost: Host) => {
+            const index = systemHosts.findIndex((systemHost: Host) => {
+                return databaseHost.ip === systemHost.ip && databaseHost.domain === systemHost.domain;
+            });
+            return {
+                ...databaseHost,
+                selected: index >= 0,
+            };
+        });
+
+        return {code: 200, data: {hosts}};
     });
+});
+
+ipcMain.handle('setHost', (event, args): Promise<Result> => {
+    return setHost(args);
+});
+
+ipcMain.handle('insertHost', () => {
+
+});
+
+ipcMain.handle('deleteHost', () => {
+
 });

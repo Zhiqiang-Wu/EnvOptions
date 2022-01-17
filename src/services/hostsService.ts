@@ -4,3 +4,11 @@
 export const listHosts = (): Promise<Result> => {
     return window.localServices.listHosts();
 };
+
+export const setHost = (host: Host): Promise<Result> => {
+    return window.localServices.setHost(host);
+};
+
+export const deleteHost = (host: Host): Promise<Result> => {
+    return window.localServices.setHost(host);
+};

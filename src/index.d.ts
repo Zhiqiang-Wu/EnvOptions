@@ -27,7 +27,7 @@ declare global {
         ip: string;
         domain: string;
         selected: boolean;
-        description?: string;
+        // description?: string;
     }
 
     type Setting = {
@@ -86,6 +86,7 @@ declare global {
             deleteSourcePath: (sourcePath: string) => Promise<Result>;
             sendChar: (str: string) => void;
             listHosts: () => Promise<Result>;
+            setHost: (host: Host) => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;
