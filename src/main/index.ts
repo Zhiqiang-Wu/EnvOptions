@@ -476,64 +476,62 @@ const listDatabaseHosts = (): Promise<Result> => {
 };
 
 const listSystemHosts = (): Promise<Result> => {
-    return new Promise<Result>((resolve) => {
-        const str = fsExtra.readFileSync(hostsPath, 'utf-8');
+    return readHostsFile().then((result) => {
+        if (result.code !== 200) {
+            return result;
+        }
+        const str = result.data.hosts;
         const systemHosts = str.split('\n').filter((value) => isHost(value)).map((value) => {
             const arr = value.trim().split(' ');
             const ip = arr.shift();
             const domain = arr.join(' ');
             return {ip, domain};
         });
-        resolve({
-            code: 200,
-            data: {
-                systemHosts,
-            },
-        });
+        return {code: 200, data: {systemHosts}};
     });
 };
 
 const setHost = (host: Host): Promise<Result> => {
-    const str = fsExtra.readFileSync(hostsPath, 'utf-8');
-    let arr = str.split('\n');
-    if (host.selected) {
-        let flag = false;
-        arr = arr.map((value) => {
-            if (isHost(value)) {
-                const arr = value.trim().split(' ');
-                const ip = arr.shift();
-                const domain = arr.join(' ');
-                if (domain === host.domain) {
-                    flag = true;
-                    return host.ip + ' ' + domain;
+    return readHostsFile().then((result) => {
+        if (result.code !== 200) {
+            return result;
+        }
+        const str = result.data.hosts;
+        let arr = str.split('\n');
+        if (host.selected) {
+            let flag = false;
+            arr = arr.map((value) => {
+                if (isHost(value)) {
+                    const arr = value.trim().split(' ');
+                    const ip = arr.shift();
+                    const domain = arr.join(' ');
+                    if (domain === host.domain) {
+                        flag = true;
+                        return host.ip + ' ' + domain;
+                    } else {
+                        return value;
+                    }
                 } else {
                     return value;
                 }
-            } else {
-                return value;
+            });
+            if (!flag) {
+                arr.push(host.ip + ' ' + host.domain);
             }
-        });
-        if (!flag) {
-            arr.push(host.ip + ' ' + host.domain);
+        } else {
+            arr = arr.filter((value) => {
+                if (isHost(value)) {
+                    const arr = value.trim().split(' ');
+                    const ip = arr.shift();
+                    const domain = arr.join(' ');
+                    return domain !== host.domain;
+                } else {
+                    return true;
+                }
+            });
         }
-    } else {
-        arr = arr.filter((value) => {
-            if (isHost(value)) {
-                const arr = value.trim().split(' ');
-                const ip = arr.shift();
-                const domain = arr.join(' ');
-                return domain !== host.domain;
-            } else {
-                return true;
-            }
-        });
-    }
 
-    const newStr = arr.join('\n');
-    fsExtra.writeFileSync(hostsPath, newStr, 'utf-8');
-
-    return Promise.resolve({
-        code: 200
+        return writeHostsFile(arr.join('\n'));
     });
 };
 
@@ -551,8 +549,20 @@ const deleteDatabaseHost = (id: number): Promise<Result> => {
     });
 };
 
-const openHost = (): void => {
+const openHostsFile = (): void => {
     console.log('打开host');
+};
+
+const writeHostsFile = (str): Promise<Result> => {
+    fsExtra.writeFileSync(hostsPath, str, 'utf-8');
+    return Promise.resolve({
+        code: 200
+    });
+};
+
+const readHostsFile = (): Promise<Result> => {
+    const str = fsExtra.readFileSync(hostsPath, 'utf-8');
+    return Promise.resolve({code: 200, data: {hosts: str}});
 };
 
 const quitAndInstall = (): void => {
@@ -895,6 +905,14 @@ ipcMain.handle('deleteHost', (event, args): Promise<Result> => {
     return deleteDatabaseHost(args.id);
 });
 
-ipcMain.on('openHost', (): void => {
-    openHost();
+ipcMain.on('openHostsFile', (): void => {
+    openHostsFile();
+});
+
+ipcMain.handle('writeHostsFile', (event, args) => {
+    return writeHostsFile(args);
+});
+
+ipcMain.handle('readHostsFile', () => {
+    return readHostsFile();
 });

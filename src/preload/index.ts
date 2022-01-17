@@ -71,9 +71,15 @@ const localServices: any = {
     deleteHost: (host: Host): Promise<Result> => {
         return ipcRenderer.invoke('deleteHost', host);
     },
-    openHost: (): void => {
-        ipcRenderer.send('openHost');
-    }
+    openHostsFile: (): void => {
+        ipcRenderer.send('openHostsFile');
+    },
+    writeHostsFile: (str): Promise<Result> => {
+        return ipcRenderer.invoke('writeHostsFile', str);
+    },
+    readHostsFile: (): Promise<Result> => {
+        return ipcRenderer.invoke('readHostsFile');
+    },
 };
 
 const localFunctions: any = {
