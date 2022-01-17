@@ -3,8 +3,8 @@
 
 import HostsView from '@/pages/hosts/hosts-view';
 import {compose, withState, withHandlers, lifecycle} from 'recompose';
-import {LIST_HOSTS, SET_HOST} from '@/actions/actionTypes';
-import {listHosts, setHost} from '@/actions/actions';
+import {LIST_HOSTS, SET_HOST, DELETE_HOST} from '@/actions/actionTypes';
+import {listHosts, setHost, deleteHost} from '@/actions/actions';
 import withDva from '@/components/with-dva';
 import {message} from 'antd';
 import {createSelector} from 'reselect';
@@ -66,6 +66,27 @@ const onSelectedChange = ({
     });
 };
 
+const onDelete = ({dispatch, setHosts, setSelectedRowKeys}: IProps) => (host: Host) => {
+    dispatch(deleteHost(host)).then((result: Result) => {
+        if (result.code !== 200) {
+            return result;
+        }
+        return dispatch(listHosts());
+    }).then((result: Result) => {
+        if (result.code !== 200) {
+            message.warn(result.message);
+            return;
+        }
+        const hosts: Array<Host> = result.data.hosts;
+        setHosts(hosts);
+        setSelectedRowKeys(hosts.filter((host) => host.selected).map((host) => host.id));
+    });
+};
+
+const showDeleteAction = () => (host: Host) => {
+    return !host.selected;
+};
+
 const withLifecycle = lifecycle({
     componentDidMount() {
         const {dispatch, setHosts, setSelectedRowKeys}: any = this.props;
@@ -85,14 +106,16 @@ const mapStateToProps = (state) => ({
     tableLoading: createSelector([
         (state: any) => state.loading.effects[LIST_HOSTS],
         (state: any) => state.loading.effects[SET_HOST],
-    ], (loading1, loading2) => {
-        return loading1 === true || loading2 === true;
+        (state: any) => state.loading.effects[DELETE_HOST],
+    ], (loading1, loading2, loading3) => {
+        return loading1 === true || loading2 === true || loading3 === true;
     })(state),
     reloadButtonDisabled: createSelector([
         (state: any) => state.loading.effects[LIST_HOSTS],
         (state: any) => state.loading.effects[SET_HOST],
-    ], (loading1, loading2) => {
-        return loading1 === true || loading2 === true;
+        (state: any) => state.loading.effects[DELETE_HOST],
+    ], (loading1, loading2, loading3) => {
+        return loading1 === true || loading2 === true || loading3 === true;
     })(state),
 });
 
@@ -103,6 +126,8 @@ export default compose(
     withHandlers({
         onReload,
         onSelectedChange,
+        showDeleteAction,
+        onDelete,
     }),
     withLifecycle,
 )(HostsView);

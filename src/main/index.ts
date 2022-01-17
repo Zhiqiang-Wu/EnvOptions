@@ -537,6 +537,20 @@ const setHost = (host: Host): Promise<Result> => {
     });
 };
 
+const deleteDatabaseHost = (id: number): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        baseDB.exec(`DELETE
+                     FROM host
+                     WHERE id = ${id}`, (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
 const quitAndInstall = (): void => {
     if (baseDB) {
         baseDB.close(() => {
@@ -873,6 +887,6 @@ ipcMain.handle('insertHost', () => {
 
 });
 
-ipcMain.handle('deleteHost', () => {
-
+ipcMain.handle('deleteHost', (event, args) => {
+    return deleteDatabaseHost(args.id);
 });

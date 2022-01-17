@@ -2,11 +2,20 @@
 // @date 2021/1/14
 
 import React from 'react';
-import {Table, Tooltip, Button} from 'antd';
+import {Table, Tooltip, Button, Popconfirm, Typography, Space} from 'antd';
 import styles from './index.scss';
-import {ReloadOutlined} from '@ant-design/icons';
+import {DeleteOutlined, ReloadOutlined} from '@ant-design/icons';
 
-const HostsView = ({hosts, tableLoading, reloadButtonDisabled, onReload, selectedRowKeys, onSelectedChange}: any) => {
+const HostsView = ({
+                       hosts,
+                       tableLoading,
+                       reloadButtonDisabled,
+                       onReload,
+                       selectedRowKeys,
+                       onSelectedChange,
+                       showDeleteAction,
+                       onDelete,
+                   }: any) => {
     const columns = [
         {
             key: 'ip',
@@ -17,6 +26,30 @@ const HostsView = ({hosts, tableLoading, reloadButtonDisabled, onReload, selecte
             key: 'domain',
             title: '域名',
             dataIndex: 'domain',
+        },
+        {
+            key: 'action',
+            title: '操作',
+            width: 70,
+            render: (record) => {
+                const deleteAction = showDeleteAction && showDeleteAction(record) ? (
+                    <Popconfirm
+                        title='确认删除？'
+                        onConfirm={() => onDelete(record)}
+                    >
+                        <Tooltip title='删除'>
+                            <Typography.Link>
+                                <DeleteOutlined/>
+                            </Typography.Link>
+                        </Tooltip>
+                    </Popconfirm>
+                ) : null;
+                return (
+                    <Space>
+                        {deleteAction}
+                    </Space>
+                );
+            },
         },
     ];
     return (

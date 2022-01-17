@@ -87,6 +87,7 @@ declare global {
             sendChar: (str: string) => void;
             listHosts: () => Promise<Result>;
             setHost: (host: Host) => Promise<Result>;
+            deleteHost: (host: Host) => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;

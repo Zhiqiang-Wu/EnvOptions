@@ -68,6 +68,9 @@ const localServices: any = {
     setHost: (host: Host): Promise<Result> => {
         return ipcRenderer.invoke('setHost', host);
     },
+    deleteHost: (host: Host): Promise<Result> => {
+        return ipcRenderer.invoke('deleteHost', host);
+    },
 };
 
 const localFunctions: any = {
