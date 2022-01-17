@@ -11,11 +11,15 @@ const HostsView = ({
                        tableLoading,
                        reloadButtonDisabled,
                        onReload,
+                       onReload2,
                        selectedRowKeys,
                        onSelectedChange,
                        showDeleteAction,
                        onDelete,
-                       onOpenHost
+                       onOpenHost,
+                       onTabChange,
+                       hostsStr,
+                       onHostsStrChange,
                    }: any) => {
     const columns = [
         {
@@ -54,7 +58,7 @@ const HostsView = ({
         },
     ];
     return (
-        <Tabs defaultActiveKey='1'>
+        <Tabs defaultActiveKey='1' onChange={onTabChange}>
             <Tabs.TabPane key='1' tab='hosts'>
                 <div className={styles.action}>
                     <Space size={'large'}>
@@ -81,9 +85,17 @@ const HostsView = ({
                 />
             </Tabs.TabPane>
             <Tabs.TabPane key='2' tab='hosts文件'>
-                <Input.TextArea autoSize={{minRows: 15}}/>
+                <div className={styles.action}>
+                    <Tooltip title='刷新'>
+                        <Button
+                            icon={<ReloadOutlined/>}
+                            disabled={reloadButtonDisabled}
+                            onClick={onReload2}
+                        />
+                    </Tooltip>
+                </div>
+                <Input.TextArea onChange={onHostsStrChange} value={hostsStr} autoSize={{minRows: 15}}/>
             </Tabs.TabPane>
-
         </Tabs>
     );
 };

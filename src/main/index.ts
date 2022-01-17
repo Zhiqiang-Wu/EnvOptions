@@ -480,7 +480,7 @@ const listSystemHosts = (): Promise<Result> => {
         if (result.code !== 200) {
             return result;
         }
-        const str = result.data.hosts;
+        const str = result.data.hostsStr;
         const systemHosts = str.split('\n').filter((value) => isHost(value)).map((value) => {
             const arr = value.trim().split(' ');
             const ip = arr.shift();
@@ -496,7 +496,7 @@ const setHost = (host: Host): Promise<Result> => {
         if (result.code !== 200) {
             return result;
         }
-        const str = result.data.hosts;
+        const str = result.data.hostsStr;
         let arr = str.split('\n');
         if (host.selected) {
             let flag = false;
@@ -562,7 +562,7 @@ const writeHostsFile = (str): Promise<Result> => {
 
 const readHostsFile = (): Promise<Result> => {
     const str = fsExtra.readFileSync(hostsPath, 'utf-8');
-    return Promise.resolve({code: 200, data: {hosts: str}});
+    return Promise.resolve({code: 200, data: {hostsStr: str}});
 };
 
 const quitAndInstall = (): void => {

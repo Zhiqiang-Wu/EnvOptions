@@ -4,7 +4,7 @@
 import HostsView from '@/pages/hosts/hosts-view';
 import {compose, withState, withHandlers, lifecycle} from 'recompose';
 import {LIST_HOSTS, SET_HOST, DELETE_HOST} from '@/actions/actionTypes';
-import {listHosts, setHost, deleteHost, openHostsFile} from '@/actions/actions';
+import {listHosts, setHost, deleteHost, openHostsFile, readHostsFile, writeHostsFile} from '@/actions/actions';
 import withDva from '@/components/with-dva';
 import {message} from 'antd';
 import {createSelector} from 'reselect';
@@ -16,6 +16,7 @@ interface IProps {
     setSelectedRowKeys: Function;
     selectedRowKeys: Array<number>;
     hosts: Array<Host>;
+    setHostsStr: Function;
 }
 
 const onReload = ({dispatch, setHosts, setSelectedRowKeys}: IProps) => () => {
@@ -24,6 +25,16 @@ const onReload = ({dispatch, setHosts, setSelectedRowKeys}: IProps) => () => {
             const hosts: Array<Host> = result.data.hosts;
             setHosts(hosts);
             setSelectedRowKeys(hosts.filter((host) => host.selected).map((host) => host.id));
+        } else {
+            message.warn(result.message);
+        }
+    });
+};
+
+const onReload2 = ({dispatch, setHostsStr}: IProps) => () => {
+    dispatch(readHostsFile()).then((result: Result) => {
+        if (result.code === 200) {
+            setHostsStr(result.data.hostsStr);
         } else {
             message.warn(result.message);
         }
@@ -91,6 +102,38 @@ const onOpenHost = ({dispatch}: IProps) => () => {
     dispatch(openHostsFile());
 };
 
+const onTabChange = ({dispatch, setHosts, setSelectedRowKeys, setHostsStr}: IProps) => (key) => {
+    if (key === '1') {
+        dispatch(listHosts()).then((result: Result) => {
+            if (result.code === 200) {
+                const hosts: Array<Host> = result.data.hosts;
+                setHosts(hosts);
+                setSelectedRowKeys(hosts.filter((host) => host.selected).map((host) => host.id));
+            } else {
+                message.warn(result.message);
+            }
+        });
+    } else {
+        dispatch(readHostsFile()).then((result: Result) => {
+            if (result.code === 200) {
+                setHostsStr(result.data.hostsStr);
+            } else {
+                message.warn(result.message);
+            }
+        });
+    }
+};
+
+let timer;
+
+const onHostsStrChange = ({setHostsStr, dispatch}: IProps) => (e) => {
+    setHostsStr(e.target.value);
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+        dispatch(writeHostsFile(e.target.value));
+    }, 500);
+};
+
 const withLifecycle = lifecycle({
     componentDidMount() {
         const {dispatch, setHosts, setSelectedRowKeys}: any = this.props;
@@ -127,12 +170,16 @@ export default compose(
     withDva(mapStateToProps),
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
     withState('hosts', 'setHosts', []),
+    withState('hostsStr', 'setHostsStr', ''),
     withHandlers({
         onReload,
+        onReload2,
         onSelectedChange,
         showDeleteAction,
         onDelete,
         onOpenHost,
+        onTabChange,
+        onHostsStrChange,
     }),
     withLifecycle,
 )(HostsView);
