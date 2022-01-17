@@ -551,6 +551,10 @@ const deleteDatabaseHost = (id: number): Promise<Result> => {
     });
 };
 
+const openHost = (): void => {
+    console.log('打开host');
+};
+
 const quitAndInstall = (): void => {
     if (baseDB) {
         baseDB.close(() => {
@@ -887,6 +891,10 @@ ipcMain.handle('insertHost', () => {
 
 });
 
-ipcMain.handle('deleteHost', (event, args) => {
+ipcMain.handle('deleteHost', (event, args): Promise<Result> => {
     return deleteDatabaseHost(args.id);
+});
+
+ipcMain.on('openHost', (): void => {
+    openHost();
 });

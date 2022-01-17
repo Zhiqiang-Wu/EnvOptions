@@ -12,3 +12,7 @@ export const setHost = (host: Host): Promise<Result> => {
 export const deleteHost = (host: Host): Promise<Result> => {
     return window.localServices.deleteHost(host);
 };
+
+export const openHost = (): void => {
+    return window.localServices.openHost();
+};

@@ -2,9 +2,9 @@
 // @date 2021/1/14
 
 import HostsView from '@/pages/hosts/hosts-view';
-import {compose, withState, withHandlers, lifecycle} from 'recompose';
+import {compose, withState, withHandlers, lifecycle, withProps} from 'recompose';
 import {LIST_HOSTS, SET_HOST, DELETE_HOST} from '@/actions/actionTypes';
-import {listHosts, setHost, deleteHost} from '@/actions/actions';
+import {listHosts, setHost, deleteHost, openHost} from '@/actions/actions';
 import withDva from '@/components/with-dva';
 import {message} from 'antd';
 import {createSelector} from 'reselect';
@@ -87,6 +87,10 @@ const showDeleteAction = () => (host: Host) => {
     return !host.selected;
 };
 
+const onOpenHost = ({dispatch}: IProps) => () => {
+    dispatch(openHost());
+};
+
 const withLifecycle = lifecycle({
     componentDidMount() {
         const {dispatch, setHosts, setSelectedRowKeys}: any = this.props;
@@ -128,6 +132,7 @@ export default compose(
         onSelectedChange,
         showDeleteAction,
         onDelete,
+        onOpenHost,
     }),
     withLifecycle,
 )(HostsView);

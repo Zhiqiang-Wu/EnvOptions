@@ -15,6 +15,7 @@ const HostsView = ({
                        onSelectedChange,
                        showDeleteAction,
                        onDelete,
+                       onOpenHost
                    }: any) => {
     const columns = [
         {
@@ -55,13 +56,16 @@ const HostsView = ({
     return (
         <>
             <div className={styles.action}>
-                <Tooltip title='刷新'>
-                    <Button
-                        icon={<ReloadOutlined/>}
-                        disabled={reloadButtonDisabled}
-                        onClick={onReload}
-                    />
-                </Tooltip>
+                <Space size={'large'}>
+                    <Tooltip title='刷新'>
+                        <Button
+                            icon={<ReloadOutlined/>}
+                            disabled={reloadButtonDisabled}
+                            onClick={onReload}
+                        />
+                    </Tooltip>
+                    <Button onClick={onOpenHost} type={'primary'}>打开host文件</Button>
+                </Space>
             </div>
             <Table
                 loading={tableLoading}
