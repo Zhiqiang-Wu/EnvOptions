@@ -2,7 +2,7 @@
 // @date 2021/1/14
 
 import React from 'react';
-import {Table, Tooltip, Button, Popconfirm, Typography, Space} from 'antd';
+import {Table, Tooltip, Button, Popconfirm, Typography, Space, Tabs, Input} from 'antd';
 import styles from './index.scss';
 import {DeleteOutlined, ReloadOutlined} from '@ant-design/icons';
 
@@ -54,31 +54,37 @@ const HostsView = ({
         },
     ];
     return (
-        <>
-            <div className={styles.action}>
-                <Space size={'large'}>
-                    <Tooltip title='刷新'>
-                        <Button
-                            icon={<ReloadOutlined/>}
-                            disabled={reloadButtonDisabled}
-                            onClick={onReload}
-                        />
-                    </Tooltip>
-                    <Button onClick={onOpenHost} type={'primary'}>打开host文件</Button>
-                </Space>
-            </div>
-            <Table
-                loading={tableLoading}
-                columns={columns}
-                dataSource={hosts}
-                rowKey={(record) => record.id}
-                rowSelection={{
-                    hideSelectAll: true,
-                    selectedRowKeys,
-                    onChange: onSelectedChange,
-                }}
-            />
-        </>
+        <Tabs defaultActiveKey='1'>
+            <Tabs.TabPane key='1' tab='hosts'>
+                <div className={styles.action}>
+                    <Space size={'large'}>
+                        <Tooltip title='刷新'>
+                            <Button
+                                icon={<ReloadOutlined/>}
+                                disabled={reloadButtonDisabled}
+                                onClick={onReload}
+                            />
+                        </Tooltip>
+                        <Button onClick={onOpenHost} type={'primary'}>打开host文件</Button>
+                    </Space>
+                </div>
+                <Table
+                    loading={tableLoading}
+                    columns={columns}
+                    dataSource={hosts}
+                    rowKey={(record) => record.id}
+                    rowSelection={{
+                        hideSelectAll: true,
+                        selectedRowKeys,
+                        onChange: onSelectedChange,
+                    }}
+                />
+            </Tabs.TabPane>
+            <Tabs.TabPane key='2' tab='hosts文件'>
+                <Input.TextArea autoSize={{minRows: 15}}/>
+            </Tabs.TabPane>
+
+        </Tabs>
     );
 };
 

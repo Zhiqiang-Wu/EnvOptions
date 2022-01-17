@@ -13,6 +13,14 @@ export const deleteHost = (host: Host): Promise<Result> => {
     return window.localServices.deleteHost(host);
 };
 
-export const openHost = (): void => {
-    return window.localServices.openHost();
+export const openHostsFile = (): void => {
+    return window.localServices.openHostsFile();
+};
+
+export const readHostsFile = (): Promise<Result> => {
+    return window.localServices.readHostsFile();
+};
+
+export const writeHostsFile = (str: string): Promise<Result> => {
+    return window.localServices.writeHostsFile(str);
 };

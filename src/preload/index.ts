@@ -74,7 +74,7 @@ const localServices: any = {
     openHostsFile: (): void => {
         ipcRenderer.send('openHostsFile');
     },
-    writeHostsFile: (str): Promise<Result> => {
+    writeHostsFile: (str: string): Promise<Result> => {
         return ipcRenderer.invoke('writeHostsFile', str);
     },
     readHostsFile: (): Promise<Result> => {

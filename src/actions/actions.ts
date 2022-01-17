@@ -31,7 +31,9 @@ import {
     LIST_HOSTS,
     SET_HOST,
     DELETE_HOST,
-    OPEN_HOST,
+    OPEN_HOSTS_FILE,
+    READ_HOSTS_FILE,
+    WRITE_HOSTS_FILE,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -68,4 +70,6 @@ export const passwordCracking = createAction(PASSWORD_CRACKING);
 export const listHosts = createAction(LIST_HOSTS);
 export const setHost = createAction(SET_HOST);
 export const deleteHost = createAction(DELETE_HOST);
-export const openHost = createAction(OPEN_HOST);
+export const openHostsFile = createAction(OPEN_HOSTS_FILE);
+export const readHostsFile = createAction(READ_HOSTS_FILE);
+export const writeHostsFile = createAction(WRITE_HOSTS_FILE);
