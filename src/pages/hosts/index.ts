@@ -3,8 +3,16 @@
 
 import HostsView from '@/pages/hosts/hosts-view';
 import {compose, withState, withHandlers, lifecycle} from 'recompose';
-import {LIST_HOSTS, SET_HOST, DELETE_HOST} from '@/actions/actionTypes';
-import {listHosts, setHost, deleteHost, openHostsFile, readHostsFile, writeHostsFile} from '@/actions/actions';
+import {LIST_HOSTS, SET_HOST, DELETE_HOST, READ_HOSTS_FILE, WRITE_HOSTS_FILE} from '@/actions/actionTypes';
+import {
+    listHosts,
+    setHost,
+    deleteHost,
+    openHostsFile,
+    readHostsFile,
+    writeHostsFile,
+    getSetting,
+} from '@/actions/actions';
 import withDva from '@/components/with-dva';
 import {message} from 'antd';
 import {createSelector} from 'reselect';
@@ -136,7 +144,7 @@ const onHostsStrChange = ({setHostsStr, dispatch}: IProps) => (e) => {
 
 const withLifecycle = lifecycle({
     componentDidMount() {
-        const {dispatch, setHosts, setSelectedRowKeys}: any = this.props;
+        const {dispatch, setHosts, setSelectedRowKeys, setPageSize}: any = this.props;
         dispatch(listHosts()).then((result: Result) => {
             if (result.code === 200) {
                 const hosts: Array<Host> = result.data.hosts;
@@ -144,6 +152,14 @@ const withLifecycle = lifecycle({
                 setSelectedRowKeys(hosts.filter((host) => host.selected).map((host) => host.id));
             } else {
                 message.warn(result.message);
+            }
+        });
+        dispatch(getSetting('pageSize')).then((result: Result) => {
+            if (result.code === 200) {
+                const pageSize = result.data.pageSize;
+                if (pageSize && pageSize >= 1 && pageSize <= 20) {
+                    setPageSize(pageSize);
+                }
             }
         });
     },
@@ -164,6 +180,30 @@ const mapStateToProps = (state) => ({
     ], (loading1, loading2, loading3) => {
         return loading1 === true || loading2 === true || loading3 === true;
     })(state),
+    reloadButton2Disabled: createSelector([
+        (state: any) => state.loading.effects[READ_HOSTS_FILE],
+        (state: any) => state.loading.effects[WRITE_HOSTS_FILE],
+    ], (loading1, loading2) => {
+        return loading1 === true || loading2 === true;
+    })(state),
+    tabPane1Disabled: createSelector([
+        (state: any) => state.loading.effects[READ_HOSTS_FILE],
+        (state: any) => state.loading.effects[WRITE_HOSTS_FILE],
+        (state: any) => state.loading.effects[LIST_HOSTS],
+        (state: any) => state.loading.effects[SET_HOST],
+        (state: any) => state.loading.effects[DELETE_HOST],
+    ], (loading1, loading2, loading3, loading4, loading5) => {
+        return loading1 === true || loading2 === true || loading3 === true || loading4 === true || loading5 === true;
+    })(state),
+    tabPane2Disabled: createSelector([
+        (state: any) => state.loading.effects[READ_HOSTS_FILE],
+        (state: any) => state.loading.effects[WRITE_HOSTS_FILE],
+        (state: any) => state.loading.effects[LIST_HOSTS],
+        (state: any) => state.loading.effects[SET_HOST],
+        (state: any) => state.loading.effects[DELETE_HOST],
+    ], (loading1, loading2, loading3, loading4, loading5) => {
+        return loading1 === true || loading2 === true || loading3 === true || loading4 === true || loading5 === true;
+    })(state),
 });
 
 export default compose(
@@ -171,6 +211,7 @@ export default compose(
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
     withState('hosts', 'setHosts', []),
     withState('hostsStr', 'setHostsStr', ''),
+    withState('pageSize', 'setPageSize', 10),
     withHandlers({
         onReload,
         onReload2,

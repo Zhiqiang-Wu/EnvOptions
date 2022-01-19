@@ -29,6 +29,7 @@ import ref from 'ref-napi';
 import {Parser} from 'xml2js';
 import {v4 as uuidV4} from 'uuid';
 import {isHost} from '../utils/hostUtil';
+import childProcess from 'child_process';
 // import semver from 'semver';
 
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -550,7 +551,7 @@ const deleteDatabaseHost = (id: number): Promise<Result> => {
 };
 
 const openHostsFile = (): void => {
-    console.log('打开host');
+    childProcess.exec(`notepad.exe ${hostsPath}`);
 };
 
 const writeHostsFile = (str): Promise<Result> => {

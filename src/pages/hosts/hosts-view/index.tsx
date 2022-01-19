@@ -20,6 +20,10 @@ const HostsView = ({
                        onTabChange,
                        hostsStr,
                        onHostsStrChange,
+                       tabPane1Disabled,
+                       tabPane2Disabled,
+                       reloadButton2Disabled,
+                       pageSize,
                    }: any) => {
     const columns = [
         {
@@ -59,7 +63,7 @@ const HostsView = ({
     ];
     return (
         <Tabs defaultActiveKey='1' onChange={onTabChange}>
-            <Tabs.TabPane key='1' tab='hosts'>
+            <Tabs.TabPane key='1' tab='hosts' disabled={tabPane1Disabled}>
                 <div className={styles.action}>
                     <Space size={'large'}>
                         <Tooltip title='刷新'>
@@ -82,14 +86,15 @@ const HostsView = ({
                         selectedRowKeys,
                         onChange: onSelectedChange,
                     }}
+                    pagination={{pageSize}}
                 />
             </Tabs.TabPane>
-            <Tabs.TabPane key='2' tab='hosts文件'>
+            <Tabs.TabPane key='2' tab='hosts文件' disabled={tabPane2Disabled}>
                 <div className={styles.action}>
                     <Tooltip title='刷新'>
                         <Button
                             icon={<ReloadOutlined/>}
-                            disabled={reloadButtonDisabled}
+                            disabled={reloadButton2Disabled}
                             onClick={onReload2}
                         />
                     </Tooltip>
