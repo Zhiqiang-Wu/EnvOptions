@@ -24,3 +24,7 @@ export const readHostsFile = (): Promise<Result> => {
 export const writeHostsFile = (str: string): Promise<Result> => {
     return window.localServices.writeHostsFile(str);
 };
+
+export const insertHost = (value): Promise<Result> => {
+    return window.localServices.insertHost(value);
+};

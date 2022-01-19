@@ -91,6 +91,7 @@ declare global {
             openHostsFile: () => void;
             readHostsFile: () => Promise<Result>;
             writeHostsFile: (str: string) => Promise<Result>;
+            insertHost: (host: Host) => Promise<Result>;
         };
         localFunctions: {
             showOpenDialog: (options: OpenDialogOptions1) => Promise<OpenDialogReturnValue>;

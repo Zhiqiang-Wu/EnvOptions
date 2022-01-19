@@ -80,6 +80,9 @@ const localServices: any = {
     readHostsFile: (): Promise<Result> => {
         return ipcRenderer.invoke('readHostsFile');
     },
+    insertHost: (host: Host): Promise<Result> => {
+        return ipcRenderer.invoke('insertHost', host);
+    },
 };
 
 const localFunctions: any = {

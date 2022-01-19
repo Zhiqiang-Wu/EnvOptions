@@ -3,7 +3,7 @@
 
 import HostsView from '@/pages/hosts/hosts-view';
 import {compose, withState, withHandlers, lifecycle} from 'recompose';
-import {LIST_HOSTS, SET_HOST, DELETE_HOST, READ_HOSTS_FILE, WRITE_HOSTS_FILE} from '@/actions/actionTypes';
+import {LIST_HOSTS, SET_HOST, DELETE_HOST, READ_HOSTS_FILE, WRITE_HOSTS_FILE, INSERT_HOST} from '@/actions/actionTypes';
 import {
     listHosts,
     setHost,
@@ -12,6 +12,7 @@ import {
     readHostsFile,
     writeHostsFile,
     getSetting,
+    insertHost,
 } from '@/actions/actions';
 import withDva from '@/components/with-dva';
 import {message} from 'antd';
@@ -25,6 +26,7 @@ interface IProps {
     selectedRowKeys: Array<number>;
     hosts: Array<Host>;
     setHostsStr: Function;
+    setVisible: Function;
 }
 
 const onReload = ({dispatch, setHosts, setSelectedRowKeys}: IProps) => () => {
@@ -165,6 +167,32 @@ const withLifecycle = lifecycle({
     },
 });
 
+const onInsert = ({setVisible}: IProps) => () => {
+    setVisible(true);
+};
+
+const onCancel = ({setVisible}: IProps) => () => {
+    setVisible(false);
+};
+
+const onOk = ({dispatch, setHosts, setSelectedRowKeys, setVisible}: IProps) => (value) => {
+    dispatch(insertHost(value)).then((result: Result) => {
+        if (result.code !== 200) {
+            return result;
+        }
+        return dispatch(listHosts());
+    }).then((result: Result) => {
+        if (result.code !== 200) {
+            message.warn(result.message);
+            return;
+        }
+        setVisible(false);
+        const hosts: Array<Host> = result.data.hosts;
+        setHosts(hosts);
+        setSelectedRowKeys(hosts.filter((host) => host.selected).map((host) => host.id));
+    });
+};
+
 const mapStateToProps = (state) => ({
     tableLoading: createSelector([
         (state: any) => state.loading.effects[LIST_HOSTS],
@@ -204,15 +232,24 @@ const mapStateToProps = (state) => ({
     ], (loading1, loading2, loading3, loading4, loading5) => {
         return loading1 === true || loading2 === true || loading3 === true || loading4 === true || loading5 === true;
     })(state),
+    okButtonLoading: createSelector([
+        (state: any) => state.loading.effects[INSERT_HOST],
+    ], (loading1) => {
+        return loading1 === true;
+    })(state),
 });
 
 export default compose(
     withDva(mapStateToProps),
+    withState('visible', 'setVisible', false),
     withState('selectedRowKeys', 'setSelectedRowKeys', []),
     withState('hosts', 'setHosts', []),
     withState('hostsStr', 'setHostsStr', ''),
     withState('pageSize', 'setPageSize', 10),
     withHandlers({
+        onOk,
+        onInsert,
+        onCancel,
         onReload,
         onReload2,
         onSelectedChange,

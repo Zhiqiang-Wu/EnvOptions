@@ -34,6 +34,7 @@ import {
     OPEN_HOSTS_FILE,
     READ_HOSTS_FILE,
     WRITE_HOSTS_FILE,
+    INSERT_HOST,
 } from '@/actions/actionTypes';
 
 export const listEnvironmentVariables = createAction(LIST_ENVIRONMENT_VARIABLES);
@@ -73,3 +74,4 @@ export const deleteHost = createAction(DELETE_HOST);
 export const openHostsFile = createAction(OPEN_HOSTS_FILE);
 export const readHostsFile = createAction(READ_HOSTS_FILE);
 export const writeHostsFile = createAction(WRITE_HOSTS_FILE);
+export const insertHost = createAction(INSERT_HOST);

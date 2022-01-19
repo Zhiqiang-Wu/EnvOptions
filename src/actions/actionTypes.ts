@@ -35,6 +35,7 @@ export const PASSWORD_CRACKING = 'posModel/passwordCracking';
 export const LIST_HOSTS = 'hostModel/listHosts';
 export const SET_HOST = 'hostModel/setHost';
 export const DELETE_HOST = 'hostModel/deleteHost';
+export const INSERT_HOST = 'hostModel/insertHost';
 export const OPEN_HOSTS_FILE = 'hostModel/openHostsFile';
 export const READ_HOSTS_FILE = 'hostModel/readHostsFile';
 export const WRITE_HOSTS_FILE = 'hostModel/writeHostsFile';

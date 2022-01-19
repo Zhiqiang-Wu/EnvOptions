@@ -2,7 +2,15 @@
 // @date 2022/1/14
 
 import {Map} from 'immutable';
-import {listHosts, setHost, deleteHost, openHostsFile, writeHostsFile, readHostsFile} from '@/services/hostsService';
+import {
+    listHosts,
+    setHost,
+    deleteHost,
+    openHostsFile,
+    writeHostsFile,
+    readHostsFile,
+    insertHost,
+} from '@/services/hostsService';
 
 export default {
     namespace: 'hostModel',
@@ -25,6 +33,9 @@ export default {
         },
         * writeHostsFile({payload}, {call}) {
             return yield call(writeHostsFile, payload);
+        },
+        * insertHost({payload}, {call}) {
+            return yield call(insertHost, payload);
         },
     },
 };

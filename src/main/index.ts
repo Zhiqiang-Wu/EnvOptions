@@ -566,6 +566,20 @@ const readHostsFile = (): Promise<Result> => {
     return Promise.resolve({code: 200, data: {hostsStr: str}});
 };
 
+const insertDatabaseHost = (value): Promise<Result> => {
+    return new Promise<Result>((resolve) => {
+        const sql = `INSERT INTO host (ip, domain)
+                     VALUES (${'\''}${value.ip}${'\''}, ${'\''}${value.domain}${'\''})`;
+        baseDB.exec(sql, (err) => {
+            if (err) {
+                resolve({code: 1, message: err.message});
+            } else {
+                resolve({code: 200});
+            }
+        });
+    });
+};
+
 const quitAndInstall = (): void => {
     if (baseDB) {
         baseDB.close(() => {
@@ -898,10 +912,6 @@ ipcMain.handle('setHost', (event, args): Promise<Result> => {
     return setHost(args);
 });
 
-ipcMain.handle('insertHost', () => {
-
-});
-
 ipcMain.handle('deleteHost', (event, args): Promise<Result> => {
     return deleteDatabaseHost(args.id);
 });
@@ -916,4 +926,8 @@ ipcMain.handle('writeHostsFile', (event, args) => {
 
 ipcMain.handle('readHostsFile', () => {
     return readHostsFile();
+});
+
+ipcMain.handle('insertHost', (event, args): Promise<Result> => {
+    return insertDatabaseHost(args);
 });
