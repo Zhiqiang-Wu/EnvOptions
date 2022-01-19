@@ -18,6 +18,7 @@ import withDva from '@/components/with-dva';
 import {message} from 'antd';
 import {createSelector} from 'reselect';
 import lodash from 'lodash';
+import {isIpv4} from '@/utils/hostUtil';
 
 interface IProps {
     dispatch: Function;
@@ -175,7 +176,18 @@ const onCancel = ({setVisible}: IProps) => () => {
     setVisible(false);
 };
 
-const onOk = ({dispatch, setHosts, setSelectedRowKeys, setVisible}: IProps) => (value) => {
+const onOk = ({dispatch, setHosts, setSelectedRowKeys, setVisible, hosts}: IProps) => (value: Host) => {
+    const index = hosts.findIndex((host: Host) => {
+        return host.ip === value.ip && host.domain === value.domain;
+    });
+    if (index >= 0) {
+        message.warn('已存在');
+        return;
+    }
+    if (!isIpv4(value.ip.trim())) {
+        message.warn('ip格式不正确');
+        return;
+    }
     dispatch(insertHost(value)).then((result: Result) => {
         if (result.code !== 200) {
             return result;
