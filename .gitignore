@@ -1,28 +1,28 @@
 # dependencies
-/node_modules
-/npm-debug.log*
-/yarn-error.log
-/yarn.lock
-/package-lock.json
+env-options/node_modules
+env-options/npm-debug.log*
+env-options/yarn-error.log
+env-options/yarn.lock
+env-options/package-lock.json
 
 # production
-/dist
+env-options/dist
 
 # misc
-.DS_Store
+env-options/.DS_Store
 
 # umi
-/src/.umi
-/src/.umi-production
-/src/.umi-test
-/.env.local
+env-options/src/.umi
+env-options/src/.umi-production
+env-options/src/.umi-test
+env-options/.env.local
 
-/.idea
-/dist_electron
+env-options/.idea
+env-options/dist_electron
 
-/log
+env-options/log
 
-/.mfsu-production
+env-options/.mfsu-production
 
 /key-event-dll/.idea
 /key-event-dll/cmake-build-debug
