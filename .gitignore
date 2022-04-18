@@ -23,3 +23,6 @@
 /log
 
 /.mfsu-production
+
+/key-event-dll/.idea
+/key-event-dll/cmake-build-debug
