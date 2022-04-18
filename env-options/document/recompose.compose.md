@@ -14,7 +14,7 @@ export default compose(
 export default hoc1(hoc2(hoc3(BaseComponent)));
 ```
 
-需要注意compose中高阶组件的执行顺序，有些高阶组件需要放在指定位置才有效，比如[keepAlive](../src/components/keep-alive/index.tsx)(用于保存组件状态的高阶组件)
+需要注意compose中高阶组件的执行顺序，有些高阶组件需要放在指定位置才有效，比如[keepAlive](../../src/components/keep-alive/index.tsx)(用于保存组件状态的高阶组件)
 
 1. 因为keepAlive先执行，所以无法保存hoc1、hoc2、hoc3中定义的状态，只能保存BaseComponent中定义的状态
 ```ts
