@@ -22,12 +22,10 @@ import {
     LIST_SOURCE_PATHS,
     INSERT_SOURCE_PATH,
     DELETE_SOURCE_PATH,
-    UPDATE_MAVEN_MODEL,
     UPDATE_SCAN_MODEL,
     LIST_VIDEO_INPUT_DEVICES,
     OPEN_SCAN,
     CLOSE_SCAN,
-    PASSWORD_CRACKING,
     LIST_HOSTS,
     SET_HOST,
     DELETE_HOST,
@@ -59,14 +57,11 @@ export const exportDependency = createAction(EXPORT_DEPENDENCY);
 export const listSourcePaths = createAction(LIST_SOURCE_PATHS);
 export const insertSourcePath = createAction(INSERT_SOURCE_PATH);
 export const deleteSourcePath = createAction(DELETE_SOURCE_PATH);
-export const updateMavenModel = createAction(UPDATE_MAVEN_MODEL);
 
 export const updateScanModel = createAction(UPDATE_SCAN_MODEL);
 export const listVideoInputDevices = createAction(LIST_VIDEO_INPUT_DEVICES);
 export const openScan = createAction(OPEN_SCAN);
 export const closeScan = createAction(CLOSE_SCAN);
-
-export const passwordCracking = createAction(PASSWORD_CRACKING);
 
 export const listHosts = createAction(LIST_HOSTS);
 export const setHost = createAction(SET_HOST);

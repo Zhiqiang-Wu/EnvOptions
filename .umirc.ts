@@ -84,14 +84,6 @@ export default defineConfig({
             footerRender: false,
         },
         {
-            path: '/pos',
-            name: 'POS',
-            icon: 'experiment',
-            exact: true,
-            component: '@/pages/pos',
-            footerRender: false,
-        },
-        {
             path: '/hosts',
             name: 'hosts',
             icon: 'shareAlt',
@@ -107,14 +99,6 @@ export default defineConfig({
             hideInMenu: true,
             footerRender: false,
         },
-        /*{
-            path: '/edit2',
-            name: '编辑',
-            exact: true,
-            component: '@/pages/edit2',
-            hideInMenu: true,
-            footerRender: false,
-        },*/
         {
             path: '/detail',
             name: '详情',

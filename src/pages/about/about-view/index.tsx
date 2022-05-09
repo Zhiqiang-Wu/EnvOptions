@@ -10,7 +10,7 @@ const AboutView = ({onCheck, checkLoading, updateLoading, onUpdate, updateInfo}:
         <div className={styles.about}>
             <div className={styles.header}>
                 <Typography.Title>Env Options</Typography.Title>
-                <Typography.Title level={4} type='secondary'>环境变量管理工具</Typography.Title>
+                <Typography.Title level={4} type='secondary'>一个工具</Typography.Title>
             </div>
             <Space direction='vertical' size={'large'}>
                 <div>

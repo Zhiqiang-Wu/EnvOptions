@@ -23,14 +23,10 @@ export const EXPORT_DEPENDENCY = 'mavenModel/exportDependency';
 export const LIST_SOURCE_PATHS = 'mavenModel/listSourcePaths';
 export const INSERT_SOURCE_PATH = 'mavenModel/insertSourcePath';
 export const DELETE_SOURCE_PATH = 'mavenModel/deleteSourcePath';
-export const UPDATE_MAVEN_MODEL = 'mavenModel/updateMavenModel';
-
 export const UPDATE_SCAN_MODEL = 'scanModel/updateScanModel';
 export const LIST_VIDEO_INPUT_DEVICES = 'scanModel/listVideoInputDevices';
 export const OPEN_SCAN = 'scanModel/openScan';
 export const CLOSE_SCAN = 'scanModel/closeScan';
-
-export const PASSWORD_CRACKING = 'posModel/passwordCracking';
 
 export const LIST_HOSTS = 'hostModel/listHosts';
 export const SET_HOST = 'hostModel/setHost';
