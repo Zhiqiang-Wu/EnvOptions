@@ -17,7 +17,18 @@
         "gulp:deleteDistElectron": "gulp deleteDistElectron",
         "gulp:writeReleaseNotes": "gulp writeReleaseNotes"
     },
+    "keywords": ["env", "umi", "electron", "hosts", "maven"],
+    "author": {
+        "name": "Wuzhiqiang",
+        "url": "https://github.com/Zhiqiang-Wu"
+    },
+    "license": "MIT",
     "gitHooks": {},
+    "packageManager": "pnpm@7.0.0",
+    "engines": {
+        "node": "=16",
+        "pnpm": "=7"
+    },
     "lint-staged": {
         "*.{js,jsx,less,md,json}": [
             "prettier --write"
