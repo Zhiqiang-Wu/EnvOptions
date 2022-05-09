@@ -7,7 +7,7 @@
         "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
         "test": "umi-test",
         "test:coverage": "umi-test --coverage",
-        "preinstall": "npx only-allow yarn",
+        "preinstall": "npx only-allow pnpm",
         "rebuild-deps": "electron-builder install-app-deps",
         "electron:init": "umi electron init",
         "electron:dev": "umi dev electron",
