@@ -7,6 +7,8 @@
 
 # Env Options
 
+![](https://img.shields.io/github/license/Zhiqiang-Wu/env-options) ![](https://img.shields.io/github/package-json/v/Zhiqiang-Wu/env-options)
+
 一个工具。
 
 <ul style="padding: 5px">
