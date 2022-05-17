@@ -7,7 +7,7 @@
         "prettier": "prettier --write '**/*.{js,jsx,tsx,ts,less,md,json}'",
         "test": "umi-test",
         "test:coverage": "umi-test --coverage",
-        "preinstall": "npx only-allow pnpm",
+        "preinstall": "npx only-allow yarn",
         "rebuild-deps": "electron-builder install-app-deps",
         "electron:init": "umi electron init",
         "electron:dev": "umi dev electron",
@@ -24,10 +24,8 @@
     },
     "license": "MIT",
     "gitHooks": {},
-    "packageManager": "pnpm@7.0.0",
     "engines": {
-        "node": "=16",
-        "pnpm": "=7"
+        "node": "=16"
     },
     "lint-staged": {
         "*.{js,jsx,less,md,json}": [
@@ -41,7 +39,7 @@
         "@ant-design/icons": "4.7.0",
         "@ant-design/pro-layout": "^6.34.8",
         "@zxing/library": "^0.19.1",
-        "electron-updater": "^4.6.1",
+        "electron-updater": "^5.0.1",
         "extract-zip": "^2.0.1",
         "ffi-napi": "^4.0.3",
         "fs-extra": "^10.0.1",
@@ -56,7 +54,7 @@
         "regedit": "^5.0.0",
         "reselect": "4.1.5",
         "sqlite3": "^5.0.2",
-        "umi": "3.5.21",
+        "umi": "3.5.23",
         "umi-plugin-keep-alive": "^0.0.1-beta.29",
         "uuid": "^8.3.2",
         "webrtc-adapter": "^8.1.0",
@@ -84,10 +82,10 @@
         "@types/xml2js": "^0.4.9",
         "@umijs/plugin-sass": "^1.1.1",
         "@umijs/preset-react": "1.x",
-        "@umijs/test": "3.5.21",
+        "@umijs/test": "3.5.23",
         "csv-parser": "^3.0.0",
-        "electron": "18.0.1",
-        "electron-builder": "22.14.13",
+        "electron": "18.2.3",
+        "electron-builder": "23.0.3",
         "gulp": "^4.0.2",
         "js-yaml": "^4.1.0",
         "lint-staged": "^12.3.7",
@@ -99,5 +97,5 @@
         "yorkie": "^2.0.0"
     },
     "name": "env-options",
-    "version": "1.3.0"
+    "version": "1.3.1"
 }
