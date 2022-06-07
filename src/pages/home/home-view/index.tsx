@@ -12,7 +12,6 @@ import {
     Form,
     Input,
     Space,
-    InputNumber,
     Typography,
     Radio,
     Popconfirm,
